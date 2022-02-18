@@ -11,7 +11,7 @@ export default function Form({ values }) {
   function validateUrl(value) {
     return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(value);
   }
-
+  //make this so that the function cannot run if the website is improperly typed
   function generateResults(website, medium, source) {
     if (!website) {
       return alert('Please provide a website.')
@@ -46,7 +46,7 @@ export default function Form({ values }) {
                 className="text-input"
                 onChange={e => setWebsite(e.currentTarget.value)}
               />
-              {website ? <small style={{ color: 'red', position: 'absolute' }}>{validateUrl(website) ? '' : 'Please enter a valid URL.'}</small> : null}
+              {website ? <small id="url-warning" style={{ color: 'red', position: 'absolute' }}>{validateUrl(website) ? '' : 'Please enter a valid URL.'}</small> : null}
             </label>
           </div>
           <div className='form-control'>
@@ -66,10 +66,13 @@ export default function Form({ values }) {
             </label>
           </div>
 
-          <button className="button" onClick={() => generateResults(website, medium, source)}>Generate URLs</button>
+          {
+            website && validateUrl(website) ?
+              <button className={"button"} onClick={() => generateResults(website, medium, source)}>Generate URLs</button> :
+              <button disabled className={"button"} onClick={() => generateResults(website, medium, source)}>Generate URLs</button>
+          }
 
         </div>
-        {results && results}
         {results &&
           <div className="results-wrapper">
             {results && results.map((r, i) => {
@@ -81,6 +84,7 @@ export default function Form({ values }) {
               )
             })}
           </div>
+
         }
       </div>
     </>
