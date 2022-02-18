@@ -1,0 +1,159 @@
+<!-- Version 3.0.0 - updated 02/09/2022 -->
+<!-- Removed jQuery -->
+<!-- Reconfigured access group handling to no longer rely on merge/custom fields -->
+<!--  -->
+<div id="metaDataWrapper" style="display: none">
+  <div id="attendeeFname">*/fname/*</div>
+  <div id="attendeeLname">*/lname/*</div>
+  <div id="attendeeEmail">*/email/*</div>
+  <div id="attendeeReferenceID">*/referencenumber/*</div>
+  <div id="country">*/country/*</div>
+  <div name="eventid" id="attendeeEventID">*/eventid/*</div>
+  <div id="category">*/category/*</div>
+  <div id="virtualEventURL">*/VirtualEventURL/*</div>
+  <div id="virtualEventID">*/VirtualEventID/*</div>
+  <div id="virtualEventKey">*/VirtualEventKey/*</div>
+  <div id="eventType">*/eventtype/*</div>
+  <!-- Staff, Role, Badge default to 0 unless these fields contain values -->
+  <div id="VirtualEventStaff">*/custom1/*</div>
+  <div id="virtualEventBadge">*/custom2/*</div>
+  <div id="virtualEventRole">*/custom3/*</div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let access_group = [];
+
+    const first_name = document.getElementById("attendeeFname").textContent;
+    const last_name = document.getElementById("attendeeLname").textContent;
+    const email = document.getElementById("attendeeEmail").textContent;
+    const category = document.getElementById("category").textContent;
+    const country = document.getElementById("country").textContent;
+    const attendeeid = document.getElementById("attendeeReferenceID").textContent;
+    const eventid = document.getElementById("attendeeEventID").textContent;
+    const staff = document.getElementById("VirtualEventStaff").textContent;
+    const badge = document.getElementById("virtualEventBadge").textContent;
+    const role = document.getElementById("virtualEventRole").textContent;
+    const attendeeTypeSelection = document.getElementsByName("selectcategoryid");
+
+    let subcategory = localStorage.getItem("subcategory");
+    let attendeeType = localStorage.getItem("attendee_type");
+
+    access_group.push(attendeeType);
+    //in person 
+    // replaces the country conditional question setup
+    if (country !== "United States") {
+      access_group.push("Non-US Attendee");
+    } else {
+      access_group.push("US Attendee");
+    }
+
+    // builds the access_groups array according to the selected category
+    switch (subcategory) {
+      case "RN/PA/NP/Pharmacist/Other Healthcare Professional":
+        access_group.push("Member"); //role of member
+        break;
+      case "Fellow/Resident":
+        access_group.push("Member");
+        break;
+      case "MD/DO":
+        access_group.push("Member");
+        break;
+      case "Industry Attendee": //role member
+        access_group.push("Industry");
+        access_group.push("Game: Excluded");
+        break;
+      case "Exhibitor": //role member
+        access_group.push("Exhibitor");
+        access_group.push("Game: Excluded");
+        break;
+      case "Faculty":
+        access_group.push("Faculty");
+      case "Complimentary":
+        access_group.push("Member"); //role member
+        break;
+      default:
+        access_group.push("Member");
+        break;
+    }
+
+    const attendee = {
+      first_name,
+      last_name,
+      email,
+      attendeeid,
+      eventid,
+      staff: staff == "*/custom1/*" ? 0 : staff,
+      badge: badge == "*/custom2/*" ? 0 : badge,
+      role: role == "*/custom3/*" ? 0 : role,
+      access_groups: access_group.map((el) => el.trim()).toString(),
+    };
+
+    if (first_name && last_name && email) {
+      console.log(attendee);
+      createAttendee(attendee);
+    } else {
+      alert("please fill out required fields");
+    }
+
+    function createAttendee(attendee) {
+      const event_url = document.getElementById("virtualEventURL").textContent;
+      const source = document.getElementById("virtualEventKey").textContent;
+      const event_id = document.getElementById("virtualEventID").textContent;
+
+      const api_url = encodeURI(`${event_url}/remote/regform/${event_id}?source=${source}`);
+
+      fetch(api_url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(attendee),
+      })
+        .then((response) => response.json())
+        .then((data) => data)
+        .catch((err) => console.log(`error from catch handler: ${err}`));
+    }
+
+  });
+</script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // const inPerson = document.getElementById("c4306576");
+    // const virtual = document.getElementById("c4306575");
+    const optionList = document.getElementsByClassName("category-selection-tr");
+
+    const inputs = document.querySelectorAll('input')
+
+    inputs.forEach(el => {
+      if (el.type === 'radio') {
+
+      }
+    })
+
+
+    for (let option of optionList) {
+      for (let td of option.childNodes) {
+        for (let input of td.childNodes) {
+          input.addEventListener("click", (e) => {
+            localStorage.setItem(
+              "subcategory",
+              e.target.labels[0].innerText.split("$")[0].trim()
+            );
+          });
+        }
+      }
+    }
+
+    // inPerson.addEventListener("click", (e) => {
+    //   localStorage.setItem("attendee_type", "In-Person Attendee");
+    // });
+    // virtual.addEventListener("click", (e) => {
+    //   localStorage.setItem("attendee_type", "Virtual Attendee");
+    // });
+  });
+</script>
