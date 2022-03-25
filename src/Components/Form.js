@@ -10,8 +10,9 @@ import {
   InputLabel,
   Link,
   FormHelperText,
+  Button,
 } from "@mui/material";
-import { HelpOutlined, HelpOutlineOutlined } from "@mui/icons-material";
+import { HelpOutlineOutlined } from "@mui/icons-material";
 
 //need help ? link - sends auto message to me / inbox - questions, concerns etc.
 export default function Form() {
@@ -185,6 +186,8 @@ export default function Form() {
           fullWidth
           multiline
         />
+
+        <Button onClick={() => navigator.clipboard.writeText(state.url)} variant='contained'>COPY</Button>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
           <HelpOutlineOutlined fontSize="small" color='secondary' />
