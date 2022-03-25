@@ -19,10 +19,15 @@ body,
 }
 
 .form-wrapper {
-  background-color: rgb(40, 40, 40);
+  /* background-color: rgba(55, 55, 55, 0.35); */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 75%;
+  background-color: white;
   border-radius: 10pt;
-  color: white;
-  padding: 2rem 2rem;
+  padding: 0.5rem 2rem;
+  width: 800px;
 }
 
 .text-input {
@@ -45,6 +50,10 @@ body,
   width: inherit;
 }
 
+.flex-display {
+  display: inline-flex;
+}
+
 #results-wrapper {
   width: 100%;
 }
@@ -60,6 +69,7 @@ body,
 }
 
 .badge {
+  padding-top: 5px;
   flex-grow: 0;
   font-size: 1.5rem;
 }
@@ -107,4 +117,24 @@ body,
 
 .error {
   outline: solid red 1px;
+}
+
+.copied {
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  top: 5px;
+  color: darkgreen;
+  background-color: rgb(49, 255, 124);
+  border: none;
+  padding: 1rem;
+  opacity: 1;
+}
+
+.hide {
+  border: 0;
+  top: 5px;
+  color: darkgreen;
+  background-color: rgb(49, 255, 124);
+  opacity: 0;
+  position: absolute;
 }

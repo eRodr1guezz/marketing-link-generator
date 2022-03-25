@@ -1,7 +1,8 @@
-<!-- Version 3.0.0 - updated 02/09/2022 -->
-<!-- Removed jQuery -->
-<!-- Reconfigured access group handling to no longer rely on merge/custom fields -->
-<!--  -->
+<!-- Version 3.0.3 - updated 03/04/2022 -->
+<!-- 03/03/22 - Use Session storage, update page title conditional for subcat and attendee types -->
+<!-- 03/04/22 - Added better handling of different access group names for the variants of event info -->
+<!-- Registration Page Header Code  -->
+<!-- In order to remove any ambiguity from the potential for classifaction setup variants affecting access groups, I updated the switch statement to use regex so we can catch those keywords (ie. industry) and properly classify. -->
 <div id="metaDataWrapper" style="display: none">
   <div id="attendeeFname">*/fname/*</div>
   <div id="attendeeLname">*/lname/*</div>
@@ -36,10 +37,10 @@
     const role = document.getElementById("virtualEventRole").textContent;
     const attendeeTypeSelection = document.getElementsByName("selectcategoryid");
 
-    let subcategory = localStorage.getItem("subcategory");
-    let attendeeType = localStorage.getItem("attendee_type");
+    let subcategory = sessionStorage.getItem("subcategory");
+    let attendeeType = sessionStorage.getItem("attendee_type");
 
-    access_group.push(attendeeType);
+    access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
     //in person 
     // replaces the country conditional question setup
     if (country !== "United States") {
@@ -48,33 +49,22 @@
       access_group.push("US Attendee");
     }
 
-    // builds the access_groups array according to the selected category
-    switch (subcategory) {
-      case "RN/PA/NP/Pharmacist/Other Healthcare Professional":
-        access_group.push("Member"); //role of member
-        break;
-      case "Fellow/Resident":
-        access_group.push("Member");
-        break;
-      case "MD/DO":
-        access_group.push("Member");
-        break;
-      case "Industry Attendee": //role member
-        access_group.push("Industry");
-        access_group.push("Game: Excluded");
-        break;
-      case "Exhibitor": //role member
-        access_group.push("Exhibitor");
-        access_group.push("Game: Excluded");
-        break;
-      case "Faculty":
-        access_group.push("Faculty");
-      case "Complimentary":
-        access_group.push("Member"); //role member
-        break;
-      default:
-        access_group.push("Member");
-        break;
+    if (/industry/gi.test(subcategory)) {
+      access_group.push("Industry");
+      access_group.push("Game: Excluded");
+    }
+
+    if (/exhibitor/gi.test(subcategory)) {
+      access_group.push('Exhibitor');
+      access_group.push("Game: Excluded");
+    }
+
+    if (/faculty/gi.test(subcategory)) {
+      access_group.push("Faculty");
+    }
+
+    if (/complimentary/gi.test(subcategory)) {
+      access_group.push('Complimentary');
     }
 
     const attendee = {
@@ -86,15 +76,11 @@
       staff: staff == "*/custom1/*" ? 0 : staff,
       badge: badge == "*/custom2/*" ? 0 : badge,
       role: role == "*/custom3/*" ? 0 : role,
-      access_groups: access_group.map((el) => el.trim()).toString(),
+      access_groups: access_group.length > 0 ? access_group.map((el) => el.trim()).toString() : '',
     };
 
-    if (first_name && last_name && email) {
-      console.log(attendee);
-      createAttendee(attendee);
-    } else {
-      alert("please fill out required fields");
-    }
+    console.log(access_group)
+    createAttendee(attendee)
 
     function createAttendee(attendee) {
       const event_url = document.getElementById("virtualEventURL").textContent;
@@ -102,6 +88,8 @@
       const event_id = document.getElementById("virtualEventID").textContent;
 
       const api_url = encodeURI(`${event_url}/remote/regform/${event_id}?source=${source}`);
+
+      console.log(api_url)
 
       fetch(api_url, {
         method: "POST",
@@ -112,48 +100,34 @@
         body: new URLSearchParams(attendee),
       })
         .then((response) => response.json())
-        .then((data) => data)
+        .then((data) => {
+          console.log(data)
+          return data
+        })
         .catch((err) => console.log(`error from catch handler: ${err}`));
     }
 
   });
 </script>
-
-
-
+<!-- This is not working - subcategory  -->
+<!-- Look & Feel -> Custom Code -> Custom HTML <HEAD> code -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // const inPerson = document.getElementById("c4306576");
-    // const virtual = document.getElementById("c4306575");
     const optionList = document.getElementsByClassName("category-selection-tr");
 
     const inputs = document.querySelectorAll('input')
-
-    inputs.forEach(el => {
-      if (el.type === 'radio') {
-
-      }
-    })
-
 
     for (let option of optionList) {
       for (let td of option.childNodes) {
         for (let input of td.childNodes) {
           input.addEventListener("click", (e) => {
-            localStorage.setItem(
-              "subcategory",
+            sessionStorage.setItem(
+              document.title.includes('Select Category') ? "subcategory" : "attendee_type",
               e.target.labels[0].innerText.split("$")[0].trim()
             );
           });
         }
       }
     }
-
-    // inPerson.addEventListener("click", (e) => {
-    //   localStorage.setItem("attendee_type", "In-Person Attendee");
-    // });
-    // virtual.addEventListener("click", (e) => {
-    //   localStorage.setItem("attendee_type", "Virtual Attendee");
-    // });
   });
 </script>

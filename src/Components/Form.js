@@ -1,92 +1,189 @@
-import React, { useState } from 'react'
-import ResultRow from './ResultLine';
+import { useReducer, useState, useEffect } from "react";
+import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
+import SimpleSnackbar from "./Snackbar";
+import {
+  TextField,
+  Button,
+  Autocomplete,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  InputAdornment,
+} from "@mui/material";
 
+//need help ? link - sends auto message to me / inbox - questions, concerns etc.
+export default function Form() {
+  const [state, dispatch] = useReducer(urlBuildReducer, initialState);
+  const [vehicleTypeValue, setVehicleTypeValue] = useState([])
 
-export default function Form({ values }) {
-  const [source, setSource] = useState('')
-  const [website, setWebsite] = useState('')
-  const [medium, setMedium] = useState('')
-  const [results, setResults] = useState()
-
-  function validateUrl(value) {
-    return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(value);
-  }
-  //make this so that the function cannot run if the website is improperly typed
-  function generateResults(website, medium, source) {
-    if (!website) {
-      return alert('Please provide a website.')
-    }
-
-    let finalResults = []
-
-    const social = ['linkedin', 'twitter', 'facebook', 'instagram']
-
-    social.forEach(s => {
-      finalResults.push(encodeURI(website + '?' + 'utm_source=' + source + '&utm_medium=' + medium + '&utm_social=' + s))
-    })
-
-    // let med = ['web', 'email', 'newsletter']
-
-    // med.forEach(m => {
-    //   finalResults.push(encodeURI(website + '?' + 'utm_source=' + source + '&utm_medium=' + m))
-    // })
-
-    setResults(finalResults)
-  }
+  useEffect(() => {
+    setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
+  }, [state.currentSelectedDriver])
 
   return (
     <>
+      {state.errors.length !== 0 &&
+        <SimpleSnackbar
+          visible={true}
+          message={state.errors && state.errors[0].msg}
+        />
+      }
       <div className='form-wrapper'>
         <h1 style={{ fontWeight: 800 }}>Campaign URL Builder</h1>
-        <div className="form">
-          <div className="form-control">
-            <label><strong>Website URL</strong>
-              <input
-                type="url"
-                className="text-input"
-                onChange={e => setWebsite(e.currentTarget.value)}
-              />
-              {website ? <small id="url-warning" style={{ color: 'red', position: 'absolute' }}>{validateUrl(website) ? '' : 'Please enter a valid URL.'}</small> : null}
-            </label>
-          </div>
-          <div className='form-control'>
-            <label><strong>Source</strong>
-              <input
-                className="text-input"
-                onChange={e => setSource(e.currentTarget.value)}
-              />
-            </label>
-          </div>
-          <div className='form-control'>
-            <label><strong>Medium</strong>
-              <input
-                className="text-input"
-                onChange={e => setMedium(e.currentTarget.value)}
-              />
-            </label>
-          </div>
 
-          {
-            website && validateUrl(website) ?
-              <button className={"button"} onClick={() => generateResults(website, medium, source)}>Generate URLs</button> :
-              <button disabled className={"button"} onClick={() => generateResults(website, medium, source)}>Generate URLs</button>
-          }
+        <FormControl
+          required
+          fullWidth
+        >
+          <TextField
+            label="URL"
+            error={state.isURLInvalid}
+            onChange={(e) => dispatch({ type: 'url', value: e.currentTarget.value })}
+          />
+        </FormControl>
 
-        </div>
-        {results &&
-          <div className="results-wrapper">
-            {results && results.map((r, i) => {
-              const parseableUrl = new URLSearchParams(r)
-              const type = parseableUrl.get('utm_social')
+        {/* Campaign Drivers */}
+        <FormControl required fullWidth>
+          <InputLabel>Campaign Drivers</InputLabel>
+          <Select
+            disabled={state.disabledFields}
+            name="campaignDrivers"
+            label="Campaign Drivers"
+            value={state.campaignDriversField}
+            onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
+          >
+            {state.drivers.map(el => (
+              <MenuItem value={el.param}
+                key={el.param}
+                onClick={() => {
+                  dispatch({ type: 'appendParam', paramType: 'source', param: el.param })
+                  dispatch({ type: 'select', fieldType: el.driver })
+                }
+                }>
+                {el.driver}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-              return (
-                <ResultRow url={r} key={i} type={type} />
-              )
-            })}
-          </div>
-
+        {state.driverTypesVisibilty ?
+          <FormControl fullWidth>
+            <InputLabel>Driver Vehicle Type</InputLabel>
+            <Select
+              label="Driver Vehicle Type"
+              name="vehicleTypes"
+              disabled={state.disabledFields}
+              value={state.vehicleTypesField}
+              onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
+            >
+              {state.selectedDriverTypes.map(({ label, param }) => (
+                <MenuItem
+                  key={param}
+                  value={param}
+                  onClick={() => dispatch({ type: 'appendParam', paramType: 'vehicleTypes', param: param })}
+                >
+                  {label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl> : null
         }
+
+        {/* Vehicle Class aka Business Unit */}
+
+        {/* <Autocomplete
+            options={state.areas}
+            onChange={(e, newValue) => {
+              if (!newValue) {
+                return
+              } else {
+                setValue(newValue)
+                newValue.id && dispatch({ type: 'appendParam', paramType: 'vehicleClass', param: newValue.id })
+              }
+            }}
+            onInputChange={(e, newInputValue) => {
+              setInputValue(newInputValue)
+            }}
+            inputValue={inputValue}
+            value={value}
+            selectOnFocus
+            clearOnBlur
+            disablePortal
+            renderInput={(params) => {
+              return <TextField {...params} label={'Business Unit'} />
+            }}
+          /> */}
+        {/* <FormControl fullWidth>
+          <InputLabel>Business Unit</InputLabel>
+          <Select
+            value={businessUnit}
+          >
+            {
+              state.businessUnits.map(({ label, param }) => (
+                <MenuItem
+                  value={param}
+                  onClick={() => dispatch({ type: 'appendParam', paramType: 'vehicleClass', param: param })}
+                >
+                  {label}
+                </MenuItem>
+              ))
+            }
+          </Select>
+        </FormControl> */}
+
+        {/* <FormControl required fullWidth>
+          <InputLabel>Therapeutic Areas</InputLabel>
+          <Select
+            disabled={state.disabledFields}
+            value={state.therapeuticAreasField}
+            label="Therapeutic Areas"
+            name="therapeuticAreas"
+            onChange={e => {
+              dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })
+              dispatch({ type: 'getEntity', param: e.target.value, entity: e.target.name })
+            }}
+          >
+            {state.therapeuticAreas.map(({ label, param }) => (
+              <MenuItem
+                value={param}
+                onClick={() => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: param })}
+              >
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl> */}
+
+        <FormControl fullWidth>
+          <Autocomplete
+            freeSolo
+            disableClearable={true}
+            options={state.therapeuticAreas}
+            onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
+            renderInput={(params) => {
+              return (
+                <TextField
+                  {...params}
+                  label={'Therapeutic Areas'}
+                  InputProps={{
+                    ...params.InputProps,
+                    type: 'search',
+                  }}
+                />
+              )
+            }}
+          />
+        </FormControl>
+
+        <TextField
+          label="Generated URL"
+          rows={4}
+          value={encodeURI(state.url)}
+          fullWidth
+          multiline
+        />
       </div>
     </>
-  )
+  );
 }

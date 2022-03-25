@@ -1,0 +1,5 @@
+BusinessUnit,ID,Permissions
+MedscapeLIVE!,lbu,"mrk, edu, ma, prop, prof, vcs, part, oth"
+MDEdge,mde,"mrk, ma, prop, vcs, part, oth"
+Medscape,msc,"mrk, edu, ma, prop, vcs, part, oth"
+Sonaworks,sw,"mrk, oth"

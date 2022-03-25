@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Icon } from '@iconify/react';
 
 export default function ResultRow({ type, url }) {
+  const [clipCopyVisible, setClipCopyVisible] = useState(false)
+
   function copyUrl(u) {
     navigator.clipboard.writeText(u)
+    setClipCopyVisible(true)
+    setTimeout(() => setClipCopyVisible(false), 3000)
   }
 
   const truncateUrl = u => {
@@ -28,6 +32,7 @@ export default function ResultRow({ type, url }) {
         className="clipboard">
         {<Icon icon="bi:clipboard-check" />}
       </div>
+      <div className={clipCopyVisible ? 'copied' : 'hide'}>Copied To Clipboard!</div>
     </div>
   )
 }
