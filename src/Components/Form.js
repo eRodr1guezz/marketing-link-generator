@@ -13,11 +13,11 @@ import {
 //need help ? link - sends auto message to me / inbox - questions, concerns etc.
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
-  const [vehicleTypeValue, setVehicleTypeValue] = useState([])
+  const [, setVehicleTypeValue] = useState([])
 
   useEffect(() => {
     setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
-  }, [state.currentSelectedDriver])
+  }, [state.currentSelectedDriver, state.drivers])
 
   return (
     <>
@@ -28,7 +28,7 @@ export default function Form() {
         />
       }
       <div className='form-wrapper'>
-        <h1 style={{ fontWeight: 800 }}>Campaign URL Builder</h1>
+        <h1 style={{ fontWeight: 800, fontSize: '3rem' }}>Campaign URL Builder</h1>
 
         <FormControl
           required
