@@ -8,7 +8,10 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Link,
+  FormHelperText,
 } from "@mui/material";
+import { HelpOutlined, HelpOutlineOutlined } from "@mui/icons-material";
 
 //need help ? link - sends auto message to me / inbox - questions, concerns etc.
 export default function Form() {
@@ -28,8 +31,7 @@ export default function Form() {
         />
       }
       <div className='form-wrapper'>
-        <h1 style={{ fontWeight: 800, fontSize: '3rem' }}>Campaign URL Builder</h1>
-
+        <h1 style={{ fontWeight: 800, fontSize: '4rem' }}>Campaign URL Builder</h1>
         <FormControl
           required
           fullWidth
@@ -65,7 +67,7 @@ export default function Form() {
           </Select>
         </FormControl>
 
-        {state.driverTypesVisibilty ?
+        {state.driverTypesVisibility ?
           <FormControl fullWidth>
             <InputLabel>Driver Vehicle Type</InputLabel>
             <Select
@@ -87,6 +89,7 @@ export default function Form() {
             </Select>
           </FormControl> : null
         }
+
 
         {/* Vehicle Class aka Business Unit */}
 
@@ -172,6 +175,7 @@ export default function Form() {
               )
             }}
           />
+          <FormHelperText>Start typing a Therapeutic Area for autofill.</FormHelperText>
         </FormControl>
 
         <TextField
@@ -181,6 +185,11 @@ export default function Form() {
           fullWidth
           multiline
         />
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+          <HelpOutlineOutlined fontSize="small" color='secondary' />
+          <Link underline="always" variant="body2" style={{ textAlign: 'right', textDecoration: 'none' }} href='mailto:babruzese@medscapelive.com'>Issues with the URL builder? Get in touch!</Link>
+        </div>
       </div>
     </>
   );
