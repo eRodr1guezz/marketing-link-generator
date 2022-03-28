@@ -9,28 +9,28 @@ import {
   MenuItem,
   InputLabel,
   Link,
-  FormHelperText,
   Button,
 } from "@mui/material";
 import { HelpOutlineOutlined } from "@mui/icons-material";
+import useSnackbar from "../Hooks/useSnackbar";
 
-//need help ? link - sends auto message to me / inbox - questions, concerns etc.
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const [, setVehicleTypeValue] = useState([])
+  const { isOpen, alertType, message, openSnackBar } = useSnackbar()
+
+  function copy(url) {
+    navigator.clipboard.writeText(url)
+    openSnackBar('URL copied successfully!', 'success')
+  }
 
   useEffect(() => {
-    setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
+    state.currentSelectedDriver.length > 0 && setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
   }, [state.currentSelectedDriver, state.drivers])
 
   return (
     <>
-      {state.errors.length !== 0 &&
-        <SimpleSnackbar
-          visible={true}
-          message={state.errors && state.errors[0].msg}
-        />
-      }
+      {isOpen ? <SimpleSnackbar type={alertType} message={message} isOpen={true} /> : null}
       <div className='form-wrapper'>
         <h1 style={{ fontWeight: 800, fontSize: '4rem' }}>Campaign URL Builder</h1>
         <FormControl
@@ -40,7 +40,8 @@ export default function Form() {
           <TextField
             label="URL"
             error={state.isURLInvalid}
-            onChange={(e) => dispatch({ type: 'url', value: e.currentTarget.value })}
+            helperText={state.isURLInvalid ? 'An invalid URL was provided - please check the input and try again.' : null}
+            onChange={(e) => dispatch({ type: 'setUrl', value: e.currentTarget.value })}
           />
         </FormControl>
 
@@ -67,8 +68,7 @@ export default function Form() {
             ))}
           </Select>
         </FormControl>
-
-        {state.driverTypesVisibility ?
+        {state.selectedDriverTypes.length > 0 ?
           <FormControl fullWidth>
             <InputLabel>Driver Vehicle Type</InputLabel>
             <Select
@@ -161,12 +161,14 @@ export default function Form() {
           <Autocomplete
             freeSolo
             disableClearable={true}
+            defaultValue="Dermatologists"
             options={state.therapeuticAreas}
             onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
             renderInput={(params) => {
               return (
                 <TextField
                   {...params}
+                  helperText="Start typing a Therapeutic Area for autofill."
                   label={'Therapeutic Areas'}
                   InputProps={{
                     ...params.InputProps,
@@ -176,7 +178,6 @@ export default function Form() {
               )
             }}
           />
-          <FormHelperText>Start typing a Therapeutic Area for autofill.</FormHelperText>
         </FormControl>
 
         <TextField
@@ -187,7 +188,7 @@ export default function Form() {
           multiline
         />
 
-        <Button onClick={() => navigator.clipboard.writeText(state.url)} variant='contained'>COPY</Button>
+        <Button onClick={() => copy(state.url)} variant='contained'>COPY URL</Button>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
           <HelpOutlineOutlined fontSize="small" color='secondary' />

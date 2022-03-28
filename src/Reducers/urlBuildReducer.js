@@ -5,20 +5,21 @@ const initialState = {
   url: '',
   isURLInvalid: false,
   disabledFields: true,
+  showSnackBar: false,
+  snackBarType: '',
+  snackBarMessage: '',
   drivers,
   businessUnits,
   areas,
   therapeuticAreas,
   businessUnitsField: '',
-  name: '',
   campaignDriversField: '',
   therapeuticAreasField: '',
-  selectedTherapeuticAreaType: '',
-  currentSelectedtherapeuticAreas: [],
   vehicleTypesField: '',
+  selectedTherapeuticAreaType: '',
   currentSelectedDriver: '',
   selectedDriverTypes: [],
-  driverTypesVisibilty: false,
+  currentSelectedtherapeuticAreas: [],
   driverTypesFieldEnabled: true,
   errors: [],
 }
@@ -30,7 +31,9 @@ export function urlBuildReducer(state, action) {
     if (!urlCopy.searchParams.get('utm_' + action.paramType)) {
       return {
         ...state,
-        errors: [{ type: 'url', msg: 'Cannot remove a parameter that is not there!' }]
+        showSnackBar: true,
+        snackBarMessage: 'Cannot remove a parameter that is not there!',
+        snackBarType: 'error',
       }
     }
 
@@ -64,11 +67,14 @@ export function urlBuildReducer(state, action) {
 
       return {
         ...state,
-        url: urlCopy.href
+        url: urlCopy.href,
+        showSnackBar: true,
+        snackBarMessage: 'Parameter successfully added!',
+        snackBarType: 'success'
       }
     }
 
-  } else if (action.type === 'url') {
+  } else if (action.type === 'setUrl') {
     if (!validateUrl(action.value)) {
       return {
         ...state,
@@ -92,41 +98,6 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       [fieldName + 'Field']: value
-    }
-
-  } else if (action.type === 'setBusinessUnitsField') {
-    return {
-      ...state,
-      businessUnitsField: action.value
-    }
-  } else if (action.type === 'setVehicleClasses') {
-    return {
-      ...state,
-      vehicleClasses: action.value
-    }
-  } else if (action.type === 'setVehicleClassField') {
-    return {
-      ...state,
-      vehicleClassField: action.value
-    }
-  } else if (action.type === 'setVehicleTypes') {
-    return {
-      ...state,
-      vehicleTypes: action.value
-    }
-  } else if (action.type === 'setVehicleTypesField') {
-    return {
-      ...state,
-      vehicleTypesField: action.value
-    }
-  } else if (action.type === 'setEmail') {
-    const urlCopy = new URL(state.url)
-
-    urlCopy.searchParams.append('utm_campaignSource', action.value)
-
-    return {
-      ...state,
-      url: urlCopy.href
     }
   } else if (action.type === 'select') {
     const { fieldType } = action
@@ -165,7 +136,12 @@ export function urlBuildReducer(state, action) {
       // driverTypesVisibilty: data[0].type.length > 0 && data[0].type !== undefined,
       // selectedTherapeuticAreaType: data[0].type
     }
+  } else if (action.type === 'copyUrl') {
+    navigator.clipboard.write(action.value)
+    return {
+      ...state,
 
+    }
   }
 }
 
