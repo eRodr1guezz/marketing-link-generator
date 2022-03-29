@@ -5,9 +5,6 @@ const initialState = {
   url: '',
   isURLInvalid: false,
   disabledFields: true,
-  showSnackBar: false,
-  snackBarType: '',
-  snackBarMessage: '',
   drivers,
   businessUnits,
   areas,
@@ -15,6 +12,7 @@ const initialState = {
   businessUnitsField: '',
   campaignDriversField: '',
   therapeuticAreasField: '',
+  therapeuticAreaSwitchField: false,
   vehicleTypesField: '',
   selectedTherapeuticAreaType: '',
   currentSelectedDriver: '',
@@ -68,9 +66,6 @@ export function urlBuildReducer(state, action) {
       return {
         ...state,
         url: urlCopy.href,
-        showSnackBar: true,
-        snackBarMessage: 'Parameter successfully added!',
-        snackBarType: 'success'
       }
     }
 
@@ -147,6 +142,17 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       errors: action.value
+    }
+  } else if (action.type === 'toggleTherapeuticAreaSwitch') {
+    if (state.therapeuticAreaSwitchField === false) {
+      return {
+        ...state,
+        therapeuticAreaSwitchField: true
+      }
+    } else {
+      return {
+        ...state, therapeuticAreaSwitchField: false
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useReducer, useState, useEffect } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
@@ -10,6 +11,8 @@ import {
   InputLabel,
   Link,
   Button,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { HelpOutlineOutlined } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
@@ -18,6 +21,8 @@ export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const [, setVehicleTypeValue] = useState([])
   const { isOpen, alertType, message, openSnackBar } = useSnackbar()
+
+  const label = { inputProps: { 'aria-label': 'Therapeutic Areas?' } }
 
   function copy(url) {
     if (url.length === 0) {
@@ -101,95 +106,59 @@ export default function Form() {
           </FormControl> : null
         }
 
-
-        {/* Vehicle Class aka Business Unit */}
-
-        {/* <Autocomplete
-            options={state.areas}
-            onChange={(e, newValue) => {
-              if (!newValue) {
-                return
-              } else {
-                setValue(newValue)
-                newValue.id && dispatch({ type: 'appendParam', paramType: 'vehicleClass', param: newValue.id })
-              }
-            }}
-            onInputChange={(e, newInputValue) => {
-              setInputValue(newInputValue)
-            }}
-            inputValue={inputValue}
-            value={value}
-            selectOnFocus
-            clearOnBlur
-            disablePortal
-            renderInput={(params) => {
-              return <TextField {...params} label={'Business Unit'} />
-            }}
-          /> */}
-        {/* <FormControl fullWidth>
-          <InputLabel>Business Unit</InputLabel>
+        <FormControl fullWidth>
           <Select
-            value={businessUnit}
+            label="Business Unit"
+            name="businessUnits"
+            onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
           >
-            {
-              state.businessUnits.map(({ label, param }) => (
-                <MenuItem
-                  value={param}
-                  onClick={() => dispatch({ type: 'appendParam', paramType: 'vehicleClass', param: param })}
-                >
-                  {label}
-                </MenuItem>
-              ))
-            }
-          </Select>
-        </FormControl> */}
-
-        {/* <FormControl required fullWidth>
-          <InputLabel>Therapeutic Areas</InputLabel>
-          <Select
-            disabled={state.disabledFields}
-            value={state.therapeuticAreasField}
-            label="Therapeutic Areas"
-            name="therapeuticAreas"
-            onChange={e => {
-              dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })
-              dispatch({ type: 'getEntity', param: e.target.value, entity: e.target.name })
-            }}
-          >
-            {state.therapeuticAreas.map(({ label, param }) => (
+            {state.businessUnits.map(({ label, param }) => (
               <MenuItem
+                key={param}
                 value={param}
-                onClick={() => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: param })}
+                onClick={() => dispatch({ type: 'appendParam', paramType: 'businessUnit', param: param })}
               >
                 {label}
               </MenuItem>
             ))}
-          </Select>
-        </FormControl> */}
 
-        <FormControl fullWidth>
-          <Autocomplete
-            freeSolo
-            disableClearable={true}
-            disabled={state.errors.length > 0}
-            options={state.therapeuticAreas}
-            onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
-            renderInput={(params) => {
-              return (
-                <TextField
-                  {...params}
-                  helperText="Start typing a Therapeutic Area for autofill."
-                  label={'Therapeutic Areas'}
-                  InputProps={{
-                    ...params.InputProps,
-                    type: 'search',
-                  }}
-                />
-              )
-            }}
+          </Select>
+        </FormControl>
+
+        <FormControl>
+          <FormControlLabel
+            control={<Switch color="secondary" {...label} />}
+            label="Therapeutic Areas?"
+            name="therapeuticAreaSwitch"
+            checked={state.therapeuticAreaSwitchField}
+            onChange={() => dispatch({ type: 'toggleTherapeuticAreaSwitch' })}
           />
         </FormControl>
 
+        {state.therapeuticAreaSwitchField ?
+          <FormControl fullWidth>
+            <Autocomplete
+              freeSolo
+              disableClearable={true}
+              disabled={state.errors.length > 0 || state.url.length === 0}
+              options={state.therapeuticAreas}
+              onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
+              renderInput={(params) => {
+                return (
+                  <TextField
+                    {...params}
+                    helperText="Start typing a Therapeutic Area for autofill."
+                    label={'Therapeutic Areas'}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: 'search',
+                    }}
+                  />
+                )
+              }}
+            />
+          </FormControl> : null
+        }
         <TextField
           label="Generated URL"
           rows={4}
