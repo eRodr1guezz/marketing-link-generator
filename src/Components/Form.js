@@ -20,9 +20,19 @@ export default function Form() {
   const { isOpen, alertType, message, openSnackBar } = useSnackbar()
 
   function copy(url) {
-    navigator.clipboard.writeText(url)
-    openSnackBar('URL copied successfully!', 'success')
+    if (url.length === 0) {
+      dispatch({ type: 'error', value: 'No URL to copy! Enter a URL and try again.' })
+    } else {
+      navigator.clipboard.writeText(url)
+      openSnackBar('URL copied successfully!', 'success')
+    }
   }
+
+  useEffect(() => {
+    if (state.errors.length > 0) {
+      openSnackBar(state.errors, 'error')
+    }
+  }, [state.errors])
 
   useEffect(() => {
     state.currentSelectedDriver.length > 0 && setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
@@ -49,7 +59,7 @@ export default function Form() {
         <FormControl required fullWidth>
           <InputLabel>Campaign Drivers</InputLabel>
           <Select
-            disabled={state.disabledFields}
+            disabled={state.disabledFields || state.errors.length > 0}
             name="campaignDrivers"
             label="Campaign Drivers"
             value={state.campaignDriversField}
@@ -161,7 +171,7 @@ export default function Form() {
           <Autocomplete
             freeSolo
             disableClearable={true}
-            defaultValue="Dermatologists"
+            disabled={state.errors.length > 0}
             options={state.therapeuticAreas}
             onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
             renderInput={(params) => {

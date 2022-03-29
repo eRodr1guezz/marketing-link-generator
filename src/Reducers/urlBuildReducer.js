@@ -21,7 +21,7 @@ const initialState = {
   selectedDriverTypes: [],
   currentSelectedtherapeuticAreas: [],
   driverTypesFieldEnabled: true,
-  errors: [],
+  errors: '',
 }
 
 export function urlBuildReducer(state, action) {
@@ -47,7 +47,7 @@ export function urlBuildReducer(state, action) {
     if (state.url.length === 0) {
       return {
         ...state,
-        errors: [{ type: 'url', msg: 'Cannot generate a URL without a URL provided! Please provide a valid URL in order to proceed.' }]
+        errors: 'Cannot generate a URL without a URL provided! Please provide a valid URL in order to proceed.'
       }
     }
 
@@ -75,20 +75,21 @@ export function urlBuildReducer(state, action) {
     }
 
   } else if (action.type === 'setUrl') {
-    if (!validateUrl(action.value)) {
-      return {
-        ...state,
-        isURLInvalid: true,
-        disabledFields: true,
-        errors: [{ type: 'url', msg: 'An invalid URL was provided - please try again.' }]
-      }
-    } else {
+    if (validateUrl(action.value)) {
       return {
         ...state,
         isURLInvalid: false,
         disabledFields: false,
         url: action.value,
-        errors: []
+        errors: ''
+      }
+    } else {
+      return {
+        ...state,
+        url: action.value,
+        isURLInvalid: true,
+        disabledFields: true,
+        errors: 'An invalid URL was provided - please try again.'
       }
     }
 
@@ -105,7 +106,7 @@ export function urlBuildReducer(state, action) {
     if (!state.url) {
       return {
         ...state,
-        errors: [{ type: 'url', msg: 'URL cannot be empty when selecting a campaign driver! Please provide a URL and try again.' }]
+        errors: 'URL cannot be empty when selecting a campaign driver! Please provide a URL and try again.'
       }
     } else {
       const urlCopy = new URL(state.url)
@@ -141,6 +142,11 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
 
+    }
+  } else if (action.type === 'error') {
+    return {
+      ...state,
+      errors: action.value
     }
   }
 }

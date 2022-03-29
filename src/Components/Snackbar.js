@@ -21,7 +21,7 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
     <div>
       <Snackbar
         open={isOpen}
-        autoHideDuration={3000}
+        // autoHideDuration={3000}
         // onClose={() => isOpen(false)}
         action={action}
         anchorOrigin={{
