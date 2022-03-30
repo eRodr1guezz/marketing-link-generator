@@ -13,6 +13,9 @@ import {
   Button,
   Switch,
   FormControlLabel,
+  Box,
+  Container,
+  Grid,
 } from "@mui/material";
 import { HelpOutlineOutlined } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
@@ -24,20 +27,17 @@ export default function Form() {
 
   const label = { inputProps: { 'aria-label': 'Therapeutic Areas?' } }
 
-  function copy(url) {
-    if (url.length === 0) {
-      dispatch({ type: 'error', value: 'No URL to copy! Enter a URL and try again.' })
-    } else {
-      navigator.clipboard.writeText(url)
-      openSnackBar('URL copied successfully!', 'success')
-    }
-  }
-
   useEffect(() => {
     if (state.errors.length > 0) {
       openSnackBar(state.errors, 'error')
+    } else if (state.messages.length > 0) {
+      openSnackBar(state.messages, 'success')
     }
-  }, [state.errors])
+    return () => {
+      dispatch({ type: 'error', value: '' })
+      dispatch({ type: 'message', value: '' })
+    }
+  }, [state.errors, state.messages])
 
   useEffect(() => {
     state.currentSelectedDriver.length > 0 && setVehicleTypeValue(state.drivers.filter(d => d.driver === state.currentSelectedDriver))
@@ -46,134 +46,178 @@ export default function Form() {
   return (
     <>
       {isOpen ? <SimpleSnackbar type={alertType} message={message} isOpen={true} /> : null}
-      <div className='form-wrapper'>
-        <h1 style={{ fontWeight: 800, fontSize: '4rem' }}>Campaign URL Builder</h1>
-        <FormControl
-          required
-          fullWidth
+      <Container
+        fixed
+        maxWidth="lg"
+      >
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="stretch"
+          rowGap={2}
+          sx={{
+            backgroundColor: '#fff',
+            padding: '2rem'
+          }}
         >
-          <TextField
-            label="URL"
-            error={state.isURLInvalid}
-            helperText={state.isURLInvalid ? 'An invalid URL was provided - please check the input and try again.' : null}
-            onChange={(e) => dispatch({ type: 'setUrl', value: e.currentTarget.value })}
-          />
-        </FormControl>
+          {/* <div className='form-wrapper'> */}
+          <h1 style={{ fontWeight: 800, fontSize: '4rem' }}>Campaign URL Builder</h1>
 
-        {/* Campaign Drivers */}
-        <FormControl required fullWidth>
-          <InputLabel>Campaign Drivers</InputLabel>
-          <Select
-            disabled={state.disabledFields || state.errors.length > 0}
-            name="campaignDrivers"
-            label="Campaign Drivers"
-            value={state.campaignDriversField}
-            onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
-          >
-            {state.drivers.map(el => (
-              <MenuItem value={el.param}
-                key={el.param}
-                onClick={() => {
-                  dispatch({ type: 'appendParam', paramType: 'source', param: el.param })
-                  dispatch({ type: 'select', fieldType: el.driver })
-                }
-                }>
-                {el.driver}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {state.selectedDriverTypes.length > 0 ?
-          <FormControl fullWidth>
-            <InputLabel>Driver Vehicle Type</InputLabel>
-            <Select
-              label="Driver Vehicle Type"
-              name="vehicleTypes"
-              disabled={state.disabledFields}
-              value={state.vehicleTypesField}
-              onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
+          <Grid item>
+            <FormControl
+              required
+              fullWidth
             >
-              {state.selectedDriverTypes.map(({ label, param }) => (
-                <MenuItem
-                  key={param}
-                  value={param}
-                  onClick={() => dispatch({ type: 'appendParam', paramType: 'vehicleTypes', param: param })}
-                >
-                  {label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> : null
-        }
+              <TextField
+                name="url"
+                label="URL"
+                error={state.isURLInvalid}
+                helperText={state.isURLInvalid ? 'An invalid URL was provided - please check the input and try again.' : null}
+                onChange={(e) => dispatch({ type: 'setUrl', value: e.currentTarget.value })}
+              />
+            </FormControl>
+          </Grid>
 
-        <FormControl fullWidth>
-          <Select
-            label="Business Unit"
-            name="businessUnits"
-            onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
-          >
-            {state.businessUnits.map(({ label, param }) => (
-              <MenuItem
-                key={param}
-                value={param}
-                onClick={() => dispatch({ type: 'appendParam', paramType: 'businessUnit', param: param })}
+          {/* Business Units */}
+          <Grid item>
+            <FormControl fullWidth required>
+              <InputLabel>Business Unit</InputLabel>
+              <Select
+                disabled={state.url.length === 0}
+                label="Business Units"
+                name="businessUnits"
+                value={state.businessUnitsField}
+                onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
               >
-                {label}
-              </MenuItem>
-            ))}
+                {state.businessUnits.map(({ label, param }) => (
+                  <MenuItem
+                    key={param}
+                    value={param}
+                    onClick={() => dispatch({ type: 'appendParam', paramType: 'businessUnit', param: param })}
+                  >
+                    {label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
 
-          </Select>
-        </FormControl>
-
-        <FormControl>
-          <FormControlLabel
-            control={<Switch color="secondary" {...label} />}
-            label="Therapeutic Areas?"
-            name="therapeuticAreaSwitch"
-            checked={state.therapeuticAreaSwitchField}
-            onChange={() => dispatch({ type: 'toggleTherapeuticAreaSwitch' })}
-          />
-        </FormControl>
-
-        {state.therapeuticAreaSwitchField ?
-          <FormControl fullWidth>
-            <Autocomplete
-              freeSolo
-              disableClearable={true}
-              disabled={state.errors.length > 0 || state.url.length === 0}
-              options={state.therapeuticAreas}
-              onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
-              renderInput={(params) => {
-                return (
-                  <TextField
-                    {...params}
-                    helperText="Start typing a Therapeutic Area for autofill."
-                    label={'Therapeutic Areas'}
-                    InputProps={{
-                      ...params.InputProps,
-                      type: 'search',
-                    }}
-                  />
-                )
+          {/* Campaign Drivers */}
+          <Grid item>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
-            />
-          </FormControl> : null
-        }
-        <TextField
-          label="Generated URL"
-          rows={4}
-          value={encodeURI(state.url)}
-          fullWidth
-          multiline
-        />
+            >
 
-        <Button onClick={() => copy(state.url)} variant='contained'>COPY URL</Button>
+              <FormControl required fullWidth>
+                <InputLabel>Campaign Drivers</InputLabel>
+                <Select
+                  disabled={state.disabledFields || state.errors.length > 0}
+                  name="campaignDrivers"
+                  label="Campaign Drivers"
+                  value={state.campaignDriversField}
+                  onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
+                >
+                  {state.drivers.map(el => (
+                    <MenuItem value={el.param}
+                      key={el.param}
+                      onClick={() => {
+                        dispatch({ type: 'appendParam', paramType: 'source', param: el.param })
+                        dispatch({ type: 'select', fieldType: el.driver })
+                      }
+                      }>
+                      {el.driver}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </Grid>
+          {state.selectedDriverTypes.length > 0 ?
+            <Grid item>
+              <FormControl fullWidth>
+                <InputLabel>Driver Vehicle Type</InputLabel>
+                <Select
+                  label="Driver Vehicle Type"
+                  name="vehicleTypes"
+                  disabled={state.disabledFields}
+                  value={state.vehicleTypesField}
+                  onChange={e => dispatch({ type: 'setField', fieldName: e.target.name, value: e.target.value })}
+                >
+                  {state.selectedDriverTypes.map(({ label, param }) => (
+                    <MenuItem
+                      key={param}
+                      value={param}
+                      onClick={() => dispatch({ type: 'appendParam', paramType: 'vehicleTypes', param: param })}
+                    >
+                      {label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid> : null
+          }
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-          <HelpOutlineOutlined fontSize="small" color='secondary' />
-          <Link underline="always" variant="body2" style={{ textAlign: 'right', textDecoration: 'none' }} href='mailto:babruzese@medscapelive.com'>Issues with the URL builder? Get in touch!</Link>
-        </div>
-      </div>
+          <Grid item>
+            <FormControl>
+              <FormControlLabel
+                control={<Switch color="secondary" {...label} />}
+                label="Therapeutic Areas?"
+                name="therapeuticAreaSwitch"
+                checked={state.therapeuticAreaSwitchField}
+                onChange={() => dispatch({ type: 'toggleTherapeuticAreaSwitch' })}
+              />
+            </FormControl>
+          </Grid>
+
+          {state.therapeuticAreaSwitchField ?
+            <Grid item>
+              <FormControl fullWidth>
+                <Autocomplete
+                  freeSolo
+                  disableClearable={true}
+                  disabled={state.errors.length > 0 || state.url.length === 0}
+                  options={state.therapeuticAreas}
+                  onSelectCapture={(e) => dispatch({ type: 'appendParam', paramType: 'therapeuticArea', param: state.therapeuticAreas.filter(el => el.label === e.target.value)[0].param })}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        {...params}
+                        helperText="Start typing a Therapeutic Area for autofill."
+                        label={'Therapeutic Areas'}
+                        InputProps={{
+                          ...params.InputProps,
+                          type: 'search',
+                        }}
+                      />
+                    )
+                  }}
+                />
+              </FormControl>
+            </Grid> : null
+          }
+
+          <TextField
+            label="Generated URL"
+            rows={4}
+            value={encodeURI(state.url)}
+            fullWidth
+            multiline
+          />
+
+          <Button fullWidth onClick={() => dispatch({ type: 'copyUrl', value: encodeURI(state.url) })} variant='contained'>COPY URL</Button>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <HelpOutlineOutlined fontSize="small" color='secondary' />
+            <Link underline="always" variant="body2" style={{ textAlign: 'right', textDecoration: 'none' }} href='mailto:babruzese@medscapelive.com'>Issues with the URL builder? Get in touch!</Link>
+          </div>
+          {/* </div> */}
+        </Grid>
+      </Container>
     </>
   );
 }

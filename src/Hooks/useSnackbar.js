@@ -7,7 +7,7 @@ export default function useSnackbar() {
 
   useEffect(() => {
     if (isOpen === true) {
-      setTimeout(() => setIsOpen(false), 2000)
+      setTimeout(() => setIsOpen(false), 3000)
     }
   }, [isOpen])
 

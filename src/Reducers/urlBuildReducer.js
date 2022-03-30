@@ -9,6 +9,9 @@ const initialState = {
   businessUnits,
   areas,
   therapeuticAreas,
+  customFieldSwitch: false,
+  customParamField: '',
+  customLabelField: '',
   businessUnitsField: '',
   campaignDriversField: '',
   therapeuticAreasField: '',
@@ -19,6 +22,7 @@ const initialState = {
   selectedDriverTypes: [],
   currentSelectedtherapeuticAreas: [],
   driverTypesFieldEnabled: true,
+  messages: '',
   errors: '',
 }
 
@@ -29,9 +33,7 @@ export function urlBuildReducer(state, action) {
     if (!urlCopy.searchParams.get('utm_' + action.paramType)) {
       return {
         ...state,
-        showSnackBar: true,
-        snackBarMessage: 'Cannot remove a parameter that is not there!',
-        snackBarType: 'error',
+        errors: 'Cannot remove a parameter that is not there!'
       }
     }
 
@@ -133,10 +135,17 @@ export function urlBuildReducer(state, action) {
       // selectedTherapeuticAreaType: data[0].type
     }
   } else if (action.type === 'copyUrl') {
-    navigator.clipboard.write(action.value)
+    if (state.url === '') {
+      return {
+        ...state,
+        errors: 'No URL provided! Please provide a URL and try again.'
+      }
+    } else {
+      navigator.clipboard.writeText(state.url)
+    }
     return {
       ...state,
-
+      messages: 'Successfully copied the URL to your clipboard!'
     }
   } else if (action.type === 'error') {
     return {
@@ -144,15 +153,45 @@ export function urlBuildReducer(state, action) {
       errors: action.value
     }
   } else if (action.type === 'toggleTherapeuticAreaSwitch') {
-    if (state.therapeuticAreaSwitchField === false) {
+    if (state.url === '') {
       return {
         ...state,
-        therapeuticAreaSwitchField: true
+        errors: 'Nahhh son nahhhh'
       }
     } else {
-      return {
-        ...state, therapeuticAreaSwitchField: false
+      let url = new URL(state.url)
+
+      url.searchParams.delete('utm_therapeuticArea')
+
+      if (state.therapeuticAreaSwitchField === false) {
+        return {
+          ...state,
+          url: url.href,
+          therapeuticAreaSwitchField: true
+        }
+      } else {
+        return {
+          ...state,
+          url: url.href,
+          therapeuticAreaSwitchField: false
+        }
       }
+    }
+
+  } else if (action.type === 'clearField') {
+    let url = new URL(state.url)
+
+    url.searchParams.delete('utm_' + action.fieldName)
+
+    return {
+      ...state,
+      [action.fieldName + 'Field']: '',
+      url: url.href
+    }
+  } else if (action.type === 'message') {
+    return {
+      ...state,
+      messages: action.value
     }
   }
 }

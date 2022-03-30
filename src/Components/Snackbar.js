@@ -19,9 +19,9 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
 
   return (
     <div>
-      <Snackbar
+      {isOpen ? <Snackbar
         open={isOpen}
-        // autoHideDuration={3000}
+        autoHideDuration={3000}
         // onClose={() => isOpen(false)}
         action={action}
         anchorOrigin={{
@@ -30,13 +30,11 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
         }}
       >
         <Alert
-          // onClose={() => isOpen(false)}
           severity={type}
         >
           {message}
         </Alert>
-      </Snackbar>
+      </Snackbar> : null}
     </div>
-
   );
 }
