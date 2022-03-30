@@ -3,22 +3,3 @@ export function validateUrl(value) {
     value
   );
 }
-
-export function generateResults(url, medium, bizUnit, term, content, id, name) {
-  if (!url) {
-    return alert("Please provide a website URL.");
-  }
-
-  let finalResults = [];
-
-  const social = ["linkedin", "twitter", "facebook", "instagram"];
-
-  social.forEach((s) => {
-    finalResults.push(
-      encodeURI(
-        `${url}?utm_source=${bizUnit}&utm_medium=${medium}&utm_social=${s}&utm_term=${term}&utm_campaign=${name}&utm_id=${id}&utm_content=${content}`
-      )
-    );
-  });
-  return finalResults
-}

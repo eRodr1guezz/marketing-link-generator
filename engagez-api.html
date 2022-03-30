@@ -39,7 +39,11 @@
 
     let subcategory = sessionStorage.getItem("subcategory");
     let attendeeType = sessionStorage.getItem("attendee_type");
-
+    //in person and virtual
+    //us attendee status
+    //industry
+    //delete member
+    //IID and ALF
     access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
     //in person 
     // replaces the country conditional question setup

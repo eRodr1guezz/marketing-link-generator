@@ -22,6 +22,8 @@ const initialState = {
   selectedDriverTypes: [],
   currentSelectedtherapeuticAreas: [],
   driverTypesFieldEnabled: true,
+  bitlyUrlField: '',
+  bitlyAccessTokenField: '',
   messages: '',
   errors: '',
 }
@@ -156,7 +158,7 @@ export function urlBuildReducer(state, action) {
     if (state.url === '') {
       return {
         ...state,
-        errors: 'Nahhh son nahhhh'
+        errors: 'Please provide a URL before enabling the Therapeutic Area dropdown.'
       }
     } else {
       let url = new URL(state.url)
@@ -192,6 +194,24 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       messages: action.value
+    }
+  } else if (action.type === 'setBitlyURL') {
+    if (state.bitlyAccessTokenField === '') {
+      return {
+        ...state,
+        errors: 'Must provide an access token from your Bit.ly account.'
+      }
+    } else {
+      return {
+        ...state,
+        bitlyUrlField: action.value,
+        messages: 'Your shortened URL was successfully created with Bit.ly!'
+      }
+    }
+  } else if (action.type === 'setBitlyAccessToken') {
+    return {
+      ...state,
+      bitlyAccessTokenField: action.value
     }
   }
 }
