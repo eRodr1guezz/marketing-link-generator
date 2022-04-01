@@ -10,7 +10,6 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
         size="small"
         aria-label="close"
         color="inherit"
-      // onClick={() => (false)}
       >
         <CloseIcon fontSize="small" />
       </IconButton>
@@ -22,7 +21,6 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
       {isOpen ? <Snackbar
         open={isOpen}
         autoHideDuration={3000}
-        // onClose={() => isOpen(false)}
         action={action}
         anchorOrigin={{
           horizontal: 'center',

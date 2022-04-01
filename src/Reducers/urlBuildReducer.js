@@ -1,31 +1,49 @@
 import { drivers, areas, businessUnits, therapeuticAreas } from '../internal'
 import { validateUrl } from '../Utils';
 
+//business units
+//drivers
+//driver types
+//therapeutic areas
+
+//any state denoted as "Field" refers to the forms field state value
+//any state denoted as itself, ie. drivers, business units etc are application Entities
+//any state denoted 
+
 const initialState = {
+  //top level form state
+  messages: '',
+  errors: '',
   url: '',
   isURLInvalid: false,
   disabledFields: true,
+  //entities - right now this state is internally stored, however, there may be a point where it becomes available from another source. keeping this accessible and isolated will be important.
   drivers,
   businessUnits,
   areas,
   therapeuticAreas,
-  customFieldSwitch: false,
-  customParamField: '',
-  customLabelField: '',
+  //internal controlled form state - ie. form fields, inputs etc.
+  bitlyUrlField: [],
+  bitlyAccessTokenField: '',
+  //form input values
   businessUnitsField: '',
   campaignDriversField: '',
   therapeuticAreasField: '',
-  therapeuticAreaSwitchField: false,
-  vehicleTypesField: '',
-  selectedTherapeuticAreaType: '',
+  //selected entities
   currentSelectedDriver: '',
-  selectedDriverTypes: [],
-  currentSelectedtherapeuticAreas: [],
-  driverTypesFieldEnabled: true,
-  bitlyUrlField: '',
-  bitlyAccessTokenField: '',
-  messages: '',
-  errors: '',
+  selectedTherapeuticAreaType: '',
+  currentSelectedtherapeuticAreas: [], //this should be a string
+  selectedDriverTypes: [], //this is the array of selected driver types - the population of this array should render additional URLs (1 per driver type))
+  driverTypesField: [], //this is the form state value (what is shown as the current value in the chip box)
+  availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
+  urlsByDriverType: [],
+  therapeuticAreaSwitchField: false,
+  driverTypesFieldEnabled: true, //this can probably go
+  //this field grouping will enable custom entries to be added (ie, details for campaigns such as the type of social post (poll, video, text, img etc.))
+  customFieldSwitch: false,
+  customParamField: '',
+  customLabelField: '',
+  listOfUrlsToBeShortened: []
 }
 
 export function urlBuildReducer(state, action) {
@@ -99,7 +117,7 @@ export function urlBuildReducer(state, action) {
       ...state,
       [fieldName + 'Field']: value
     }
-  } else if (action.type === 'select') {
+  } else if (action.type === 'selectDriver') {
     const { fieldType } = action
 
     if (!state.url) {
@@ -108,6 +126,7 @@ export function urlBuildReducer(state, action) {
         errors: 'URL cannot be empty when selecting a campaign driver! Please provide a URL and try again.'
       }
     } else {
+
       const urlCopy = new URL(state.url)
       urlCopy.searchParams.delete('utm_vehicleType') //when we select a new driver, we delete any old associated types from the url
 
@@ -116,9 +135,11 @@ export function urlBuildReducer(state, action) {
       return {
         ...state,
         url: urlCopy.href,
+        selectedDriverTypes: [],
+        urlsByDriverType: [],
         currentSelectedDriver: driverData[0].driver,
         driverTypesVisibilty: driverData[0].type.length > 0 && driverData[0].type !== undefined,
-        selectedDriverTypes: driverData[0].type //array of the drivers types
+        availableDriverTypes: driverData[0].type //array of the drivers types
       }
     }
   } else if (action.type === 'getEntity') {
@@ -137,13 +158,14 @@ export function urlBuildReducer(state, action) {
       // selectedTherapeuticAreaType: data[0].type
     }
   } else if (action.type === 'copyUrl') {
+    console.log(action.value)
     if (state.url === '') {
       return {
         ...state,
         errors: 'No URL provided! Please provide a URL and try again.'
       }
     } else {
-      navigator.clipboard.writeText(state.url)
+      navigator.clipboard.writeText(action.value)
     }
     return {
       ...state,
@@ -195,23 +217,52 @@ export function urlBuildReducer(state, action) {
       ...state,
       messages: action.value
     }
-  } else if (action.type === 'setBitlyURL') {
+  } else if (action.type === 'setBitlyURLs') {
     if (state.bitlyAccessTokenField === '') {
       return {
         ...state,
         errors: 'Must provide an access token from your Bit.ly account.'
       }
     } else {
+      console.log(action.value)
       return {
         ...state,
         bitlyUrlField: action.value,
-        messages: 'Your shortened URL was successfully created with Bit.ly!'
+        messages: 'Your shortened URLs were successfully created with Bit.ly!'
       }
     }
   } else if (action.type === 'setBitlyAccessToken') {
     return {
       ...state,
       bitlyAccessTokenField: action.value
+    }
+  } else if (action.type === 'addDriverType') {
+    //multiple driver types can be selected - adding multiple driver types will render additional urls - 1 URL per driver type (ie. one twitter, one linkedin, one facebook etc)
+    return {
+      ...state,
+      selectedDriverTypes: action.value
+    }
+  } else if (action.type === 'renderUrlsByDriverType') {
+    // make this return an array that contains the constructed URLs 
+    const urlsByDriverTypes = state.selectedDriverTypes.map((param) => {
+      let url = new URL(state.url)
+
+      if (url.searchParams.get('utm_driverTypes')) {
+        url.searchParams.delete('utm_driverTypes')
+        url.searchParams.append('utm_driverTypes', param)
+      }
+
+      return url.href
+    })
+
+    return {
+      ...state,
+      urlsByDriverType: urlsByDriverTypes
+    }
+  } else if (action.type === 'setAvailableDriverTypes') {
+    return {
+      ...state,
+      availableDriverTypes: action.value[0].type
     }
   }
 }
