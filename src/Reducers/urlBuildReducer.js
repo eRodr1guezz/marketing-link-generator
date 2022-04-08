@@ -31,19 +31,19 @@ const initialState = {
   therapeuticAreasField: '',
   //selected entities
   currentSelectedDriver: '',
+  urlCollection: [],
   selectedTherapeuticAreaType: '',
   currentSelectedtherapeuticAreas: [], //this should be a string
   selectedDriverTypes: [], //this is the array of selected driver types - the population of this array should render additional URLs (1 per driver type))
   driverTypesField: [], //this is the form state value (what is shown as the current value in the chip box)
   availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
   urlsByDriverType: [],
-  therapeuticAreaSwitchField: false,
-  driverTypesFieldEnabled: true, //this can probably go
+  therapeuticAreaFieldSwitch: false,
   //this field grouping will enable custom entries to be added (ie, details for campaigns such as the type of social post (poll, video, text, img etc.))
+  bitlyFieldSwitch: false,
   customFieldSwitch: false,
   customParamField: '',
   customLabelField: '',
-  listOfUrlsToBeShortened: []
 }
 
 export function urlBuildReducer(state, action) {
@@ -64,6 +64,9 @@ export function urlBuildReducer(state, action) {
       url: urlCopy.href
     }
   } else if (action.type === 'appendParam') {
+    const { paramType, param } = action
+    const urlCopy = new URL(state.url)
+
     if (state.url.length === 0) {
       return {
         ...state,
@@ -71,8 +74,22 @@ export function urlBuildReducer(state, action) {
       }
     }
 
-    const { paramType, param } = action
-    const urlCopy = new URL(state.url)
+    if (state.urlCollection.length > 0) {
+      let updatedUrlCollection = state.urlCollection.map(url => {
+        if (url.searchParams.has(`utm_${paramType}`)) {
+          url.searchParams.delete(`utm_${paramType}`)
+          url.searchParams.append(`utm_${paramType}`, param)
+
+          return url
+        } else {
+          return null
+        }
+      })
+      return {
+        ...state,
+        urlCollection: updatedUrlCollection
+      }
+    }
 
     if (urlCopy.searchParams.has(`utm_${paramType}`)) {
       urlCopy.searchParams.delete(`utm_${paramType}`)
@@ -95,7 +112,6 @@ export function urlBuildReducer(state, action) {
     if (validateUrl(action.value)) {
       return {
         ...state,
-        isURLInvalid: false,
         disabledFields: false,
         url: action.value,
         errors: ''
@@ -104,9 +120,7 @@ export function urlBuildReducer(state, action) {
       return {
         ...state,
         url: action.value,
-        isURLInvalid: true,
         disabledFields: true,
-        errors: 'An invalid URL was provided - please try again.'
       }
     }
 
@@ -126,9 +140,8 @@ export function urlBuildReducer(state, action) {
         errors: 'URL cannot be empty when selecting a campaign driver! Please provide a URL and try again.'
       }
     } else {
-
       const urlCopy = new URL(state.url)
-      urlCopy.searchParams.delete('utm_vehicleType') //when we select a new driver, we delete any old associated types from the url
+      urlCopy.searchParams.delete('utm_driver_type') //when we select a new driver, we delete any old associated types from the url
 
       const driverData = state.drivers.filter(d => d.driver === fieldType)
 
@@ -176,29 +189,24 @@ export function urlBuildReducer(state, action) {
       ...state,
       errors: action.value
     }
-  } else if (action.type === 'toggleTherapeuticAreaSwitch') {
-    if (state.url === '') {
+  } else if (action.type === 'toggleFieldSwitch') {
+    const { fieldType, param } = action
+
+    let url = new URL(state.url)
+
+    url.searchParams.delete(param)
+
+    if (state[`${fieldType}FieldSwitch`] === false) {
       return {
         ...state,
-        errors: 'Please provide a URL before enabling the Therapeutic Area dropdown.'
+        url: url.href,
+        [fieldType + 'FieldSwitch']: true
       }
     } else {
-      let url = new URL(state.url)
-
-      url.searchParams.delete('utm_therapeuticArea')
-
-      if (state.therapeuticAreaSwitchField === false) {
-        return {
-          ...state,
-          url: url.href,
-          therapeuticAreaSwitchField: true
-        }
-      } else {
-        return {
-          ...state,
-          url: url.href,
-          therapeuticAreaSwitchField: false
-        }
+      return {
+        ...state,
+        url: url.href,
+        [fieldType + 'FieldSwitch']: false
       }
     }
 
@@ -224,7 +232,6 @@ export function urlBuildReducer(state, action) {
         errors: 'Must provide an access token from your Bit.ly account.'
       }
     } else {
-      console.log(action.value)
       return {
         ...state,
         bitlyUrlField: action.value,
@@ -243,18 +250,19 @@ export function urlBuildReducer(state, action) {
       selectedDriverTypes: action.value
     }
   } else if (action.type === 'renderUrlsByDriverType') {
+    //this should not render urls BY driver type - it needs to render urls from the global url state, and take into account each driver type, rendering a url from the root url for each driver type
     // make this return an array that contains the constructed URLs 
+    //what if we add a param AFTER the url has been generated? should we keep track of when urls are generated and then how many 
     const urlsByDriverTypes = state.selectedDriverTypes.map((param) => {
       let url = new URL(state.url)
 
-      if (url.searchParams.get('utm_driverTypes')) {
-        url.searchParams.delete('utm_driverTypes')
-        url.searchParams.append('utm_driverTypes', param)
+      if (url.searchParams.get('utm_driver_type')) {
+        url.searchParams.delete('utm_driver_type')
+        url.searchParams.append('utm_driver_type', param)
       }
 
-      return url.href
+      return { fullUrl: url.href, bitlyUrl: '' }
     })
-
     return {
       ...state,
       urlsByDriverType: urlsByDriverTypes
@@ -263,6 +271,28 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       availableDriverTypes: action.value[0].type
+    }
+  } else if (action.type === 'renderUrls') {
+    //set a count equal to the amount of selected driver types
+    if (state.selectedDriverTypes.length > 0) {
+      if (state.bitlyFieldSwitch) {
+        let urlCollection = state.selectedDriverTypes.map(type => {
+          let rootUrlInstance = new URL(state.url)
+
+          rootUrlInstance.searchParams.append('utm_driver_type', type)
+
+          return rootUrlInstance
+        })
+        return {
+          ...state,
+          urlCollection,
+        }
+      } else {
+        return {
+          ...state,
+          errors: 'nothing happened'
+        }
+      }
     }
   }
 }

@@ -1,0 +1,38 @@
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    let url = new URL(window.location.href);
+
+    //function pulls all utm tags from the url and puts them in session storage
+    function getAndStoreParams() {
+      for (let [key, val] of url.searchParams.entries()) {
+        if (key.includes('utm')) {
+          sessionStorage.setItem(key, val)
+        }
+      }
+    }
+    //function grabs params from session storage and appends them to the url - returns the url href string
+    function getFromSSAndCreateUrl() {
+      for (let [key, val] of Object.entries(sessionStorage)) {
+        if (url.searchParams.has(key)) {
+          break;
+        } else {
+          url.searchParams.append(key, val)
+        }
+      }
+      return url.href
+    }
+
+    if (!url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source') === null) {
+      return console.log('direct hit - no marketing tags anywhere')
+    }
+
+    if (url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source') === null) {
+      getAndStoreParams()
+      return window.location.href = getFromSSAndCreateUrl()
+    }
+
+    if (!url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source')) {
+      return window.location.href = getFromSSAndCreateUrl()
+    }
+  })
+</script>

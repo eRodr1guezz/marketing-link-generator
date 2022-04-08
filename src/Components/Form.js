@@ -24,40 +24,26 @@ import {
   IconButton,
   InputBase,
   Divider,
+  InputAdornment,
+
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
+  CheckCircle,
   ContentCopy,
-  Facebook,
   HelpOutlineOutlined,
-  Instagram,
-  LinkedIn,
-  Twitter,
+  LinkRounded,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
+import { socialIconHandler, validateUrl } from "../Utils";
 
 const APPEND_PARAM = "appendParam";
-
-function socialIconHandler(param) {
-  switch (param) {
-    case "twi":
-      return <Twitter />;
-    case "li":
-      return <LinkedIn />;
-    case "fb":
-      return <Facebook />;
-    case "in":
-      return <Instagram />;
-    default:
-      return null;
-  }
-}
 
 export default function Form() {
   const theme = useTheme();
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
-  const fieldRef = useRef(null)
+  const fieldRef = useRef(null);
 
   const label = { inputProps: { "aria-label": "Therapeutic Areas?" } };
 
@@ -82,6 +68,7 @@ export default function Form() {
   }
 
   async function shortenURL(url, access_token) {
+    //should accept a single (or list) of urls to shorten and return a single (or list of) URL instance(s).
     const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
     await fetch(bitlyURL, {
       method: "POST",
@@ -102,8 +89,8 @@ export default function Form() {
             value: "Invalid access token. Please check and try again.",
           });
         } else {
-          // dispatch({ type: 'setBitlyURL', value: data.link })
-          return data.link;
+          dispatch({ type: "setBitlyUrlList", value: data.link });
+          // return data.link;
         }
       });
   }
@@ -139,6 +126,14 @@ export default function Form() {
       });
   }, [state.availableDriverTypes, state.selectedDriverTypes]);
 
+  //need to figure out a way to update ALL copies of the URLS
+  useEffect(() => {
+    state.urlCollection.length > 0 &&
+      dispatch({
+        type: 'renderUrls'
+      })
+  }, [state.urlCollection])
+
   return (
     <>
       {isOpen ? (
@@ -150,8 +145,9 @@ export default function Form() {
             container
             direction='column'
             justifyContent='center'
+            alignContent='center'
             alignItems='stretch'
-            rowGap={2}
+            rowGap={1.75}
             sx={{
               backgroundColor: "#fff",
               padding: "2rem",
@@ -165,15 +161,24 @@ export default function Form() {
                 <TextField
                   name='url'
                   label='URL'
-                  error={state.isURLInvalid}
+                  error={!validateUrl(state.url) && state.url !== ""}
                   helperText={
-                    state.isURLInvalid
+                    !validateUrl(state.url) && state.url !== ""
                       ? "An invalid URL was provided - please check the input and try again."
                       : null
                   }
                   onChange={(e) =>
                     dispatch({ type: "setUrl", value: e.currentTarget.value })
                   }
+                  InputProps={{
+                    endAdornment:
+                      validateUrl(state.url) && !state.url !== "" ? (
+                        <InputAdornment position='end'>
+                          {" "}
+                          <CheckCircle color='success' />{" "}
+                        </InputAdornment>
+                      ) : null,
+                  }}
                 />
               </FormControl>
             </Grid>
@@ -201,7 +206,7 @@ export default function Form() {
                       onClick={() =>
                         dispatch({
                           type: APPEND_PARAM,
-                          paramType: "businessUnit",
+                          paramType: "source",
                           param: param,
                         })
                       }>
@@ -221,7 +226,11 @@ export default function Form() {
                   name='therapeuticAreaSwitch'
                   checked={state.therapeuticAreaSwitchField}
                   onChange={() =>
-                    dispatch({ type: "toggleTherapeuticAreaSwitch" })
+                    dispatch({
+                      type: "toggleFieldSwitch",
+                      fieldType: "therapeuticArea",
+                      param: "utm_therapeutic_area",
+                    })
                   }
                 />
               </FormControl>
@@ -238,7 +247,7 @@ export default function Form() {
                     onSelectCapture={(e) =>
                       dispatch({
                         type: APPEND_PARAM,
-                        paramType: "therapeuticArea",
+                        paramType: "therapeutic_area",
                         param: state.therapeuticAreas.filter(
                           (el) => el.label === e.target.value
                         )[0].param,
@@ -291,7 +300,7 @@ export default function Form() {
                         onClick={() => {
                           dispatch({
                             type: APPEND_PARAM,
-                            paramType: "source",
+                            paramType: "medium",
                             param: el.param,
                           });
                           dispatch({
@@ -306,7 +315,7 @@ export default function Form() {
                 </FormControl>
               </Box>
             </Grid>
-
+            {/* Driver Types dropdown */}
             {state.currentSelectedDriver.length !== 0 && (
               <Grid item>
                 <FormControl sx={{ m: 1, width: 300 }} fullWidth>
@@ -327,21 +336,19 @@ export default function Form() {
                     renderValue={(selected) => (
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                         {selected.map((val) => (
-                          <Tooltip title={"the label somehow"}>
-                            <Chip
-                              color={'secondary'}
-                              icon={socialIconHandler(val)}
-                              key={val}
-                              label={val}
-                            />
-                          </Tooltip>
+                          <Chip
+                            color={"secondary"}
+                            icon={socialIconHandler(val)}
+                            key={val}
+                            label={val}
+                          />
                         ))}
                       </Box>
                     )}
                     MenuProps={MenuProps}>
                     {state.availableDriverTypes.map(({ label, param }) => (
                       <MenuItem
-                        key={param}
+                        key={label}
                         value={param}
                         style={getStyles(
                           label,
@@ -351,7 +358,7 @@ export default function Form() {
                         onClick={() =>
                           dispatch({
                             type: APPEND_PARAM,
-                            paramType: "driverTypes",
+                            paramType: "driver_type",
                             param: param,
                           })
                         }>
@@ -363,74 +370,152 @@ export default function Form() {
               </Grid>
             )}
 
-            {state.urlsByDriverType.length > 0
-              ? state.urlsByDriverType.map((el) => {
-                const elUrl = new URL(el)
-                const socialCode = elUrl.searchParams.get('utm_driverTypes')
-
-                return (
-                  <Paper
-                    component="form"
-                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', backgroundColor: '#efefef' }}
-                  >
-                    <IconButton sx={{ p: '8px' }} aria-label="driver copy bar">
-                      {socialIconHandler(socialCode)}
-                    </IconButton>
-                    <InputBase
-                      ref={fieldRef}
-                      sx={{ ml: 1, flex: 1, color: '#666' }}
-                      value={elUrl.href}
-                      inputProps={{ 'aria-label': 'copy url instance' }}
-                    />
-                    <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                    <IconButton onClick={(e) => dispatch({ type: 'copyUrl', value: fieldRef.current.childNodes[0] })} sx={{ p: '10px' }} aria-label="copy url">
-                      <ContentCopy />
-                    </IconButton>
-                  </Paper>
-                )
-              }) : null}
-
-            <Box
-              sx={{
-                border: "dashed 1px lightgrey",
-                borderRadius: "5pt",
-                padding: "1rem",
-              }}>
-              <Grid
-                container
-                direction='column'
-                justifyContent='center'
-                alignItems='stretch'
-                rowGap={2}>
+            {/* Campaign Name */}
+            <Grid item>
+              <FormControl fullWidth>
                 <TextField
-                  label='Bit.ly Access Token'
-                  value={state.bitlyAccessTokenField}
-                  fullWidth
-                  multiline
-                  onChange={(e) =>
+                  name='campaign_name'
+                  label='Campaign Name'
+                  disabled={state.url.length === 0}
+                  onChange={(e) => {
+                    if (e.currentTarget.value === '') {
+                      dispatch({ type: 'removeParam', paramType: 'campaign' })
+                    } else {
+                      dispatch({
+                        type: APPEND_PARAM,
+                        paramType: "campaign",
+                        param: e.currentTarget.value
+                      })
+                    }
+                  }
+                  }
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid item>
+              <FormControl>
+                <FormControlLabel
+                  control={<Switch color='secondary' {...label} />}
+                  label='Shorten URLs with Bit.ly?'
+                  name='bitlyFieldSwitch'
+                  checked={state.bitlySwitch}
+                  onChange={() =>
                     dispatch({
-                      type: "setBitlyAccessToken",
-                      value: e.currentTarget.value,
+                      type: "toggleFieldSwitch",
+                      fieldType: "bitly",
                     })
                   }
                 />
-                <Button
-                  color='secondary'
-                  disabled={state.bitlyAccessTokenField === ""}
-                  fullWidth
-                  onClick={() =>
-                    dispatch({
-                      type: "setBitlyURLs",
-                      value: state.urlsByDriverType.map((url) =>
-                        shortenURL(encodeURI(url), state.bitlyAccessTokenField)
-                      ),
-                    })
-                  }
-                  variant='contained'>
-                  Shorten URLs (with Bit.ly)
-                </Button>
-              </Grid>
-            </Box>
+              </FormControl>
+            </Grid>
+
+            {state.bitlyFieldSwitch ?
+              <Box
+                sx={{
+                  border: "dashed 1px lightgrey",
+                  borderRadius: "5pt",
+                  padding: "1rem",
+                }}>
+                <Grid
+                  container
+                  direction='column'
+                  justifyContent='center'
+                  alignItems='stretch'
+                  rowGap={2}>
+                  <TextField
+                    label='Bit.ly Access Token'
+                    value={state.bitlyAccessTokenField}
+                    fullWidth
+                    multiline
+                    onChange={(e) =>
+                      dispatch({
+                        type: "setBitlyAccessToken",
+                        value: e.currentTarget.value,
+                      })
+                    }
+                  />
+                  <Button
+                    color='secondary'
+                    disabled={state.bitlyAccessTokenField === ""}
+                    fullWidth
+                    onClick={() =>
+                      dispatch({
+                        type: "setBitlyURLs",
+                        value: state.urlsByDriverType.map((url) =>
+                          shortenURL(
+                            encodeURI(url.fullUrl),
+                            state.bitlyAccessTokenField
+                          )
+                        ),
+                      })
+                    }
+                    variant='contained'>
+                    Shorten URLs (with Bit.ly)
+                  </Button>
+                </Grid>
+              </Box> : null}
+
+            <Typography variant="h6">Results:</Typography>
+            {state.urlsByDriverType.length > 0
+              ? state.urlsByDriverType.map((el) => {
+                const elUrl = new URL(el.fullUrl);
+                const socialCode = elUrl.searchParams.get("utm_driver_type");
+
+                return (
+                  <Box
+                    key={elUrl}
+                    component='form'
+                    sx={{
+                      p: "2px 4px",
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      width: "100%",
+                      border: "solid 1px lightblue",
+                      borderRadius: "8pt",
+                    }}>
+                    <IconButton
+                      disableRipple
+                      sx={{ p: "8px" }}
+                      aria-label='driver copy bar'>
+                      {!socialIconHandler(socialCode) ? (
+                        <LinkRounded />
+                      ) : (
+                        socialIconHandler(socialCode)
+                      )}
+                    </IconButton>
+                    <InputBase
+                      ref={fieldRef}
+                      sx={{ ml: 1, flex: 1, color: "#555" }}
+                      value={elUrl.href}
+                      inputProps={{ "aria-label": "copy url instance" }}
+                    />
+                    <Divider
+                      sx={{ height: 28, m: 0.5 }}
+                      orientation='vertical'
+                    />
+                    <IconButton
+                      onClick={() =>
+                        dispatch({
+                          type: "copyUrl",
+                          value: elUrl.href,
+                        })
+                      }
+                      sx={{ p: "10px" }}
+                      aria-label='copy url'>
+                      <Tooltip title='Copy to clipboard'>
+                        <ContentCopy />
+                      </Tooltip>
+                    </IconButton>
+                    {state.bitlyUrlField > 0 ? (
+                      <InputBase name='bitlyField' />
+                    ) : null}
+                  </Box>
+                );
+              })
+              : null}
+            <Button onClick={() => dispatch({ type: 'renderUrls' })} variant='contained'>Generate URLs</Button>
             <div
               style={{
                 display: "flex",
