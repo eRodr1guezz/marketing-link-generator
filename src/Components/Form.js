@@ -25,7 +25,6 @@ import {
   InputBase,
   Divider,
   InputAdornment,
-
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -35,7 +34,8 @@ import {
   LinkRounded,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
-import { socialIconHandler, validateUrl } from "../Utils";
+import { socialIconHandler, subcatFilter, validateUrl } from "../Utils";
+import { businessUnits, businessUnitSubCategories } from "../internal";
 
 const APPEND_PARAM = "appendParam";
 
@@ -199,7 +199,7 @@ export default function Form() {
                       value: e.target.value,
                     })
                   }>
-                  {state.businessUnits.map(({ label, param }) => (
+                  {businessUnits.map(({ label, param }) => (
                     <MenuItem
                       key={param}
                       value={param}
@@ -215,6 +215,38 @@ export default function Form() {
                   ))}
                 </Select>
               </FormControl>
+
+              {state.businessUnitsField.length > 0 ? <FormControl fullWidth required>
+                <InputLabel>Subcategory</InputLabel>
+                <Select
+                  disabled={state.url.length === 0}
+                  label='Subcategory'
+                  name='businessUnitSubCategories'
+                  value={state.businessUnitSubCategories}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "setField",
+                      fieldName: e.target.name,
+                      value: e.target.value,
+                    })
+                  }>
+                  {businessUnitSubCategories
+                    .map(({ label, param }) => (
+                      <MenuItem
+                        key={param}
+                        value={param}
+                        onClick={() =>
+                          dispatch({
+                            type: APPEND_PARAM,
+                            paramType: "source_type",
+                            param: param,
+                          })
+                        }>
+                        {label}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl> : null}
             </Grid>
 
             {/* Optional Therapeutic Areas */}

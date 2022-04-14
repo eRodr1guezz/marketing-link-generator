@@ -1,14 +1,5 @@
-import { drivers, areas, businessUnits, therapeuticAreas } from '../internal'
+import { drivers, businessUnitSubCategories, businessUnits, therapeuticAreas } from '../internal'
 import { validateUrl } from '../Utils';
-
-//business units
-//drivers
-//driver types
-//therapeutic areas
-
-//any state denoted as "Field" refers to the forms field state value
-//any state denoted as itself, ie. drivers, business units etc are application Entities
-//any state denoted 
 
 const initialState = {
   //top level form state
@@ -20,13 +11,14 @@ const initialState = {
   //entities - right now this state is internally stored, however, there may be a point where it becomes available from another source. keeping this accessible and isolated will be important.
   drivers,
   businessUnits,
-  areas,
+  businessUnitSubCategories,
   therapeuticAreas,
   //internal controlled form state - ie. form fields, inputs etc.
   bitlyUrlField: [],
   bitlyAccessTokenField: '',
   //form input values
-  businessUnitsField: '',
+  businessUnitsField: [],
+  businessUnitSubCategoriesField: [],
   campaignDriversField: '',
   therapeuticAreasField: '',
   //selected entities

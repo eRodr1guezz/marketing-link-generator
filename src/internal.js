@@ -14,11 +14,20 @@ let therapeuticAreas = [
   { param: 1700, label: "ID/HIV Specialists" },
   { param: 1710, label: "HIV/AIDS Specialists" },
   { param: 1720, label: "Infectious Diseases" },
-  { param: 1800, label: 'Medical Geneticists' },
+  { param: 1800, label: "Medical Geneticists" },
   { param: 1900, label: "Neurologists" },
   { param: 2000, label: "Obstetricians & Gynecologists" },
-  { param: 2100, label: 'Ophthalmologists' },
-  { param: 2200, label: "Orthopedists & Orthopedic Surgeons", children: [{ childID: 2210, label: "Physical Medicine & Rehabilitation Specialists" }] },
+  { param: 2100, label: "Ophthalmologists" },
+  {
+    param: 2200,
+    label: "Orthopedists & Orthopedic Surgeons",
+    children: [
+      {
+        childID: 2210,
+        label: "Physical Medicine & Rehabilitation Specialists",
+      },
+    ],
+  },
   { param: 2400, label: "Primary Care Physicians" },
   { param: 2410, label: "Family Practitioners" },
   { param: 2420, label: "General Internists" },
@@ -27,33 +36,56 @@ let therapeuticAreas = [
   { param: 2500, label: "Public Health & Preventive Medicine Specialists " },
   { param: 2600, label: "Psychiatrists" },
   { param: 2700, label: "Pulmonologists" },
-]
+];
+
+let businessUnitSubCategories = [
+  { label: "Marketing", param: "mrk" },
+  { label: "Education", param: "edu" },
+  { label: "MedAffairs", param: "ma" },
+  { label: "Proprietary", param: "prop" },
+  { label: "Professional", param: "prof" },
+  { label: "VCS", param: "vcs" },
+  { label: "Partner", param: "part" },
+  { label: "Other", param: "oth" },
+];
 
 let businessUnits = [
-  { label: 'MedscapeLive!', param: 'lbu', permissions: ['mrk', 'edu', 'ma', 'prop', 'prof', 'vcs', 'part', 'oth'] },
-  { label: 'MDEdge', param: 'mde', permissions: ['mrk', 'ma', 'prop', 'prof', 'vcs', 'part', 'oth'] },
-  { label: 'Medscape', param: 'msc', permissions: ['mrk', 'edu', 'ma', 'prop', 'vcs', 'part', 'oth'] },
-  { label: 'Sonaworks', param: 'sw', permissions: ['mrk', 'oth'] },
-]
+  {
+    label: "MedscapeLive!",
+    param: "lbu",
+    excluded: ['prop'],
+    subcategories: businessUnitSubCategories,
+  },
+  {
+    label: "MDEdge",
+    param: "mde",
+    excluded: ['prop'],
+    subcategories: businessUnitSubCategories,
+  },
+  {
+    label: "Medscape",
+    param: "msc",
+    excluded: ['prop'],
+    subcategories: businessUnitSubCategories,
+  },
+  {
+    label: "Sonaworks",
+    param: "sw",
+    excluded: ['prop'],
+    subcategories: businessUnitSubCategories,
+  },
+];
 
-let areas = [
-  { label: "Marketing", param: 'mrk' },
-  { label: "Education", param: 'edu' },
-  { label: "MedAffairs", param: 'ma' },
-  { label: "Proprietary", param: 'prop' },
-  { label: "Professional", param: 'prof' },
-  { label: "VCS", param: 'vcs' },
-  { label: "Partner", param: 'part' },
-  { label: "Other", param: 'oth' }
-]
+businessUnits.map((unit, i, arr) => arr.excluded !== unit.subcategories[i].param ? unit : null)
+
 
 let drivers = [
   {
-    driver: 'Email',
-    param: 'em',
+    driver: "Email",
+    param: "em",
     type: [
-      { param: 'int', label: 'Internal' },
-      { param: 'ext', label: 'External' },
+      { param: "int", label: "Internal" },
+      { param: "ext", label: "External" },
     ],
     details: null, //in the case of an email, the YYMMDD ie. 220323
     custom1: {
@@ -61,23 +93,23 @@ let drivers = [
     },
     custom2: {
       type: [],
-    }
+    },
   },
   {
-    driver: 'Banners',
-    param: 'ban',
+    driver: "Banners",
+    param: "ban",
     type: [
-      { param: 'app', label: "App Push Notification" },
-      { param: 'atp', label: 'Activity Tracker Promo' },
-      { param: 'lb', label: 'Leaderboard' },
+      { param: "app", label: "App Push Notification" },
+      { param: "atp", label: "Activity Tracker Promo" },
+      { param: "lb", label: "Leaderboard" },
       // { param: 'mpu', label: '' },
-      { param: 'co', label: "Call Out" },
-      { param: 'nc', label: "Native Connect" },
+      { param: "co", label: "Call Out" },
+      { param: "nc", label: "Native Connect" },
       // { param: 'fyp', label: '' },
-      { param: 'com', label: "MedscapeLive.com" },
-      { param: 'pp', label: "Pulsepoint" },
-      { param: 'adr', label: "ADRoll Retargeting" },
-      { param: 'rt', label: "Retargeting" }
+      { param: "com", label: "MedscapeLive.com" },
+      { param: "pp", label: "Pulsepoint" },
+      { param: "adr", label: "ADRoll Retargeting" },
+      { param: "rt", label: "Retargeting" },
     ],
     details: null,
     custom1: {
@@ -85,73 +117,88 @@ let drivers = [
     },
     custom2: {
       type: [],
-    }
+    },
   },
   {
-    driver: 'Social',
-    param: 'soc',
+    driver: "Social",
+    param: "soc",
     type: [
-      { param: 'twi', label: 'Twitter' },
-      { param: 'li', label: 'LinkedIn' },
-      { param: 'in', label: 'Instagram' },
-      { param: 'fb', label: 'Facebook' },
+      { param: "twi", label: "Twitter" },
+      { param: "li", label: "LinkedIn" },
+      { param: "in", label: "Instagram" },
+      { param: "fb", label: "Facebook" },
     ],
     details: null,
     custom1: {
-      type: [{ img: 'image' }, { vid: 'video' }, { poll: 'poll' }, { text: 'text ' }],
+      type: [
+        { label: "image", param: "img" },
+        { label: "video", param: "vid" },
+        { label: "poll", param: "poll" },
+        { label: "text", param: "txt" },
+      ],
     },
     custom2: {
       type: [],
-    }
+    },
   },
   {
-    driver: 'Social Paid',
-    param: 'socpd',
-    source: areas,
+    driver: "Social Paid",
+    param: "socpd",
+    source: businessUnitSubCategories,
     therapeuticAreas,
     businessUnits,
     type: [
-      { param: 'twi', label: 'Twitter' },
-      { param: 'li', label: 'LinkedIn' },
-      { param: 'in', label: 'Instagram' },
-      { param: 'fb', label: 'Facebook' },
+      { param: "twi", label: "Twitter" },
+      { param: "li", label: "LinkedIn" },
+      { param: "in", label: "Instagram" },
+      { param: "fb", label: "Facebook" },
     ],
     details: null,
     custom1: {
-      type: [{ img: 'image' }, { vid: 'video' }, { poll: 'poll' }, { text: 'text ' }],
+      type: [
+        { label: "image", param: "img" },
+        { label: "video", param: "vid" },
+        { label: "poll", param: "poll" },
+        { label: "text", param: "txt" },
+      ],
     },
     custom2: {
       type: [],
     },
   },
   {
-    driver: 'Social Ambassador',
-    param: 'socamb',
-    source: areas,
+    driver: "Social Ambassador",
+    param: "socamb",
+    source: businessUnitSubCategories,
     therapeuticAreas,
     businessUnits,
     type: [
-      { param: 'twi', label: 'Twitter' },
-      { param: 'li', label: 'LinkedIn' },
-      { param: 'in', label: 'Instagram' },
-      { param: 'fb', label: 'Facebook' },
+      { param: "twi", label: "Twitter" },
+      { param: "li", label: "LinkedIn" },
+      { param: "in", label: "Instagram" },
+      { param: "fb", label: "Facebook" },
     ],
     details: null,
     custom1: {
-      type: [{ img: 'image' }, { vid: 'video' }, { poll: 'poll' }, { text: 'text ' }],
+      type: [
+        { label: "image", param: "img" },
+        { label: "video", param: "vid" },
+        { label: "poll", param: "poll" },
+        { label: "text", param: "txt" },
+      ],
     },
     custom2: {
       type: [],
     },
   },
   {
-    driver: 'Print',
-    param: 'prt',
+    driver: "Print",
+    param: "prt",
     type: [
-      { label: 'brochure', param: 'broch' },
-      { label: 'ad', param: 'ads' },
-      { label: 'journal', param: 'jrl' },
-      { label: 'postcard', param: 'pc' }
+      { label: "brochure", param: "broch" },
+      { label: "ad", param: "ads" },
+      { label: "journal", param: "jrl" },
+      { label: "postcard", param: "pc" },
     ],
     details: null,
     custom1: {
@@ -162,8 +209,8 @@ let drivers = [
     },
   },
   {
-    driver: '3rd Party Partnership Promotions - Digital Delivery',
-    param: 'part',
+    driver: "3rd Party Partnership Promotions - Digital Delivery",
+    param: "part",
     type: [],
     custom1: {
       type: [],
@@ -173,8 +220,8 @@ let drivers = [
     },
   },
   {
-    driver: 'Clickable PDF',
-    param: 'partpdf',
+    driver: "Clickable PDF",
+    param: "partpdf",
     id: {},
     custom1: {
       types: {},
@@ -184,8 +231,8 @@ let drivers = [
     },
   },
   {
-    driver: 'Rep Recruitment',
-    param: 'cp',
+    driver: "Rep Recruitment",
+    param: "cp",
     type: [],
     details: null,
     custom1: {
@@ -196,8 +243,8 @@ let drivers = [
     },
   },
   {
-    driver: 'Faculty Recruitment',
-    param: 'partfac',
+    driver: "Faculty Recruitment",
+    param: "partfac",
     id: {},
     custom1: {
       types: {},
@@ -205,13 +252,7 @@ let drivers = [
     custom2: {
       types: {},
     },
-  }
-]
+  },
+];
 
-export {
-  drivers,
-  areas,
-  therapeuticAreas,
-  businessUnits
-}
-
+export { drivers, therapeuticAreas, businessUnits, businessUnitSubCategories };
