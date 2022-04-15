@@ -34,8 +34,10 @@ import {
   LinkRounded,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
-import { socialIconHandler, subcatFilter, validateUrl } from "../Utils";
+import { socialIconHandler, validateUrl } from "../Utils";
 import { businessUnits, businessUnitSubCategories } from "../internal";
+import FormAutocomplete from "./FormAutocomplete";
+import TherapeuticAreasPanel from "./Specialized/TherapeuticAreasPanel";
 
 const APPEND_PARAM = "appendParam";
 
@@ -183,6 +185,23 @@ export default function Form() {
               </FormControl>
             </Grid>
 
+            <FormAutocomplete
+              disabled={state.errors.length > 0 || state.url.length === 0}
+              innerLabel='Therapeutic Areas'
+              freeSolo={true}
+              textFieldType="search"
+              options={state.therapeuticAreas}
+              handleChange={e => {
+                dispatch({
+                  type: APPEND_PARAM,
+                  paramType: "therapeutic_area",
+                  param: state.therapeuticAreas.filter(
+                    (el) => el.label === e.target.value
+                  )[0].param,
+                })
+              }}
+            />
+
             {/* Business Units */}
             <Grid item>
               <FormControl fullWidth required>
@@ -267,6 +286,26 @@ export default function Form() {
                 />
               </FormControl>
             </Grid>
+
+            <TherapeuticAreasPanel
+              visible={state.therapeuticAreaFieldSwitch}
+              disabled={state.errors.length > 0 || state.url.length === 0}
+              options={state.therapeuticAreas}
+              switchHandler={() =>
+                dispatch({
+                  type: "toggleFieldSwitch",
+                  fieldType: "therapeuticArea",
+                  param: "utm_therapeutic_area",
+                })} 
+              inputHandler={e => 
+                dispatch({
+                  type: APPEND_PARAM,
+                  paramType: "therapeutic_area",
+                  param: state.therapeuticAreas.filter(
+                    (el) => el.label === e.target.value
+                  )[0].param,
+                })}
+              />
 
             {state.therapeuticAreaSwitchField ? (
               <Grid item>

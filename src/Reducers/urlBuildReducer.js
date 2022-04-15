@@ -36,6 +36,7 @@ const initialState = {
   customFieldSwitch: false,
   customParamField: '',
   customLabelField: '',
+  test: 0,
 }
 
 export function urlBuildReducer(state, action) {
