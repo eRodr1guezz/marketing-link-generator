@@ -18,13 +18,15 @@ import {
   Grid,
   Paper,
   Typography,
-  OutlinedInput,
-  Chip,
   Tooltip,
   IconButton,
   InputBase,
   Divider,
   InputAdornment,
+  FormGroup,
+  List,
+  Grow,
+  ButtonGroup,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -32,14 +34,20 @@ import {
   ContentCopy,
   HelpOutlineOutlined,
   LinkRounded,
+  AddCircle,
+  RemoveCircle,
+  AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
+import { BitlyIcon } from "../bitlyIcon";
 import useSnackbar from "../Hooks/useSnackbar";
-import { socialIconHandler, validateUrl } from "../Utils";
+import {
+  socialIconHandler,
+  validateUrl,
+} from "../Utils";
 import { businessUnits, businessUnitSubCategories } from "../internal";
-import FormAutocomplete from "./FormAutocomplete";
-import TherapeuticAreasPanel from "./Specialized/TherapeuticAreasPanel";
-
-const APPEND_PARAM = "appendParam";
+import { UrlList } from "./UrlList";
+import { APPEND_PARAM, SET_AVAILABLE_DRIVER_TYPES } from "../Reducers/actionTypes";
+import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 
 export default function Form() {
   const theme = useTheme();
@@ -48,54 +56,6 @@ export default function Form() {
   const fieldRef = useRef(null);
 
   const label = { inputProps: { "aria-label": "Therapeutic Areas?" } };
-
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
-  function getStyles(name, driverName, theme) {
-    return {
-      fontWeight:
-        driverName.indexOf(name) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-  }
-
-  async function shortenURL(url, access_token) {
-    //should accept a single (or list) of urls to shorten and return a single (or list of) URL instance(s).
-    const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
-    await fetch(bitlyURL, {
-      method: "POST",
-      body: JSON.stringify({
-        // group_guid: "o_5kc1f828jm",
-        long_url: url,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (data.message === "FORBIDDEN") {
-          dispatch({
-            type: "error",
-            value: "Invalid access token. Please check and try again.",
-          });
-        } else {
-          dispatch({ type: "setBitlyUrlList", value: data.link });
-          // return data.link;
-        }
-      });
-  }
 
   useEffect(() => {
     if (state.errors.length > 0) {
@@ -112,29 +72,12 @@ export default function Form() {
   useEffect(() => {
     state.currentSelectedDriver.length > 0 && //if there is a driver currently selected...
       dispatch({
-        type: "setAvailableDriverTypes", //we set the value of the driver types
+        type: SET_AVAILABLE_DRIVER_TYPES,
         value: state.drivers.filter(
           (d) => d.driver === state.currentSelectedDriver
         ),
       });
-    //do you need to clean up the currentSelectedDriver state after running this effect?
   }, [state.currentSelectedDriver, state.drivers]);
-
-  useEffect(() => {
-    state.availableDriverTypes.length !== 0 &&
-      dispatch({
-        type: "renderUrlsByDriverType",
-        value: state.selectedDriverTypes,
-      });
-  }, [state.availableDriverTypes, state.selectedDriverTypes]);
-
-  //need to figure out a way to update ALL copies of the URLS
-  useEffect(() => {
-    state.urlCollection.length > 0 &&
-      dispatch({
-        type: 'renderUrls'
-      })
-  }, [state.urlCollection])
 
   return (
     <>
@@ -158,6 +101,8 @@ export default function Form() {
             <Typography sx={{ fontWeight: 800 }} variant='h3'>
               Campaign URL Builder
             </Typography>
+
+            {/* URL Input */}
             <Grid item>
               <FormControl required fullWidth>
                 <TextField
@@ -185,22 +130,30 @@ export default function Form() {
               </FormControl>
             </Grid>
 
-            <FormAutocomplete
-              disabled={state.errors.length > 0 || state.url.length === 0}
-              innerLabel='Therapeutic Areas'
-              freeSolo={true}
-              textFieldType="search"
-              options={state.therapeuticAreas}
-              handleChange={e => {
-                dispatch({
-                  type: APPEND_PARAM,
-                  paramType: "therapeutic_area",
-                  param: state.therapeuticAreas.filter(
-                    (el) => el.label === e.target.value
-                  )[0].param,
-                })
-              }}
-            />
+            {/* Campaign Name */}
+            <Grid item>
+              <FormControl fullWidth>
+                <TextField
+                  name='campaign_name'
+                  label='Campaign Name'
+                  value={state.campaign_nameField || ""}
+                  disabled={state.url.length === 0}
+                  helperText='We suggest using the full WorkFront project title, ie. 333713.01_LBU_MEDSSummer_Hybrid_07-22_CME'
+                  onChange={(e) => {
+                    dispatch({
+                      type: "setField",
+                      fieldName: e.target.name,
+                      value: e.currentTarget.value,
+                    });
+                    dispatch({
+                      type: APPEND_PARAM,
+                      paramType: "campaign",
+                      param: e.currentTarget.value,
+                    });
+                  }}
+                />
+              </FormControl>
+            </Grid>
 
             {/* Business Units */}
             <Grid item>
@@ -210,7 +163,7 @@ export default function Form() {
                   disabled={state.url.length === 0}
                   label='Business Units'
                   name='businessUnits'
-                  value={state.businessUnitsField}
+                  value={state.businessUnitsField || ""}
                   onChange={(e) =>
                     dispatch({
                       type: "setField",
@@ -234,23 +187,30 @@ export default function Form() {
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
 
-              {state.businessUnitsField.length > 0 ? <FormControl fullWidth required>
-                <InputLabel>Subcategory</InputLabel>
-                <Select
-                  disabled={state.url.length === 0}
-                  label='Subcategory'
-                  name='businessUnitSubCategories'
-                  value={state.businessUnitSubCategories}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "setField",
-                      fieldName: e.target.name,
-                      value: e.target.value,
-                    })
-                  }>
-                  {businessUnitSubCategories
-                    .map(({ label, param }) => (
+            {state.businessUnitsField && state.businessUnitsField.length > 0 && (
+              <Grow
+                in={state.businessUnitsField.length > 0}
+                style={{ transformOrigin: "0 0 0" }}
+                {...(state.businessUnitsField.length > 0
+                  ? { timeout: 1000 }
+                  : {})}>
+                <FormControl required fullWidth>
+                  <InputLabel>Subcategory</InputLabel>
+                  <Select
+                    disabled={state.url.length === 0}
+                    label='Subcategory'
+                    name='businessUnitSubCategories'
+                    value={state.businessUnitSubCategoriesField || ""}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "setField",
+                        fieldName: e.target.name,
+                        value: e.target.value,
+                      })
+                    }>
+                    {businessUnitSubCategories.map(({ label, param }) => (
                       <MenuItem
                         key={param}
                         value={param}
@@ -264,9 +224,10 @@ export default function Form() {
                         {label}
                       </MenuItem>
                     ))}
-                </Select>
-              </FormControl> : null}
-            </Grid>
+                  </Select>
+                </FormControl>
+              </Grow>
+            )}
 
             {/* Optional Therapeutic Areas */}
             <Grid item>
@@ -275,7 +236,8 @@ export default function Form() {
                   control={<Switch color='secondary' {...label} />}
                   label='Therapeutic Areas?'
                   name='therapeuticAreaSwitch'
-                  checked={state.therapeuticAreaSwitchField}
+                  checked={state.therapeuticAreaFieldSwitch}
+                  disabled={state.url === "" && !state.businessUnitsField}
                   onChange={() =>
                     dispatch({
                       type: "toggleFieldSwitch",
@@ -286,248 +248,148 @@ export default function Form() {
                 />
               </FormControl>
             </Grid>
-
-            <TherapeuticAreasPanel
-              visible={state.therapeuticAreaFieldSwitch}
-              disabled={state.errors.length > 0 || state.url.length === 0}
-              options={state.therapeuticAreas}
-              switchHandler={() =>
-                dispatch({
-                  type: "toggleFieldSwitch",
-                  fieldType: "therapeuticArea",
-                  param: "utm_therapeutic_area",
-                })} 
-              inputHandler={e => 
-                dispatch({
-                  type: APPEND_PARAM,
-                  paramType: "therapeutic_area",
-                  param: state.therapeuticAreas.filter(
-                    (el) => el.label === e.target.value
-                  )[0].param,
-                })}
-              />
-
-            {state.therapeuticAreaSwitchField ? (
+            {state.therapeuticAreaFieldSwitch ? (
               <Grid item>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    disableClearable={true}
-                    disabled={state.errors.length > 0 || state.url.length === 0}
-                    options={state.therapeuticAreas}
-                    onSelectCapture={(e) =>
-                      dispatch({
-                        type: APPEND_PARAM,
-                        paramType: "therapeutic_area",
-                        param: state.therapeuticAreas.filter(
-                          (el) => el.label === e.target.value
-                        )[0].param,
-                      })
-                    }
-                    renderInput={(params) => {
-                      return (
-                        <TextField
-                          {...params}
-                          helperText='Start typing a Therapeutic Area for autofill.'
-                          label={"Therapeutic Areas"}
-                          InputProps={{
-                            ...params.InputProps,
-                            type: "search",
-                          }}
-                        />
-                      );
-                    }}
-                  />
-                </FormControl>
+                <Grow
+                  in={
+                    state.businessUnitsField &&
+                    state.businessUnitsField.length > 0
+                  }
+                  style={{ transformOrigin: "0 0 0" }}
+                  {...(state.businessUnitsField.length > 0
+                    ? { timeout: 1000 }
+                    : {})}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      freeSolo
+                      disableClearable={true}
+                      disabled={
+                        state.errors.length > 0 || state.url.length === 0
+                      }
+                      options={state.therapeuticAreas}
+                      value={state.therapeuticAreaField || ""}
+                      onSelect={(e) => {
+                        dispatch({
+                          type: "setField",
+                          fieldName: "therapeuticArea",
+                          value: e.target.value,
+                        });
+                        dispatch({
+                          type: APPEND_PARAM,
+                          paramType: "therapeutic_area",
+                          param:
+                            e.currentTarget.value !== undefined &&
+                            state.therapeuticAreas.filter(
+                              (el) => el.label === e.target.value
+                            )[0].param,
+                        });
+                      }}
+                      renderInput={(params) => {
+                        return (
+                          <TextField
+                            {...params}
+                            helperText='Start typing a Therapeutic Area for autofill.'
+                            label={"Therapeutic Areas"}
+                            InputProps={{
+                              ...params.InputProps,
+                              type: "search",
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                  </FormControl>
+                </Grow>
               </Grid>
             ) : null}
 
-            {/* Campaign Drivers */}
-            <Grid item>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}>
-                <FormControl required fullWidth>
-                  <InputLabel>Campaign Drivers</InputLabel>
-                  <Select
-                    disabled={state.disabledFields || state.errors.length > 0}
-                    name='campaignDrivers'
-                    label='Campaign Drivers'
-                    value={state.campaignDriversField}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "setField",
-                        fieldName: e.target.name,
-                        value: e.target.value,
-                      })
-                    }>
-                    {state.drivers.map((el) => (
-                      <MenuItem
-                        value={el.param}
-                        key={el.param}
-                        onClick={() => {
-                          dispatch({
-                            type: APPEND_PARAM,
-                            paramType: "medium",
-                            param: el.param,
-                          });
-                          dispatch({
-                            type: "selectDriver",
-                            fieldType: el.driver,
-                          });
-                        }}>
-                        {el.driver}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Grid>
-            {/* Driver Types dropdown */}
-            {state.currentSelectedDriver.length !== 0 && (
-              <Grid item>
-                <FormControl sx={{ m: 1, width: 300 }} fullWidth>
-                  <InputLabel>Driver Types</InputLabel>
-                  <Select
-                    multiple
-                    value={state.selectedDriverTypes}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "addDriverType",
-                        value:
-                          typeof e.target.value === "string"
-                            ? e.target.value.split(",")
-                            : e.target.value,
-                      })
-                    }
-                    input={<OutlinedInput label='Driver Types' />}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected.map((val) => (
-                          <Chip
-                            color={"secondary"}
-                            icon={socialIconHandler(val)}
-                            key={val}
-                            label={val}
+            {['Email'].map((comp, id) => (
+              <CampaignDrivers
+                type={'em'}
+                key={id}
+                dispatchHandler={dispatch}
+                formState={state}
+              />
+            ))}
+
+            <Box>
+              <Button
+                variant='text'
+                size='medium'
+                endIcon={
+                  <AddCircleOutlineTwoTone fontSize='small' color='primary' />
+                }>
+                Add Additional Driver?
+              </Button>
+            </Box>
+
+            <Divider>
+              <Typography variant='button' fontWeight={"bold"}>
+                Results
+              </Typography>
+            </Divider>
+
+            <UrlList businessUnitsFieldLength={state.generatedUrls.length}>
+              {state.generatedUrls &&
+                state.generatedUrls.map(({ href, id }) => (
+                  <Grow
+                    key={id}
+                    in={state.currentSelectedDriver.length !== 0}
+                    style={{ transformOrigin: "0 0 0" }}
+                    {...(state.currentSelectedDriver.length !== 0
+                      ? { timeout: 1000 }
+                      : {})}>
+                    <div name={id}>
+                      <FormGroup sx={{ alignItems: "center" }} row>
+                        <List>
+                          <TextField
+                            name='id'
+                            onChange={(e) =>
+                              e.currentTarget.value === ""
+                                ? dispatch({
+                                  type: "removeParam",
+                                  paramType: e.target.name,
+                                })
+                                : null
+                            }
+                            onBlur={(e) =>
+                              dispatch({
+                                type: "updateSelectedUrl",
+                                id,
+                                value: e.currentTarget.value,
+                                href,
+                              })
+                            }
+                            label='id'
                           />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}>
-                    {state.availableDriverTypes.map(({ label, param }) => (
-                      <MenuItem
-                        key={label}
-                        value={param}
-                        style={getStyles(
-                          label,
-                          state.availableDriverTypes,
-                          theme
-                        )}
-                        onClick={() =>
-                          dispatch({
-                            type: APPEND_PARAM,
-                            paramType: "driver_type",
-                            param: param,
-                          })
-                        }>
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
+                          <TextField label='date' />
+                          <TextField label='custom' />
+                        </List>
+                        <IconButton
+                          onClick={(e) =>
+                            dispatch({ type: "removeUrl", value: id })
+                          }>
+                          <RemoveCircle color='error' />
+                        </IconButton>
+                      </FormGroup>
+                    </div>
+                  </Grow>
+                ))}
+            </UrlList>
 
-            {/* Campaign Name */}
-            <Grid item>
-              <FormControl fullWidth>
-                <TextField
-                  name='campaign_name'
-                  label='Campaign Name'
-                  disabled={state.url.length === 0}
-                  onChange={(e) => {
-                    if (e.currentTarget.value === '') {
-                      dispatch({ type: 'removeParam', paramType: 'campaign' })
-                    } else {
-                      dispatch({
-                        type: APPEND_PARAM,
-                        paramType: "campaign",
-                        param: e.currentTarget.value
-                      })
-                    }
-                  }
-                  }
-                />
-              </FormControl>
-            </Grid>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+              <Typography>Create additional URL?</Typography>
+              <IconButton
+                onClick={() => dispatch({ type: "generateSingleUrl" })}>
+                <AddCircle color='primary' />
+              </IconButton>
+            </Box>
 
-            <Grid item>
-              <FormControl>
-                <FormControlLabel
-                  control={<Switch color='secondary' {...label} />}
-                  label='Shorten URLs with Bit.ly?'
-                  name='bitlyFieldSwitch'
-                  checked={state.bitlySwitch}
-                  onChange={() =>
-                    dispatch({
-                      type: "toggleFieldSwitch",
-                      fieldType: "bitly",
-                    })
-                  }
-                />
-              </FormControl>
-            </Grid>
-
-            {state.bitlyFieldSwitch ?
-              <Box
-                sx={{
-                  border: "dashed 1px lightgrey",
-                  borderRadius: "5pt",
-                  padding: "1rem",
-                }}>
-                <Grid
-                  container
-                  direction='column'
-                  justifyContent='center'
-                  alignItems='stretch'
-                  rowGap={2}>
-                  <TextField
-                    label='Bit.ly Access Token'
-                    value={state.bitlyAccessTokenField}
-                    fullWidth
-                    multiline
-                    onChange={(e) =>
-                      dispatch({
-                        type: "setBitlyAccessToken",
-                        value: e.currentTarget.value,
-                      })
-                    }
-                  />
-                  <Button
-                    color='secondary'
-                    disabled={state.bitlyAccessTokenField === ""}
-                    fullWidth
-                    onClick={() =>
-                      dispatch({
-                        type: "setBitlyURLs",
-                        value: state.urlsByDriverType.map((url) =>
-                          shortenURL(
-                            encodeURI(url.fullUrl),
-                            state.bitlyAccessTokenField
-                          )
-                        ),
-                      })
-                    }
-                    variant='contained'>
-                    Shorten URLs (with Bit.ly)
-                  </Button>
-                </Grid>
-              </Box> : null}
-
-            <Typography variant="h6">Results:</Typography>
             {state.urlsByDriverType.length > 0
               ? state.urlsByDriverType.map((el) => {
                 const elUrl = new URL(el.fullUrl);
@@ -586,7 +448,19 @@ export default function Form() {
                 );
               })
               : null}
-            <Button onClick={() => dispatch({ type: 'renderUrls' })} variant='contained'>Generate URLs</Button>
+            <ButtonGroup fullWidth>
+              <Button
+                onClick={() => dispatch({ type: "renderUrls" })}
+                variant='contained'>
+                Generate URLs
+              </Button>
+              <Button
+                color='secondary'
+                onClick={() => dispatch({ type: "renderUrls" })}
+                variant='contained'>
+                Export URLs to CSV
+              </Button>
+            </ButtonGroup>
             <div
               style={{
                 display: "flex",
