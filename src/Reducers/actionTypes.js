@@ -1,2 +1,9 @@
-export const APPEND_PARAM = "APPEND_PARAM";
+export const SET_ERROR = "SET_ERROR"
+export const SET_MESSAGE = "SET_MESSAGE"
+
+export const SET_URL = "SET_URL"
+
+export const APPEND_PARAM = "APPEND_PARAM"
+export const REMOVE_PARAM = "REMOVE_PARAM"
+
 export const SET_AVAILABLE_DRIVER_TYPES = "SET_AVAILABLE_DRIVER_TYPES"

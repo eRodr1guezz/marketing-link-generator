@@ -6,15 +6,12 @@ import {
 } from "../internal";
 import { validateUrl } from "../Utils";
 import { v4 as uuidv4 } from "uuid";
-import { createElement } from "react";
 
 const initialState = {
   messages: "",
   errors: "",
   url: "",
-  isURLInvalid: false,
   disabledFields: true,
-  drivers,
   businessUnits,
   businessUnitSubCategories,
   therapeuticAreas,
@@ -23,13 +20,9 @@ const initialState = {
   currentSelectedDriver: "",
   urlCollection: [],
   generatedUrls: [],
-  driversArray: [], //need a better name here for this shit
-  selectedTherapeuticAreaType: "",
-  currentSelectedtherapeuticAreas: [], //this should be a string
   selectedDriverTypes: [], //this is the array of selected driver types - the population of this array should render additional URLs (1 per driver type))
   driverTypesField: [], //this is the form state value (what is shown as the current value in the chip box)
   availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
-  urlsByDriverType: [],
   therapeuticAreaFieldSwitch: false,
   //this field grouping will enable custom entries to be added (ie, details for campaigns such as the type of social post (poll, video, text, img etc.))
   bitlyFieldSwitch: false,
@@ -106,7 +99,7 @@ const createdDriversFromUI = [{ //comes from the UI form
 //i need a url that contains the root_campaign_url + driver=social + type=twi + id=twi_ad_1 + post_type=poll
 
 export function urlBuildReducer(state, action) {
-  if (action.type === "removeParam") {
+  if (action.type === "REMOVE_PARAM") {
     const urlCopy = new URL(state.url);
 
     if (!urlCopy.searchParams.get("utm_" + action.paramType)) {
@@ -196,48 +189,6 @@ export function urlBuildReducer(state, action) {
         [fieldName + "Field"]: value,
       };
     }
-
-  } else if (action.type === "selectDriver") {
-    const { fieldType, fieldId } = action;
-
-    if (!state.url) {
-      return {
-        ...state,
-        errors:
-          "URL cannot be empty when selecting a campaign driver! Please provide a URL and try again.",
-      };
-    } else {
-      const urlCopy = new URL(state.url);
-      urlCopy.searchParams.delete("utm_driver_type"); //when we select a new driver, we delete any old associated types from the url
-
-      return {
-        ...state,
-        url: urlCopy.href,
-        selectedDriverTypes: [],
-        urlsByDriverType: [],
-        currentSelectedDriver: state.drivers.filter(
-          (d) => d.driver === fieldType
-        )[0].driver,
-        availableDriverTypes: state.drivers.filter(
-          (d) => d.driver === fieldType
-        )[0].type, //array of the drivers types
-      };
-    }
-  } else if (action.type === "getEntity") {
-    const { param, entity } = action;
-
-    const url = new URL(state.url);
-    url.searchParams.delete(`utm_${entity}`); //when we select a new entity, we delete any old associated types from the url
-
-    const data = state[entity].filter((el) => el.param === param);
-
-    return {
-      ...state,
-      url: url.href, //update the url
-      [`currentSelected${entity}`]: data,
-      // driverTypesVisibilty: data[0].type.length > 0 && data[0].type !== undefined,
-      // selectedTherapeuticAreaType: data[0].type
-    };
   } else if (action.type === "copyUrl") {
     console.log(action.value);
     if (state.url === "") {
@@ -252,7 +203,7 @@ export function urlBuildReducer(state, action) {
       ...state,
       messages: "Successfully copied the URL to your clipboard!",
     };
-  } else if (action.type === "error") {
+  } else if (action.type === "SET_ERROR") {
     return {
       ...state,
       errors: action.value,
@@ -309,26 +260,6 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       bitlyAccessTokenField: action.value,
-    };
-  } else if (action.type === "addDriverType") {
-    return {
-      ...state,
-      selectedDriverTypes: action.value,
-    };
-  } else if (action.type === "renderUrlsByDriverType") {
-    const urlsByDriverTypes = state.selectedDriverTypes.map((param) => {
-      let url = new URL(state.url);
-
-      if (url.searchParams.get("utm_driver_type")) {
-        url.searchParams.delete("utm_driver_type");
-        url.searchParams.append("utm_driver_type", param);
-      }
-
-      return { fullUrl: url.href, bitlyUrl: "" };
-    });
-    return {
-      ...state,
-      urlsByDriverType: urlsByDriverTypes,
     };
   } else if (action.type === "SET_AVAILABLE_DRIVER_TYPES") {
     return {

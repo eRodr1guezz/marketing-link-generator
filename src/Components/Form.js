@@ -28,7 +28,6 @@ import {
   Grow,
   ButtonGroup,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import {
   CheckCircle,
   ContentCopy,
@@ -46,11 +45,10 @@ import {
 } from "../Utils";
 import { businessUnits, businessUnitSubCategories } from "../internal";
 import { UrlList } from "./UrlList";
-import { APPEND_PARAM, SET_AVAILABLE_DRIVER_TYPES } from "../Reducers/actionTypes";
+import { APPEND_PARAM, SET_AVAILABLE_DRIVER_TYPES, SET_URL } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 
 export default function Form() {
-  const theme = useTheme();
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
   const fieldRef = useRef(null);
@@ -115,7 +113,7 @@ export default function Form() {
                       : null
                   }
                   onChange={(e) =>
-                    dispatch({ type: "setUrl", value: e.currentTarget.value })
+                    dispatch({ type: SET_URL, value: e.currentTarget.value })
                   }
                   InputProps={{
                     endAdornment:
