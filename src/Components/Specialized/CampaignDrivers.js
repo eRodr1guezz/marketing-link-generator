@@ -10,38 +10,25 @@ import {
   Chip,
   useTheme,
   Button,
-  Link,
 } from "@mui/material";
-import { useEffect, useState, useRef } from 'react'
-import { APPEND_PARAM } from "../../Reducers/actionTypes";
+import { useEffect, useState } from 'react'
+import { APPEND_PARAM, REMOVE_URL, REMOVE_ALL_DRIVERS_BY_TYPE, ADD_URL } from "../../Reducers/actionTypes";
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
-import { v4 as uuidv4 } from 'uuid'
 import { InstanceUrl } from "../../Reducers/urlBuildReducer";
-import { DeleteOutline } from "@mui/icons-material";
+import { drivers } from "../../internal";
+import { DeleteOutlined } from "@mui/icons-material";
+import { v4 as uuidv4 } from 'uuid'
 
 export function CampaignDrivers({ dispatchHandler, formState, type }) {
   const [fieldId, setFieldId] = useState()
-  const [driverList, setDriverList] = useState(formState.drivers)
   const [driverTypes, setDriverTypes] = useState([])
   const [selectedTypes, setSelectedTypes] = useState([])
   const [driver, setDriver] = useState()
   const theme = useTheme();
 
-  useEffect(() => {
-    const componentId = uuidv4()
-    setFieldId(componentId)
-  }, [])
-
-  useEffect(() => {
-    // dispatchHandler({ type: 'addDrivers', driverType: type })
-    return () => {
-      dispatchHandler({ type: 'removerDrivers', driverType: type })
-    }
-  }, [])
-
   return (
     <>
-      <Grid spacing={2} item>
+      <Grid item>
         <Box
           sx={{
             display: "flex",
@@ -51,35 +38,29 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
           <FormControl required fullWidth>
             <InputLabel>Campaign Drivers</InputLabel>
             <Select
-              disabled={formState.errors.length > 0}
+              disabled={formState.url === ''}
               name={`campaignDriver`}
               label='Campaign Drivers'
-              value={driver}
+              value={driver || ''}
               onChange={(e) => {
                 setDriver(e.target.value)
                 if (selectedTypes.length > 0) {
                   setSelectedTypes([])
-                  dispatchHandler({ type: 'removeUrls', driverType: type })
+                  dispatchHandler({ type: REMOVE_ALL_DRIVERS_BY_TYPE, driverType: type })
                 }
-                setDriverTypes(driverList.filter(d => d.param === e.target.value)[0].type)
+                setDriverTypes(drivers.filter(d => d.param === e.target.value)[0].type)
               }}>
-              {driverList.map((el) => (
+              {drivers.map((el) => (
                 <MenuItem
                   value={el.param}
                   key={el.param}
                   onClick={(e) => {
                     setDriverTypes(e.target.value)
-                    //   dispatchHandler({
-                    //     type: APPEND_PARAM,
-                    //     paramType: "medium",
-                    //     param: el.param,
-                    //   });
-                    //   dispatchHandler({
-                    //     type: "selectDriver",
-                    //     fieldType: el.driver,
-                    //     fieldId: fieldId
-                    //   });
-                    // }}>
+                      dispatchHandler({
+                        type: APPEND_PARAM,
+                        paramType: "medium",
+                        param: el.param,
+                      });
                   }}>
                   {el.driver}
                 </MenuItem>
@@ -103,9 +84,9 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                   setSelectedTypes(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)
                 }}
                 input={<OutlinedInput label='Driver Types' />}
-                renderValue={(selected) => (
+                renderValue={() => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((val) => (
+                    {selectedTypes.map((val) => (
                       <Grow
                         key={val}
                         in={driver.length !== 0}
@@ -114,8 +95,17 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                           ? { timeout: 500 }
                           : {})}>
                         <Chip
-                          onDelete={(e) => dispatchHandler({ type: 'removeUrl', id: val })}
-                          deleteIcon={<DeleteOutline />}
+                          deleteIcon={
+                            <DeleteOutlined 
+                              onMouseDown={e => e.stopPropagation()} 
+                            />
+                          }
+                          clickable
+                          onDelete={e => { 
+                            let filtered = selectedTypes.filter(el => el !== val)
+                            setSelectedTypes(filtered)
+                            dispatchHandler({ type: REMOVE_URL, id: fieldId})
+                          }}
                           color={"secondary"}
                           icon={socialIconHandler(val)}
                           label={val}
@@ -125,26 +115,28 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                   </Box>
                 )}
                 MenuProps={MenuProps}>
-                {driverTypes.map(({ label, param }) => (
-                  <MenuItem
-                    id={uuidv4()}
-                    key={label}
-                    value={param}
-                    style={getStyles(label, driverTypes, theme)}
-                    onClick={(e) => {
-                      let url = new InstanceUrl(formState.url, type)
-                      url.searchParams.append('utm_driver_type', param)
+                {driverTypes.map(({ label, param }) => {
+                  return (
+                    <MenuItem
+                      key={label}
+                      value={param}
+                      style={getStyles(label, driverTypes, theme)}
+                      onClick={(e) => {
+                        let uniqueId = uuidv4()
+                        let url = new InstanceUrl(formState.url, uniqueId)
+                        url.searchParams.append('utm_driver_type', param)
 
-                      dispatchHandler({ type: 'addUrl', value: url })
-                    }}>
+                        dispatchHandler({ type: ADD_URL, value: url })
+                      }}>
                     {label}
-                  </MenuItem>
-                ))}
+                    </MenuItem>
+                  )
+                })}
               </Select>
               <Button
                 variant='contained'
                 onClick={(e) => {
-                  console.log()
+                  console.log(e)
                   // dispatchHandler({ type: 'removeUrl', id: e.id })
                 }}
                 color='error'>Remove Driver?</Button>

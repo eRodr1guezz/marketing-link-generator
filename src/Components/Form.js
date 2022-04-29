@@ -23,8 +23,6 @@ import {
   InputBase,
   Divider,
   InputAdornment,
-  FormGroup,
-  List,
   Grow,
   ButtonGroup,
 } from "@mui/material";
@@ -33,8 +31,6 @@ import {
   ContentCopy,
   HelpOutlineOutlined,
   LinkRounded,
-  AddCircle,
-  RemoveCircle,
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
 import { BitlyIcon } from "../bitlyIcon";
@@ -44,9 +40,9 @@ import {
   validateUrl,
 } from "../Utils";
 import { businessUnits, businessUnitSubCategories } from "../internal";
-import { UrlList } from "./UrlList";
-import { APPEND_PARAM, SET_AVAILABLE_DRIVER_TYPES, SET_URL } from "../Reducers/actionTypes";
+import { APPEND_PARAM, SET_URL } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
+import { v4 as uuidv4 } from 'uuid'
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
@@ -56,9 +52,9 @@ export default function Form() {
   const label = { inputProps: { "aria-label": "Therapeutic Areas?" } };
 
   useEffect(() => {
-    if (state.errors.length > 0) {
+    if (state.errors !== '') {
       openSnackBar(state.errors, "error");
-    } else if (state.messages.length > 0) {
+    } else if (state.messages !== '') {
       openSnackBar(state.messages, "success");
     }
     return () => {
@@ -66,16 +62,6 @@ export default function Form() {
       dispatch({ type: "message", value: "" });
     };
   }, [state.errors, state.messages]);
-
-  useEffect(() => {
-    state.currentSelectedDriver.length > 0 && //if there is a driver currently selected...
-      dispatch({
-        type: SET_AVAILABLE_DRIVER_TYPES,
-        value: state.drivers.filter(
-          (d) => d.driver === state.currentSelectedDriver
-        ),
-      });
-  }, [state.currentSelectedDriver, state.drivers]);
 
   return (
     <>
@@ -135,7 +121,7 @@ export default function Form() {
                   name='campaign_name'
                   label='Campaign Name'
                   value={state.campaign_nameField || ""}
-                  disabled={state.url.length === 0}
+                  disabled={state.url === ''}
                   helperText='We suggest using the full WorkFront project title, ie. 333713.01_LBU_MEDSSummer_Hybrid_07-22_CME'
                   onChange={(e) => {
                     dispatch({
@@ -158,7 +144,7 @@ export default function Form() {
               <FormControl fullWidth required>
                 <InputLabel>Business Unit</InputLabel>
                 <Select
-                  disabled={state.url.length === 0}
+                  disabled={state.url === ''}
                   label='Business Units'
                   name='businessUnits'
                   value={state.businessUnitsField || ""}
@@ -261,9 +247,7 @@ export default function Form() {
                     <Autocomplete
                       freeSolo
                       disableClearable={true}
-                      disabled={
-                        state.errors.length > 0 || state.url.length === 0
-                      }
+                      disabled={state.url === ''}
                       options={state.therapeuticAreas}
                       value={state.therapeuticAreaField || ""}
                       onSelect={(e) => {
@@ -327,7 +311,7 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            <UrlList businessUnitsFieldLength={state.generatedUrls.length}>
+            {/* <UrlList businessUnitsFieldLength={state.generatedUrls.length}>
               {state.generatedUrls &&
                 state.generatedUrls.map(({ href, id }) => (
                   <Grow
@@ -373,9 +357,9 @@ export default function Form() {
                     </div>
                   </Grow>
                 ))}
-            </UrlList>
+            </UrlList> */}
 
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -386,9 +370,9 @@ export default function Form() {
                 onClick={() => dispatch({ type: "generateSingleUrl" })}>
                 <AddCircle color='primary' />
               </IconButton>
-            </Box>
+            </Box> */}
 
-            {state.urlsByDriverType.length > 0
+            {state.urlsByDriverType && state.urlsByDriverType.length > 0
               ? state.urlsByDriverType.map((el) => {
                 const elUrl = new URL(el.fullUrl);
                 const socialCode = elUrl.searchParams.get("utm_driver_type");
@@ -446,6 +430,8 @@ export default function Form() {
                 );
               })
               : null}
+
+
             <ButtonGroup fullWidth>
               <Button
                 onClick={() => dispatch({ type: "renderUrls" })}

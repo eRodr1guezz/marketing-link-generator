@@ -20,8 +20,7 @@ const initialState = {
   currentSelectedDriver: "",
   urlCollection: [],
   generatedUrls: [],
-  selectedDriverTypes: [], //this is the array of selected driver types - the population of this array should render additional URLs (1 per driver type))
-  driverTypesField: [], //this is the form state value (what is shown as the current value in the chip box)
+  driverTypeUrls: [],
   availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
   therapeuticAreaFieldSwitch: false,
   //this field grouping will enable custom entries to be added (ie, details for campaigns such as the type of social post (poll, video, text, img etc.))
@@ -160,7 +159,7 @@ export function urlBuildReducer(state, action) {
         url: urlCopy.href,
       };
     }
-  } else if (action.type === "setUrl") {
+  } else if (action.type === "SET_URL") {
     if (validateUrl(action.value)) {
       return {
         ...state,
@@ -266,28 +265,6 @@ export function urlBuildReducer(state, action) {
       ...state,
       availableDriverTypes: action.value[0].type,
     };
-  } else if (action.type === "renderUrls") {
-    //set a count equal to the amount of selected driver types
-    if (state.selectedDriverTypes.length > 0) {
-      if (state.bitlyFieldSwitch) {
-        let urlCollection = state.selectedDriverTypes.map((type) => {
-          let rootUrlInstance = new URL(state.url);
-
-          rootUrlInstance.searchParams.append("utm_driver_type", type);
-
-          return rootUrlInstance;
-        });
-        return {
-          ...state,
-          urlCollection,
-        };
-      } else {
-        return {
-          ...state,
-          errors: "nothing happened",
-        };
-      }
-    }
   } else if (action.type === "generateSingleUrl") {
     const url = new InstanceUrl(state.url, uuidv4());
     const prev = state.generatedUrls;
@@ -295,13 +272,6 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       generatedUrls: prev.concat(url),
-    };
-  } else if (action.type === "removeUrl") {
-    return {
-      ...state,
-      generatedUrls: state.generatedUrls.filter(
-        ({ id }) => id !== action.value
-      ),
     };
   } else if (action.type === "updateSelectedUrl") {
     const updatedUrl = new InstanceUrl(action.href, action.id);
@@ -321,11 +291,10 @@ export function urlBuildReducer(state, action) {
       ...state,
       [fieldId + 'driverField']: values
     }
-  } else if (action.type === 'addUrl') {
-    const { value } = action
+  } else if (action.type === 'ADD_URL') {
     let nextState = state.urlCollection
 
-    nextState.push(value)
+    nextState.push(action.value)
 
     return {
       ...state,
@@ -349,11 +318,21 @@ export function urlBuildReducer(state, action) {
         [driverType]: drivers
       }
     }
-  } else if (action.type === 'removeDrivers') {
+  } else if (action.type === 'REMOVE_ALL_DRIVERS_BY_TYPE') {
     const { driverType } = action
+    const collection = state.urlCollection
+    
     return {
       ...state,
-      [driverType]: []
+      urlCollection: collection.filter(url => url.type !== driverType)
+    }
+  } else if(action.type === 'REMOVE_URL') {
+    const { id } = action
+    console.log(id)
+
+    return {
+      ...state,
+      urlCollection: state.urlCollection.filter(url => url.id !== id)
     }
   }
 }
