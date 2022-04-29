@@ -56,11 +56,11 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                   key={el.param}
                   onClick={(e) => {
                     setDriverTypes(e.target.value)
-                      dispatchHandler({
-                        type: APPEND_PARAM,
-                        paramType: "medium",
-                        param: el.param,
-                      });
+                    dispatchHandler({
+                      type: APPEND_PARAM,
+                      paramType: "medium",
+                      param: el.param,
+                    });
                   }}>
                   {el.driver}
                 </MenuItem>
@@ -96,15 +96,15 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                           : {})}>
                         <Chip
                           deleteIcon={
-                            <DeleteOutlined 
-                              onMouseDown={e => e.stopPropagation()} 
+                            <DeleteOutlined
+                              onMouseDown={e => e.stopPropagation()}
                             />
                           }
                           clickable
-                          onDelete={e => { 
+                          onDelete={e => {
                             let filtered = selectedTypes.filter(el => el !== val)
                             setSelectedTypes(filtered)
-                            dispatchHandler({ type: REMOVE_URL, id: fieldId})
+                            dispatchHandler({ type: REMOVE_URL, driverType: val })
                           }}
                           color={"secondary"}
                           icon={socialIconHandler(val)}
@@ -128,7 +128,7 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
 
                         dispatchHandler({ type: ADD_URL, value: url })
                       }}>
-                    {label}
+                      {label}
                     </MenuItem>
                   )
                 })}

@@ -321,18 +321,17 @@ export function urlBuildReducer(state, action) {
   } else if (action.type === 'REMOVE_ALL_DRIVERS_BY_TYPE') {
     const { driverType } = action
     const collection = state.urlCollection
-    
+
     return {
       ...state,
       urlCollection: collection.filter(url => url.type !== driverType)
     }
-  } else if(action.type === 'REMOVE_URL') {
-    const { id } = action
-    console.log(id)
+  } else if (action.type === 'REMOVE_URL') {
+    const { driverType } = action
 
     return {
       ...state,
-      urlCollection: state.urlCollection.filter(url => url.id !== id)
+      urlCollection: state.urlCollection.filter(url => !url.href.includes(driverType))
     }
   }
 }

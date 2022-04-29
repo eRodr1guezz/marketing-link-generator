@@ -42,7 +42,6 @@ import {
 import { businessUnits, businessUnitSubCategories } from "../internal";
 import { APPEND_PARAM, SET_URL } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
-import { v4 as uuidv4 } from 'uuid'
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
