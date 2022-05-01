@@ -4,6 +4,10 @@ import {
 import { validateUrl } from "../Utils";
 import { v4 as uuidv4 } from "uuid";
 
+//TODO: continue to transfer all component level state OUT of the global and into respective components
+//TODO: convert all action types to SCREAMING_SNAKE_CASE
+//TODO: decide if we need to keep or trash the classes
+
 const initialState = {
   messages: "",
   errors: "",
@@ -255,10 +259,10 @@ export function urlBuildReducer(state, action) {
     }
   } else if (action.type === 'ADD_URL') {
     let nextState = state.urlCollection
-
+    //adding a url should check for dupes BEFORE creation!!
     state.urlCollection.forEach(url => {
       if (url.href === action.value.href) {
-        //this is where you left off
+        //this is where you left off *****
       }
     })
 
@@ -269,11 +273,13 @@ export function urlBuildReducer(state, action) {
       urlCollection: nextState
     }
   } else if (action.type === 'removeUrls') {
+    //this is technically remove ALL URLS
     return {
       ...state,
       urlCollection: []
     }
   } else if (action.type === 'addDrivers') {
+    //this is adding drivers by the driver type but we dont need to do that we just need to create a general driver [] and add to that
     const { driverType } = action
     if (!drivers) {
       return
@@ -296,7 +302,7 @@ export function urlBuildReducer(state, action) {
     }
   } else if (action.type === 'REMOVE_URL') {
     const { driverType } = action
-
+    //this is removing urls by DRIVER TYPE - this may not always be the case? need to dive in a bit more here.
     return {
       ...state,
       urlCollection: state.urlCollection.filter(url => !url.href.includes(driverType))
