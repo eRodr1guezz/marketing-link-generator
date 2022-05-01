@@ -4,15 +4,9 @@ import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
 import {
   TextField,
-  Autocomplete,
   FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
   Link,
   Button,
-  Switch,
-  FormControlLabel,
   Box,
   Container,
   Grid,
@@ -22,12 +16,9 @@ import {
   IconButton,
   InputBase,
   Divider,
-  InputAdornment,
-  Grow,
   ButtonGroup,
 } from "@mui/material";
 import {
-  CheckCircle,
   ContentCopy,
   HelpOutlineOutlined,
   LinkRounded,
@@ -37,18 +28,17 @@ import { BitlyIcon } from "../bitlyIcon";
 import useSnackbar from "../Hooks/useSnackbar";
 import {
   socialIconHandler,
-  validateUrl,
 } from "../Utils";
-import { businessUnits, businessUnitSubCategories } from "../internal";
-import { APPEND_PARAM, SET_URL } from "../Reducers/actionTypes";
+import { APPEND_PARAM, SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
+import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
+import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect"
+import { UrlInput } from "./Specialized/UrlInput";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
   const fieldRef = useRef(null);
-
-  const label = { inputProps: { "aria-label": "Therapeutic Areas?" } };
 
   useEffect(() => {
     if (state.errors !== '') {
@@ -57,8 +47,8 @@ export default function Form() {
       openSnackBar(state.messages, "success");
     }
     return () => {
-      dispatch({ type: "error", value: "" });
-      dispatch({ type: "message", value: "" });
+      dispatch({ type: SET_ERROR, value: "" });
+      dispatch({ type: SET_MESSAGE, value: "" });
     };
   }, [state.errors, state.messages]);
 
@@ -86,32 +76,7 @@ export default function Form() {
             </Typography>
 
             {/* URL Input */}
-            <Grid item>
-              <FormControl required fullWidth>
-                <TextField
-                  name='url'
-                  label='URL'
-                  error={!validateUrl(state.url) && state.url !== ""}
-                  helperText={
-                    !validateUrl(state.url) && state.url !== ""
-                      ? "An invalid URL was provided - please check the input and try again."
-                      : null
-                  }
-                  onChange={(e) =>
-                    dispatch({ type: SET_URL, value: e.currentTarget.value })
-                  }
-                  InputProps={{
-                    endAdornment:
-                      validateUrl(state.url) && !state.url !== "" ? (
-                        <InputAdornment position='end'>
-                          {" "}
-                          <CheckCircle color='success' />{" "}
-                        </InputAdornment>
-                      ) : null,
-                  }}
-                />
-              </FormControl>
-            </Grid>
+            <UrlInput dispatchHandler={dispatch} formState={state} />
 
             {/* Campaign Name */}
             <Grid item>
@@ -138,151 +103,9 @@ export default function Form() {
               </FormControl>
             </Grid>
 
-            {/* Business Units */}
-            <Grid item>
-              <FormControl fullWidth required>
-                <InputLabel>Business Unit</InputLabel>
-                <Select
-                  disabled={state.url === ''}
-                  label='Business Units'
-                  name='businessUnits'
-                  value={state.businessUnitsField || ""}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "setField",
-                      fieldName: e.target.name,
-                      value: e.target.value,
-                    })
-                  }>
-                  {businessUnits.map(({ label, param }) => (
-                    <MenuItem
-                      key={param}
-                      value={param}
-                      onClick={() =>
-                        dispatch({
-                          type: APPEND_PARAM,
-                          paramType: "source",
-                          param: param,
-                        })
-                      }>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            <BusinessUnitsSelect formState={state} dispatchHandler={dispatch} />
 
-            {state.businessUnitsField && state.businessUnitsField.length > 0 && (
-              <Grow
-                in={state.businessUnitsField.length > 0}
-                style={{ transformOrigin: "0 0 0" }}
-                {...(state.businessUnitsField.length > 0
-                  ? { timeout: 1000 }
-                  : {})}>
-                <FormControl required fullWidth>
-                  <InputLabel>Subcategory</InputLabel>
-                  <Select
-                    disabled={state.url.length === 0}
-                    label='Subcategory'
-                    name='businessUnitSubCategories'
-                    value={state.businessUnitSubCategoriesField || ""}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "setField",
-                        fieldName: e.target.name,
-                        value: e.target.value,
-                      })
-                    }>
-                    {businessUnitSubCategories.map(({ label, param }) => (
-                      <MenuItem
-                        key={param}
-                        value={param}
-                        onClick={() =>
-                          dispatch({
-                            type: APPEND_PARAM,
-                            paramType: "source_type",
-                            param: param,
-                          })
-                        }>
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grow>
-            )}
-
-            {/* Optional Therapeutic Areas */}
-            <Grid item>
-              <FormControl>
-                <FormControlLabel
-                  control={<Switch color='secondary' {...label} />}
-                  label='Therapeutic Areas?'
-                  name='therapeuticAreaSwitch'
-                  checked={state.therapeuticAreaFieldSwitch}
-                  disabled={state.url === "" && !state.businessUnitsField}
-                  onChange={() =>
-                    dispatch({
-                      type: "toggleFieldSwitch",
-                      fieldType: "therapeuticArea",
-                      param: "utm_therapeutic_area",
-                    })
-                  }
-                />
-              </FormControl>
-            </Grid>
-            {state.therapeuticAreaFieldSwitch ? (
-              <Grid item>
-                <Grow
-                  in={
-                    state.businessUnitsField &&
-                    state.businessUnitsField.length > 0
-                  }
-                  style={{ transformOrigin: "0 0 0" }}
-                  {...(state.businessUnitsField.length > 0
-                    ? { timeout: 1000 }
-                    : {})}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      freeSolo
-                      disableClearable={true}
-                      disabled={state.url === ''}
-                      options={state.therapeuticAreas}
-                      value={state.therapeuticAreaField || ""}
-                      onSelect={(e) => {
-                        dispatch({
-                          type: "setField",
-                          fieldName: "therapeuticArea",
-                          value: e.target.value,
-                        });
-                        dispatch({
-                          type: APPEND_PARAM,
-                          paramType: "therapeutic_area",
-                          param:
-                            e.currentTarget.value !== undefined &&
-                            state.therapeuticAreas.filter(
-                              (el) => el.label === e.target.value
-                            )[0].param,
-                        });
-                      }}
-                      renderInput={(params) => {
-                        return (
-                          <TextField
-                            {...params}
-                            helperText='Start typing a Therapeutic Area for autofill.'
-                            label={"Therapeutic Areas"}
-                            InputProps={{
-                              ...params.InputProps,
-                              type: "search",
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                  </FormControl>
-                </Grow>
-              </Grid>
-            ) : null}
+            <TherapeuticAreasSelect dispatchHandler={dispatch} formState={state} />
 
             {['Email'].map((comp, id) => (
               <CampaignDrivers

@@ -11,7 +11,7 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { APPEND_PARAM, REMOVE_URL, REMOVE_ALL_DRIVERS_BY_TYPE, ADD_URL } from "../../Reducers/actionTypes";
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
 import { InstanceUrl } from "../../Reducers/urlBuildReducer";
@@ -20,7 +20,6 @@ import { DeleteOutlined } from "@mui/icons-material";
 import { v4 as uuidv4 } from 'uuid'
 
 export function CampaignDrivers({ dispatchHandler, formState, type }) {
-  const [fieldId, setFieldId] = useState()
   const [driverTypes, setDriverTypes] = useState([])
   const [selectedTypes, setSelectedTypes] = useState([])
   const [driver, setDriver] = useState()
@@ -55,12 +54,16 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                   value={el.param}
                   key={el.param}
                   onClick={(e) => {
-                    setDriverTypes(e.target.value)
-                    dispatchHandler({
-                      type: APPEND_PARAM,
-                      paramType: "medium",
-                      param: el.param,
-                    });
+                    if (driverTypes === e.target.value) {
+                      setDriverTypes(e.target.value)
+                    } else {
+                      setDriverTypes(e.target.value)
+                      dispatchHandler({
+                        type: APPEND_PARAM,
+                        paramType: "medium",
+                        param: el.param,
+                      });
+                    }
                   }}>
                   {el.driver}
                 </MenuItem>
@@ -69,11 +72,11 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
           </FormControl>
         </Box>
       </Grid>
-      {driverTypes.length !== 0 && (
+      {driverTypes.length > 0 && (
         <Grow
-          in={driverTypes.length !== 0}
+          in={driverTypes.length > 0}
           style={{ transformOrigin: "0 0 0" }}
-          {...(driverTypes.length !== 0 ? { timeout: 1000 } : {})}>
+          {...(driverTypes.length > 0 ? { timeout: 1000 } : {})}>
           <Grid item>
             <FormControl sx={{ m: 1, width: 300 }} fullWidth>
               <InputLabel>Driver Types</InputLabel>
@@ -121,12 +124,21 @@ export function CampaignDrivers({ dispatchHandler, formState, type }) {
                       key={label}
                       value={param}
                       style={getStyles(label, driverTypes, theme)}
-                      onClick={(e) => {
-                        let uniqueId = uuidv4()
-                        let url = new InstanceUrl(formState.url, uniqueId)
-                        url.searchParams.append('utm_driver_type', param)
+                      onClick={() => {
+                        if (formState.urlCollection.length > 0) {
+                          formState.urlCollection.forEach(u => {
+                            if (u.searchParams.get('utm_driver_type') === param) {
+                              return dispatchHandler({ type: 'SET_ERROR', value: 'That URL already exists!' })
+                            }
+                          })
+                        } else {
+                          let uniqueId = uuidv4()
 
-                        dispatchHandler({ type: ADD_URL, value: url })
+                          let url = new InstanceUrl(formState.url, uniqueId)
+                          url.searchParams.append('utm_driver_type', param)
+
+                          dispatchHandler({ type: ADD_URL, value: url })
+                        }
                       }}>
                       {label}
                     </MenuItem>

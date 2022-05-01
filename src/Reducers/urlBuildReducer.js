@@ -1,8 +1,5 @@
 import {
   drivers,
-  businessUnitSubCategories,
-  businessUnits,
-  therapeuticAreas,
 } from "../internal";
 import { validateUrl } from "../Utils";
 import { v4 as uuidv4 } from "uuid";
@@ -12,9 +9,6 @@ const initialState = {
   errors: "",
   url: "",
   disabledFields: true,
-  businessUnits,
-  businessUnitSubCategories,
-  therapeuticAreas,
   bitlyUrlField: [],
   bitlyAccessTokenField: "",
   currentSelectedDriver: "",
@@ -22,8 +16,6 @@ const initialState = {
   generatedUrls: [],
   driverTypeUrls: [],
   availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
-  therapeuticAreaFieldSwitch: false,
-  //this field grouping will enable custom entries to be added (ie, details for campaigns such as the type of social post (poll, video, text, img etc.))
   bitlyFieldSwitch: false,
 };
 
@@ -118,7 +110,7 @@ export function urlBuildReducer(state, action) {
     const { paramType, param } = action;
     const urlCopy = new URL(state.url);
 
-    if (state.url.length === 0) {
+    if (state.url === '') {
       return {
         ...state,
         errors:
@@ -160,19 +152,9 @@ export function urlBuildReducer(state, action) {
       };
     }
   } else if (action.type === "SET_URL") {
-    if (validateUrl(action.value)) {
-      return {
-        ...state,
-        disabledFields: false,
-        url: action.value,
-        errors: "",
-      };
-    } else {
-      return {
-        ...state,
-        url: action.value,
-        disabledFields: true,
-      };
+    return {
+      ...state,
+      url: action.value
     }
   } else if (action.type === "setField") {
     const { fieldName, value, fieldId } = action;
@@ -207,26 +189,6 @@ export function urlBuildReducer(state, action) {
       ...state,
       errors: action.value,
     };
-  } else if (action.type === "toggleFieldSwitch") {
-    const { fieldType, param } = action;
-
-    let url = new URL(state.url);
-
-    url.searchParams.delete(param);
-
-    if (state[`${fieldType}FieldSwitch`] === false) {
-      return {
-        ...state,
-        url: url.href,
-        [fieldType + "FieldSwitch"]: true,
-      };
-    } else {
-      return {
-        ...state,
-        url: url.href,
-        [fieldType + "FieldSwitch"]: false,
-      };
-    }
   } else if (action.type === "clearField") {
     let url = new URL(state.url);
 
@@ -237,7 +199,7 @@ export function urlBuildReducer(state, action) {
       [action.fieldName + "Field"]: "",
       url: url.href,
     };
-  } else if (action.type === "message") {
+  } else if (action.type === "SET_MESSAGE") {
     return {
       ...state,
       messages: action.value,
@@ -293,6 +255,12 @@ export function urlBuildReducer(state, action) {
     }
   } else if (action.type === 'ADD_URL') {
     let nextState = state.urlCollection
+
+    state.urlCollection.forEach(url => {
+      if (url.href === action.value.href) {
+        //this is where you left off
+      }
+    })
 
     nextState.push(action.value)
 
