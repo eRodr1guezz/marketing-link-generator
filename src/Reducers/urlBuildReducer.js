@@ -1,7 +1,6 @@
 import {
   drivers,
 } from "../internal";
-import { validateUrl } from "../Utils";
 import { v4 as uuidv4 } from "uuid";
 
 //TODO: continue to transfer all component level state OUT of the global and into respective components
@@ -74,24 +73,6 @@ class Driver { //every driver generates a new url for each type
     this.params = params
   }
 }
-
-const createdDriversFromUI = [{ //comes from the UI form
-  name: 'soc',
-  types: [
-    { param: 'twi', params: [{ label: 'post_type', param: 'poll' }, { label: '' }] }
-  ],
-  customParams: [{ label: 'id', param: '1' }, { label: 'post_type', param: 'poll' }]
-},
-{
-  name: 'em',
-  types: ['int'],
-  customParams: [{ label: 'date', param: 113022 }]
-}
-]
-
-//for every driver, make a new url for each type that contains 
-
-//i need a url that contains the root_campaign_url + driver=social + type=twi + id=twi_ad_1 + post_type=poll
 
 export function urlBuildReducer(state, action) {
   if (action.type === "REMOVE_PARAM") {

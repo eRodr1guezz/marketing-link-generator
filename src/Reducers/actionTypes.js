@@ -6,7 +6,6 @@ export const ADD_URL = "ADD_URL"
 export const REMOVE_URL = "REMOVE_URL"
 export const REMOVE_ALL_DRIVERS_BY_TYPE = "REMOVE_ALL_DRIVERS_BY_TYPE"
 
-
 export const APPEND_PARAM = "APPEND_PARAM"
 export const REMOVE_PARAM = "REMOVE_PARAM"
 

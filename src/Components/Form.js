@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useReducer, useEffect, useRef } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
@@ -50,7 +49,7 @@ export default function Form() {
       dispatch({ type: SET_ERROR, value: "" });
       dispatch({ type: SET_MESSAGE, value: "" });
     };
-  }, [state.errors, state.messages]);
+  }, [state.errors, state.messages, openSnackBar]);
 
   return (
     <>
@@ -78,7 +77,7 @@ export default function Form() {
             {/* URL Input */}
             <UrlInput dispatchHandler={dispatch} formState={state} />
 
-            {/* Campaign Name */}
+            {/* Campaign Name -- TODO: EXTRACT TO COMPONENT*/}
             <Grid item>
               <FormControl fullWidth>
                 <TextField
@@ -132,67 +131,6 @@ export default function Form() {
                 Results
               </Typography>
             </Divider>
-
-            {/* <UrlList businessUnitsFieldLength={state.generatedUrls.length}>
-              {state.generatedUrls &&
-                state.generatedUrls.map(({ href, id }) => (
-                  <Grow
-                    key={id}
-                    in={state.currentSelectedDriver.length !== 0}
-                    style={{ transformOrigin: "0 0 0" }}
-                    {...(state.currentSelectedDriver.length !== 0
-                      ? { timeout: 1000 }
-                      : {})}>
-                    <div name={id}>
-                      <FormGroup sx={{ alignItems: "center" }} row>
-                        <List>
-                          <TextField
-                            name='id'
-                            onChange={(e) =>
-                              e.currentTarget.value === ""
-                                ? dispatch({
-                                  type: "removeParam",
-                                  paramType: e.target.name,
-                                })
-                                : null
-                            }
-                            onBlur={(e) =>
-                              dispatch({
-                                type: "updateSelectedUrl",
-                                id,
-                                value: e.currentTarget.value,
-                                href,
-                              })
-                            }
-                            label='id'
-                          />
-                          <TextField label='date' />
-                          <TextField label='custom' />
-                        </List>
-                        <IconButton
-                          onClick={(e) =>
-                            dispatch({ type: "removeUrl", value: id })
-                          }>
-                          <RemoveCircle color='error' />
-                        </IconButton>
-                      </FormGroup>
-                    </div>
-                  </Grow>
-                ))}
-            </UrlList> */}
-
-            {/* <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-              <Typography>Create additional URL?</Typography>
-              <IconButton
-                onClick={() => dispatch({ type: "generateSingleUrl" })}>
-                <AddCircle color='primary' />
-              </IconButton>
-            </Box> */}
 
             {state.urlsByDriverType && state.urlsByDriverType.length > 0
               ? state.urlsByDriverType.map((el) => {
