@@ -1,6 +1,6 @@
-//TODO: continue to transfer all component level state OUT of the global and into respective components
 //TODO: convert all action types to SCREAMING_SNAKE_CASE
 //TODO: decide if we need to keep or trash the classes
+import { drivers } from "../internal";
 
 const initialState = {
   messages: "",
@@ -12,7 +12,6 @@ const initialState = {
   generatedDrivers: [],
   urlCollection: [],
   childUrls: [],
-  availableDriverTypes: [], //values are based on the currentSelectedDriver field (what displays as selectable to the user based on driver selection)
   bitlyFieldSwitch: false,
 };
 
@@ -115,19 +114,6 @@ export function urlBuildReducer(state, action) {
       ...state,
       messages: action.value,
     };
-  } else if (action.type === "setBitlyURLs") {
-    if (state.bitlyAccessTokenField === "") {
-      return {
-        ...state,
-        errors: "Must provide an access token from your Bit.ly account.",
-      };
-    } else {
-      return {
-        ...state,
-        bitlyUrlField: action.value,
-        messages: "Your shortened URLs were successfully created with Bit.ly!",
-      };
-    }
   } else if (action.type === "setBitlyAccessToken") {
     return {
       ...state,
@@ -146,39 +132,23 @@ export function urlBuildReducer(state, action) {
       generatedUrls: state.generatedUrls,
     };
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
-    const { value, driverId, driver } = action; //the param
-    const previousChildren = state.childUrls;
-    let nextState = []
+    const { value, driver } = action; //the param
 
-    let newUrls = value.map((val) => {
-      const baseUrl = new InstanceUrl(state.url, driverId, driver);
-      baseUrl.searchParams.append("utm_driver_type", val);
-      baseUrl.searchParams.append("utm_driver", driver)
-      
-      return baseUrl;
-    });
+    let values = value.map((val) => { return { param: val, driver } })
 
-    if(previousChildren.length > 0) {
-      nextState.push(...previousChildren, newUrls)
-
-      return {
-        ...state,
-        childUrls: nextState
-      }
-    }
     return {
       ...state,
-      childUrls: newUrls,
-    };
+      [driver]: values
+    }
   } else if (action.type === "ADD_NEW_DRIVER") {
     const { driverId } = action;
     let previous = state.generatedDrivers;
     let drivers = [];
 
     if (previous.length !== 0) {
-      drivers.push(...previous, { [driverId]: { driverId, urls: [] } });
+      drivers.push(...previous, { [driverId]: { driverId } });
     } else {
-      drivers.push({ [driverId]: { driverId, urls: [] } });
+      drivers.push({ [driverId]: { driverId } });
     }
 
     return {
@@ -186,11 +156,12 @@ export function urlBuildReducer(state, action) {
       generatedDrivers: drivers,
     };
   } else if (action.type === "REMOVE_DRIVER") {
-    const { driverId } = action;
+    const { driverId, driver } = action;
 
     return {
       ...state,
-      childUrls: state.childUrls.filter((url) => url.driverId !== driverId),
+      [driver]: [],
+      urlCollection: state.urlCollection.filter(u => u.driver !== driver),
       generatedDrivers: state.generatedDrivers.filter(
         (driver) => parseInt(Object.keys(driver)[0]) !== driverId
       ),
@@ -212,6 +183,29 @@ export function urlBuildReducer(state, action) {
         (url) => !url.href.includes(driverType)
       ),
     };
+  } else if(action.type === "GENERATE_URL_CAMPAIGN") {
+    //instead of generating urls on the fly, we generate them on a single user input
+    let campaignDrivers = []
+
+    drivers.forEach(driver => { 
+      if(state[driver.param] !== [] && state[driver.param] !== undefined)
+      campaignDrivers.push(state[driver.param])
+    })
+
+    let updated = campaignDrivers
+      .reduce((a, b) => a.concat(b))
+      .map(u => { 
+        let url = new InstanceUrl(state.url, null, u.driver)
+        url.searchParams.append('utm_medium', u.driver)
+        url.searchParams.append('utm_driver_type', u.param)
+
+        return url
+      })
+    
+    return {
+      ...state,
+      urlCollection: updated
+    }
   }
 }
 

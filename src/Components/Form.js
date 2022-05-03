@@ -118,16 +118,16 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            {state.childUrls && state.childUrls.length > 0
-              ? state.childUrls.map((el) => {
+            {state.urlCollection && state.urlCollection.length > 0
+              ? state.urlCollection.map((el) => {
                   const elUrl = new URL(el.href);
                   const socialCode = elUrl.searchParams.get("utm_driver_type");
 
                   return (
                     <Grow
-                      in={state.childUrls.length > 0}
+                      in={state.urlCollection.length > 0}
                       style={{ transformOrigin: "0 0 0" }}
-                      {...(state.childUrls.length > 0 ? { timeout: 500 } : {})}
+                      {...(state.urlCollection.length > 0 ? { timeout: 500 } : {})}
                     >
                       <Box
                         key={elUrl}
@@ -185,10 +185,10 @@ export default function Form() {
                   );
                 })
               : null}
-</Box>
+            </Box>
             <ButtonGroup fullWidth>
               <Button
-                onClick={() => dispatch({ type: "renderUrls" })}
+                onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
                 variant="contained"
               >
                 Generate URLs

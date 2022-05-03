@@ -25,7 +25,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [driver, setDriver] = useState("");
-  // const [driverUrl, setDriverUrl] = useState("");
+  
   const theme = useTheme();
 
   function changeHandler(e) {
@@ -85,6 +85,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
               onClick={() =>
                 dispatchHandler({
                   type: REMOVE_DRIVER,
+                  driver,
                   driverId,
                 })
               }
