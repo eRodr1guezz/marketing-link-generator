@@ -111,12 +111,14 @@ export default function Form() {
                 Add Additional Driver?
               </Button>
             </Box>
-          <Box sx={{ height: '100px', overflow: 'auto'}}>
+
             <Divider>
               <Typography variant="button" fontWeight={"bold"}>
                 Results
               </Typography>
             </Divider>
+
+          <Box sx={{ height: '100px', overflow: 'auto', border: 'dashed solid lightblue 1px' }}>
 
             {state.urlCollection && state.urlCollection.length > 0
               ? state.urlCollection.map((el) => {
@@ -129,6 +131,7 @@ export default function Form() {
                       style={{ transformOrigin: "0 0 0" }}
                       {...(state.urlCollection.length > 0 ? { timeout: 500 } : {})}
                     >
+                      <Box sx={{ padding: '.15rem 1rem'}}>
                       <Box
                         key={elUrl}
                         component="form"
@@ -181,6 +184,7 @@ export default function Form() {
                           <InputBase name="bitlyField" />
                         ) : null}
                       </Box>
+                      </Box>
                     </Grow>
                   );
                 })
@@ -195,7 +199,7 @@ export default function Form() {
               </Button>
               <Button
                 color="secondary"
-                onClick={() => dispatch({ type: "renderUrls" })}
+                onClick={() => dispatch({ type: "EXPORT_CAMPAIGN_TO_CSV" })}
                 variant="contained"
               >
                 Export URLs to CSV

@@ -25,7 +25,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [driver, setDriver] = useState("");
-  
+
   const theme = useTheme();
 
   function changeHandler(e) {
@@ -34,7 +34,12 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
         ? e.target.value.split(",")
         : e.target.value;
     setSelectedTypes(result);
-    dispatchHandler({ type: ADD_CHILD_URL_TO_CAMPAIGN, value: result, driverId, driver});
+    dispatchHandler({
+      type: ADD_CHILD_URL_TO_CAMPAIGN,
+      value: result,
+      driverId,
+      driver,
+    });
   }
 
   return (
