@@ -17,9 +17,10 @@ const initialState = {
 };
 
 export class InstanceUrl extends URL {
-  constructor(url, id) {
+  constructor(url, driverId, driver) {
     super(url);
-    this.id = id;
+    this.driverId = driverId;
+    this.driver = driver;
   }
 }
 
@@ -145,17 +146,26 @@ export function urlBuildReducer(state, action) {
       generatedUrls: state.generatedUrls,
     };
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
-    //technically this is ADD_CHILD_URL_TO_CAMPAIGN
-    const { value } = action; //the param
-    // const previousChildren = state.childUrls;
+    const { value, driverId, driver } = action; //the param
+    const previousChildren = state.childUrls;
+    let nextState = []
 
     let newUrls = value.map((val) => {
-      const baseUrl = new URL(state.url);
+      const baseUrl = new InstanceUrl(state.url, driverId, driver);
       baseUrl.searchParams.append("utm_driver_type", val);
-
+      baseUrl.searchParams.append("utm_driver", driver)
+      
       return baseUrl;
     });
 
+    if(previousChildren.length > 0) {
+      nextState.push(...previousChildren, newUrls)
+
+      return {
+        ...state,
+        childUrls: nextState
+      }
+    }
     return {
       ...state,
       childUrls: newUrls,
@@ -166,9 +176,9 @@ export function urlBuildReducer(state, action) {
     let drivers = [];
 
     if (previous.length !== 0) {
-      drivers.push(...previous, { [driverId]: { driverId } });
+      drivers.push(...previous, { [driverId]: { driverId, urls: [] } });
     } else {
-      drivers.push({ [driverId]: { driverId } });
+      drivers.push({ [driverId]: { driverId, urls: [] } });
     }
 
     return {

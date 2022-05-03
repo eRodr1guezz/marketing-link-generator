@@ -34,7 +34,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
         ? e.target.value.split(",")
         : e.target.value;
     setSelectedTypes(result);
-    dispatchHandler({ type: ADD_CHILD_URL_TO_CAMPAIGN, value: result });
+    dispatchHandler({ type: ADD_CHILD_URL_TO_CAMPAIGN, value: result, driverId, driver});
   }
 
   return (
@@ -80,7 +80,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
               ))}
             </Select>
           </FormControl>
-          {driverId && (
+          {driverId && driverId !== 10000 ? (
             <IconButton
               onClick={() =>
                 dispatchHandler({
@@ -91,7 +91,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
             >
               <DeleteOutlined />
             </IconButton>
-          )}
+          ) : null}
         </Box>
       </Grid>
 

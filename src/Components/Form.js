@@ -1,4 +1,3 @@
-
 import { useReducer, useEffect, useRef, useState } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
@@ -35,7 +34,7 @@ import { CampaignNameInput } from "./Specialized/CampaignNameInput";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
-  const [increment, setIncrement] = useState(0);
+  const [increment, setIncrement] = useState(1);
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
   const fieldRef = useRef(null);
 
@@ -49,7 +48,8 @@ export default function Form() {
       dispatch({ type: SET_ERROR, value: "" });
       dispatch({ type: SET_MESSAGE, value: "" });
     };
-  }, [state.errors, state.messages, openSnackBar]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.errors, state.messages]);
 
   return (
     <>
@@ -82,7 +82,7 @@ export default function Form() {
               formState={state}
               dispatchHandler={dispatch}
             />
-            <CampaignDrivers formState={state} dispatchHandler={dispatch} />
+            <CampaignDrivers driverId={10000} formState={state} dispatchHandler={dispatch} />
 
             {state.generatedDrivers &&
               state.generatedDrivers.map((d) => {
@@ -111,7 +111,7 @@ export default function Form() {
                 Add Additional Driver?
               </Button>
             </Box>
-
+          <Box sx={{ height: '100px', overflow: 'auto'}}>
             <Divider>
               <Typography variant="button" fontWeight={"bold"}>
                 Results
@@ -185,7 +185,7 @@ export default function Form() {
                   );
                 })
               : null}
-
+</Box>
             <ButtonGroup fullWidth>
               <Button
                 onClick={() => dispatch({ type: "renderUrls" })}
