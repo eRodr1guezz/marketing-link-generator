@@ -138,6 +138,7 @@ export function urlBuildReducer(state, action) {
 
     return {
       ...state,
+      disabledFields: false,
       [driver]: values
     }
   } else if (action.type === "ADD_NEW_DRIVER") {
@@ -192,7 +193,7 @@ export function urlBuildReducer(state, action) {
       campaignDrivers.push(state[driver.param])
     })
 
-    let updated = campaignDrivers
+    let transformedToUrlList = campaignDrivers
       .reduce((a, b) => a.concat(b))
       .map(u => { 
         let url = new InstanceUrl(state.url, null, u.driver)
@@ -204,7 +205,7 @@ export function urlBuildReducer(state, action) {
     
     return {
       ...state,
-      urlCollection: updated
+      urlCollection: transformedToUrlList
     }
   }
 }

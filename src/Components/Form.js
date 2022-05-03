@@ -112,14 +112,36 @@ export default function Form() {
               </Button>
             </Box>
 
+          <Grid item>
+            <Box sx={{ paddingTop: '1rem' }}>
+            <ButtonGroup fullWidth>
+              <Button
+                disabled={state.disabledFields}
+                onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
+                variant="contained"
+              >
+                Generate URLs
+              </Button>
+              <Button
+                disabled={state.urlCollection.length === 0}
+                color="secondary"
+                onClick={() => dispatch({ type: "EXPORT_CAMPAIGN_TO_CSV" })}
+                variant="contained"
+              >
+                Export URLs to CSV
+              </Button>
+            </ButtonGroup>
+            </Box>
+          </Grid>
+
             <Divider>
               <Typography variant="button" fontWeight={"bold"}>
                 Results
               </Typography>
             </Divider>
 
-          <Box sx={{ height: '100px', overflow: 'auto', border: 'dashed solid lightblue 1px' }}>
-
+          <Box sx={{ height: '100px', overflow: 'auto' }}>
+          <Typography sx={{ color: '#4caf50', textAlign: 'right', paddingRight: '5px', fontWeight: '800'}} variant="body2">{ state.urlCollection.length > 0 ? state.urlCollection.length + ' URLs were successfully generated!' : null }</Typography>
             {state.urlCollection && state.urlCollection.length > 0
               ? state.urlCollection.map((el) => {
                   const elUrl = new URL(el.href);
@@ -160,7 +182,7 @@ export default function Form() {
                           ref={fieldRef}
                           sx={{ ml: 1, flex: 1, color: "#555" }}
                           value={elUrl.href}
-                          inputProps={{ "aria-label": "copy url instance" }}
+                          inputProps={{ "aria-label": "copy url instance", "style": { fontSize: 'smaller'} }}
                         />
                         <Divider
                           sx={{ height: 28, m: 0.5 }}
@@ -190,21 +212,6 @@ export default function Form() {
                 })
               : null}
             </Box>
-            <ButtonGroup fullWidth>
-              <Button
-                onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
-                variant="contained"
-              >
-                Generate URLs
-              </Button>
-              <Button
-                color="secondary"
-                onClick={() => dispatch({ type: "EXPORT_CAMPAIGN_TO_CSV" })}
-                variant="contained"
-              >
-                Export URLs to CSV
-              </Button>
-            </ButtonGroup>
             <div
               style={{
                 display: "flex",
