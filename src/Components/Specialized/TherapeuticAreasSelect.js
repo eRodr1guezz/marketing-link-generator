@@ -8,7 +8,7 @@ export function TherapeuticAreasSelect({
   formState
 }) {
   const [visible, setVisible] = useState(false)
-  const [value, setValue] = useState()
+  const [value, setValue] = useState('')
   const label = { inputProps: { "aria-label": "Therapeutic Areas?" } };
 
   function handleSwitch(type) {
@@ -48,7 +48,7 @@ export function TherapeuticAreasSelect({
                 disableClearable={true}
                 disabled={formState.url === ''}
                 options={therapeuticAreas}
-                value={value || ""}
+                value={value}
                 onSelect={(e) => {
                   setValue(e.target.value)
                   dispatchHandler({

@@ -1,3 +1,4 @@
+import csvDownload from "json-to-csv-export";
 import { useReducer, useEffect, useRef, useState } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
@@ -22,15 +23,16 @@ import {
   LinkRounded,
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
-// import { BitlyIcon } from "../bitlyIcon";
 import useSnackbar from "../Hooks/useSnackbar";
-import { socialIconHandler } from "../Utils";
+import { shortenURL, socialIconHandler } from "../Utils";
 import { SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
 import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect";
 import { UrlInput } from "./Specialized/UrlInput";
 import { CampaignNameInput } from "./Specialized/CampaignNameInput";
+import { BitlyIcon } from "../bitlyIcon";
+import BitlyTokenModal from "./Specialized/BitlyTokenModal";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
@@ -82,17 +84,21 @@ export default function Form() {
               formState={state}
               dispatchHandler={dispatch}
             />
-            <CampaignDrivers driverId={10000} formState={state} dispatchHandler={dispatch} />
+            <CampaignDrivers
+              driverId={10000}
+              formState={state}
+              dispatchHandler={dispatch}
+            />
 
             {state.generatedDrivers &&
               state.generatedDrivers.map((d) => {
-                  return (
-                    <CampaignDrivers
-                      driverId={parseInt(Object.keys(d)[0])}
-                      dispatchHandler={dispatch}
-                      formState={state}
-                    />
-                  )
+                return (
+                  <CampaignDrivers
+                    driverId={parseInt(Object.keys(d)[0])}
+                    dispatchHandler={dispatch}
+                    formState={state}
+                  />
+                );
               })}
 
             <Box>
@@ -101,7 +107,7 @@ export default function Form() {
                 size="medium"
                 onClick={() => {
                   setIncrement(increment + 1);
-                  let id = increment
+                  let id = increment;
                   dispatch({ type: "ADD_NEW_DRIVER", driverId: id });
                 }}
                 endIcon={
@@ -112,27 +118,34 @@ export default function Form() {
               </Button>
             </Box>
 
-          <Grid item>
-            <Box sx={{ paddingTop: '1rem' }}>
-            <ButtonGroup fullWidth>
-              <Button
-                disabled={state.disabledFields}
-                onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
-                variant="contained"
-              >
-                Generate URLs
-              </Button>
-              <Button
-                disabled={state.urlCollection.length === 0}
-                color="secondary"
-                onClick={() => dispatch({ type: "EXPORT_CAMPAIGN_TO_CSV" })}
-                variant="contained"
-              >
-                Export URLs to CSV
-              </Button>
-            </ButtonGroup>
-            </Box>
-          </Grid>
+            <Grid item>
+              <Box sx={{ paddingTop: "1rem" }}>
+                <ButtonGroup fullWidth>
+                  <Button
+                    disabled={state.disabledFields}
+                    onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
+                    variant="contained"
+                  >
+                    Generate URLs
+                  </Button>
+                  <Button
+                    disabled={state.urlCollection.length === 0}
+                    color="secondary"
+                    onClick={() =>
+                      csvDownload(
+                        JSON.parse(
+                          JSON.stringify(state.urlCollection.map((u) => u.href))
+                        ),
+                        "urls.csv"
+                      )
+                    }
+                    variant="contained"
+                  >
+                    Export URLs to CSV
+                  </Button>
+                </ButtonGroup>
+              </Box>
+            </Grid>
 
             <Divider>
               <Typography variant="button" fontWeight={"bold"}>
@@ -140,78 +153,120 @@ export default function Form() {
               </Typography>
             </Divider>
 
-          <Box sx={{ height: '100px', overflow: 'auto' }}>
-          <Typography sx={{ color: '#4caf50', textAlign: 'right', paddingRight: '5px', fontWeight: '800'}} variant="body2">{ state.urlCollection.length > 0 ? state.urlCollection.length + ' URLs were successfully generated!' : null }</Typography>
-            {state.urlCollection && state.urlCollection.length > 0
-              ? state.urlCollection.map((el) => {
-                  const elUrl = new URL(el.href);
-                  const socialCode = elUrl.searchParams.get("utm_driver_type");
+            <Box 
+              sx={{ 
+                height: state.urlCollection.length > 1 ? "160px" : 'auto',
+                overflow: "auto", 
+                opacity: state.urlCollection.length === 0 && 0.75,
+                backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
+              }}>
+              {state.urlCollection && state.urlCollection.length > 0
+                ? state.urlCollection.map((el) => {
+                    const elUrl = new URL(el.href ? el.href : el);
+                    const socialCode =
+                      elUrl.searchParams.get("utm_driver_type");
 
-                  return (
-                    <Grow
-                      in={state.urlCollection.length > 0}
-                      style={{ transformOrigin: "0 0 0" }}
-                      {...(state.urlCollection.length > 0 ? { timeout: 500 } : {})}
-                    >
-                      <Box sx={{ padding: '.15rem 1rem'}}>
-                      <Box
-                        key={elUrl}
-                        component="form"
-                        sx={{
-                          p: "2px 4px",
-                          display: "flex",
-                          alignItems: "center",
-                          flexWrap: "wrap",
-                          width: "100%",
-                          border: "solid 1px lightblue",
-                          borderRadius: "8pt",
-                        }}
+                    return (
+                      <Grow
+                        in={state.urlCollection.length > 0}
+                        style={{ transformOrigin: "0 0 0" }}
+                        {...(state.urlCollection.length > 0
+                          ? { timeout: 500 }
+                          : {})}
                       >
-                        <IconButton
-                          disableRipple
-                          sx={{ p: "8px" }}
-                          aria-label="driver copy bar"
-                        >
-                          {!socialIconHandler(socialCode) ? (
-                            <LinkRounded />
-                          ) : (
-                            socialIconHandler(socialCode)
-                          )}
-                        </IconButton>
-                        <InputBase
-                          ref={fieldRef}
-                          sx={{ ml: 1, flex: 1, color: "#555" }}
-                          value={elUrl.href}
-                          inputProps={{ "aria-label": "copy url instance", "style": { fontSize: 'smaller'} }}
-                        />
-                        <Divider
-                          sx={{ height: 28, m: 0.5 }}
-                          orientation="vertical"
-                        />
-                        <IconButton
-                          onClick={() =>
-                            dispatch({
-                              type: "copyUrl",
-                              value: elUrl.href,
-                            })
-                          }
-                          sx={{ p: "10px" }}
-                          aria-label="copy url"
-                        >
-                          <Tooltip title="Copy to clipboard">
-                            <ContentCopy />
-                          </Tooltip>
-                        </IconButton>
-                        {state.bitlyUrlField > 0 ? (
-                          <InputBase name="bitlyField" />
-                        ) : null}
-                      </Box>
-                      </Box>
-                    </Grow>
-                  );
-                })
-              : null}
+                        <Box sx={{ padding: ".15rem 1rem" }}>
+                          <Box
+                            key={elUrl}
+                            component="form"
+                            sx={{
+                              p: "2px 4px",
+                              display: "flex",
+                              alignItems: "center",
+                              flexWrap: "wrap",
+                              width: "100%",
+                              border: "solid 1px lightblue",
+                              borderRadius: "8pt",
+                            }}
+                          >
+                            <IconButton
+                              disableRipple
+                              sx={{ p: "8px" }}
+                              aria-label="driver copy bar"
+                            >
+                              {!socialIconHandler(socialCode) ? (
+                                <LinkRounded />
+                              ) : (
+                                socialIconHandler(socialCode)
+                              )}
+                            </IconButton>
+                            <InputBase
+                              ref={fieldRef}
+                              sx={{ ml: 1, flex: 1, color: "#555" }}
+                              value={elUrl.href}
+                              inputProps={{
+                                "aria-label": "copy url instance",
+                                style: { fontSize: "smaller" },
+                              }}
+                            />
+                            <Divider
+                              sx={{ height: 28, m: 0.5 }}
+                              orientation="vertical"
+                            />
+                            <IconButton
+                              onClick={() =>
+                                dispatch({
+                                  type: "copyUrl",
+                                  value: elUrl.href,
+                                })
+                              }
+                              sx={{ p: "10px" }}
+                              aria-label="copy url"
+                            >
+                              <Tooltip title="Copy to clipboard">
+                                <ContentCopy />
+                              </Tooltip>
+                            </IconButton>
+                            {state.bitlyUrlField > 0 ? (
+                              <InputBase name="bitlyField" />
+                            ) : null}
+                          </Box>
+                        </Box>
+                      </Grow>
+                    );
+                  })
+                : null}
             </Box>
+            {/* Bitly shortening */}
+
+            <Grid item>
+              <Box sx={{ display: 'flex', justifyContent: 'space-evenly'}}>
+              <BitlyTokenModal dispatchHandler={dispatch} />
+              <Button
+                disabled={state.bitlyAccessTokenField === ""}
+                variant="outlined"
+                color="warning"
+                onClick={() => {
+                  let data = shortenURL(
+                    state.urlCollection.map(u => u.href),
+                    state.bitlyAccessTokenField
+                  )
+
+                  console.log(data)
+
+                  // dispatch({
+                  //   type: "SHORTEN_URLS",
+                  //   value: shortenedUrls,
+                  // })
+                }}
+                endIcon={
+                  <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
+                }
+              >
+                Shorten URLs with Bit.ly
+              </Button>
+              </Box>
+            </Grid>
+                        
             <div
               style={{
                 display: "flex",

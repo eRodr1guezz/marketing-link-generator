@@ -12,7 +12,6 @@ const initialState = {
   generatedDrivers: [],
   urlCollection: [],
   childUrls: [],
-  bitlyFieldSwitch: false,
 };
 
 export class InstanceUrl extends URL {
@@ -205,7 +204,23 @@ export function urlBuildReducer(state, action) {
     
     return {
       ...state,
+      messages: `${transformedToUrlList.length} URLs were successfully created!`,
       urlCollection: transformedToUrlList
+    }
+  } else if(action.type === 'SHORTEN_URLS') {
+    const { value } = action
+
+    console.log(value)
+    
+    return {
+      ...state,
+      urlCollection: value
+    }
+  } else if (action.type === 'SET_BITLY_ACCESS_TOKEN') {
+    const { value } = action
+    return {
+      ...state,
+      bitlyAccessTokenField: value,
     }
   }
 }
