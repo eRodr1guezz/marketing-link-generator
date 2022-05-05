@@ -37,39 +37,62 @@
     const role = document.getElementById("virtualEventRole").textContent;
     const attendeeTypeSelection = document.getElementsByName("selectcategoryid");
 
-    let subcategory = sessionStorage.getItem("subcategory");
-    let attendeeType = sessionStorage.getItem("attendee_type");
+    // let subcategory = sessionStorage.getItem("subcategory");
+    // let attendeeType = sessionStorage.getItem("attendee_type");
+
+    let url = new URL(window.location.href)
+    console.log(url.searchParams.get('session_variable') === 'admin' ? 2 : 0)
     //in person and virtual
     //us attendee status
     //industry
     //delete member
     //IID and ALF
-    access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
+    
+    // access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
     //in person 
     // replaces the country conditional question setup
-    if (country !== "United States") {
-      access_group.push("Non-US Attendee");
-    } else {
-      access_group.push("US Attendee");
+    
+    // if (country !== "United States") {
+    //   access_group.push("Non-US Attendee");
+    // } else {
+    //   access_group.push("US Attendee");
+    // }
+
+    switch (country) {
+      case 'Germany': 
+        access_group.push('Room A')
+        break;
+      case 'Spain': 
+        access_group.push('Room B')
+        break;
+      case 'France':
+        access_group.push('Room C')
+        break;
+      case 'Italy': 
+        access_group.push('Room D')
+        break;
+      default:
+        access_group.push('Room E')
+        break;
     }
 
-    if (/industry/gi.test(subcategory)) {
-      access_group.push("Industry");
-      access_group.push("Game: Excluded");
-    }
+    // if (/industry/gi.test(subcategory)) {
+    //   access_group.push("Industry");
+    //   access_group.push("Game: Excluded");
+    // }
 
-    if (/exhibitor/gi.test(subcategory)) {
-      access_group.push('Exhibitor');
-      access_group.push("Game: Excluded");
-    }
+    // if (/exhibitor/gi.test(subcategory)) {
+    //   access_group.push('Exhibitor');
+    //   access_group.push("Game: Excluded");
+    // }
 
-    if (/faculty/gi.test(subcategory)) {
-      access_group.push("Faculty");
-    }
+    // if (/faculty/gi.test(subcategory)) {
+    //   access_group.push("Faculty");
+    // }
 
-    if (/complimentary/gi.test(subcategory)) {
-      access_group.push('Complimentary');
-    }
+    // if (/complimentary/gi.test(subcategory)) {
+    //   access_group.push('Complimentary');
+    // }
 
     const attendee = {
       first_name,
@@ -79,11 +102,11 @@
       eventid,
       staff: staff == "*/custom1/*" ? 0 : staff,
       badge: badge == "*/custom2/*" ? 0 : badge,
-      role: role == "*/custom3/*" ? 0 : role,
+      // role: role == "*/custom3/*" ? 0 : role,
+      role: url.searchParams.get('session_variable') === 'admin' ? 2 : role,
       access_groups: access_group.length > 0 ? access_group.map((el) => el.trim()).toString() : '',
     };
 
-    console.log(access_group)
     createAttendee(attendee)
 
     function createAttendee(attendee) {
@@ -92,8 +115,6 @@
       const event_id = document.getElementById("virtualEventID").textContent;
 
       const api_url = encodeURI(`${event_url}/remote/regform/${event_id}?source=${source}`);
-
-      console.log(api_url)
 
       fetch(api_url, {
         method: "POST",
@@ -113,7 +134,6 @@
 
   });
 </script>
-<!-- This is not working - subcategory  -->
 <!-- Look & Feel -> Custom Code -> Custom HTML <HEAD> code -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {

@@ -251,12 +251,10 @@ export default function Form() {
                     state.bitlyAccessTokenField
                   )
 
-                  console.log(data)
-
-                  // dispatch({
-                  //   type: "SHORTEN_URLS",
-                  //   value: shortenedUrls,
-                  // })
+                  dispatch({
+                    type: "SHORTEN_URLS",
+                    value: data,
+                  })
                 }}
                 endIcon={
                   <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />

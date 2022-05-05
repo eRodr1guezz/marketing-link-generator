@@ -63,7 +63,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
                 setDriver(e.target.value);
                 if (selectedTypes.length > 0) {
                   setSelectedTypes([]);
-                  dispatchHandler({ type: REMOVE_ALL_DRIVERS_BY_TYPE });
+                  dispatchHandler({ type: REMOVE_DRIVER, driver });
                 }
                 setDriverTypes(
                   drivers.filter((d) => d.param === e.target.value)[0].type
