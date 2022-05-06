@@ -126,7 +126,7 @@ export default function Form() {
                     onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
                     variant="contained"
                   >
-                    Generate URLs
+                    Generate URL Campaign
                   </Button>
                   <Button
                     disabled={state.urlCollection.length === 0}
@@ -160,6 +160,7 @@ export default function Form() {
                 opacity: state.urlCollection.length === 0 && 0.75,
                 backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
               }}>
+              <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated}</Typography>}</span>
               {state.urlCollection && state.urlCollection.length > 0
                 ? state.urlCollection.map((el) => {
                   const elUrl = new URL(el);
@@ -169,6 +170,7 @@ export default function Form() {
 
                   return (
                     <Grow
+                      key={elUrl}
                       in={state.urlCollection.length > 0}
                       style={{ transformOrigin: "0 0 0" }}
                       {...(state.urlCollection.length > 0
@@ -177,7 +179,6 @@ export default function Form() {
                     >
                       <Box sx={{ padding: ".15rem 1rem" }}>
                         <Box
-                          key={elUrl}
                           component="form"
                           sx={{
                             p: "2px 4px",
@@ -214,12 +215,10 @@ export default function Form() {
                             orientation="vertical"
                           />
                           <IconButton
-                            onClick={() =>
-                              dispatch({
-                                type: "copyUrl",
-                                value: elUrl.href,
-                              })
-                            }
+                            onClick={() => {
+                              navigator.clipboard.writeText(elUrl.href);
+                              dispatch({ type: SET_MESSAGE, value: 'URL successfully copied to your clipboard!' })
+                            }}
                             sx={{ p: "10px" }}
                             aria-label="copy url"
                           >
@@ -227,9 +226,21 @@ export default function Form() {
                               <ContentCopy />
                             </Tooltip>
                           </IconButton>
-                          {state.bitlyUrlField > 0 ? (
-                            <InputBase name="bitlyField" />
-                          ) : null}
+                          <Divider
+                            sx={{ height: 28, m: 0.5 }}
+                            orientation="vertical"
+                          />
+                          <IconButton
+                            onClick={() => {
+                              dispatch({ type: SET_MESSAGE, value: 'URL successfully shortened with Bit.ly!' })
+                            }}
+                            sx={{ p: "10px" }}
+                            aria-label="copy url"
+                          >
+                            <Tooltip title="Shorten URL">
+                              <BitlyIcon htmlColor={'#ba68c8'} />
+                            </Tooltip>
+                          </IconButton>
                         </Box>
                       </Box>
                     </Grow>
@@ -261,7 +272,7 @@ export default function Form() {
                     <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
                   }
                 >
-                  Shorten URLs with Bit.ly
+                  Shorten ALL URLs
                 </Button>
               </Box>
             </Grid>

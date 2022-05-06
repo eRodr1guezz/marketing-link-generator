@@ -19,6 +19,7 @@ import {
 } from "../../Reducers/actionTypes";
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
 import { drivers } from "../../internal";
+// import CustomParamAccordion from "./CustomParamAccordion";
 
 export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
@@ -107,10 +108,10 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
           {...(driverTypes.length > 0 ? { timeout: 500 } : {})}
         >
           <Grid item>
-            <FormControl sx={{ m: 1, width: 300 }} fullWidth>
+            <FormControl sx={{ m: 1, width: 300 }}>
               <InputLabel>Driver Types</InputLabel>
               <Select
-                fullWidth
+                // fullWidth
                 multiple
                 value={selectedTypes}
                 onChange={(e) => changeHandler(e)}
@@ -147,6 +148,19 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
                   );
                 })}
               </Select>
+              {
+                <Box>
+                  {/* {
+                    driverTypes.length > 0 && driverTypes && selectedTypes.map(type => (
+                      <CustomParamAccordion
+                        title={type}
+                        formState={formState}
+                        dispatchHandler={dispatchHandler}
+                      />
+                    ))
+                  } */}
+                </Box>
+              }
             </FormControl>
           </Grid>
         </Grow>

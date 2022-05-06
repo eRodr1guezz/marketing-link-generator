@@ -45,21 +45,24 @@ export function TherapeuticAreasSelect({
             <FormControl fullWidth>
               <Autocomplete
                 freeSolo
-                disableClearable={true}
+                // disableClearable={true}
+                id='therapeutic_area'
                 disabled={formState.url === ''}
                 options={therapeuticAreas}
                 value={value}
+                onChange={e => e.currentTarget.value === '' && dispatchHandler({ type: REMOVE_PARAM, paramType: 'therapeutic_area' })}
                 onSelect={(e) => {
-                  setValue(e.target.value)
-                  dispatchHandler({
-                    type: APPEND_PARAM,
-                    paramType: "therapeutic_area",
-                    param:
-                      e.target.value !== undefined &&
-                      therapeuticAreas.filter(
-                        (el) => el.label === e.target.value
-                      )[0].param,
-                  });
+                  if (e.target.value !== undefined || e.target.value !== '') {
+                    setValue(e.target.value)
+                    dispatchHandler({
+                      type: APPEND_PARAM,
+                      paramType: "therapeutic_area",
+                      param:
+                        therapeuticAreas.filter(
+                          (el) => el.label === e.target.value
+                        )[0].param,
+                    });
+                  }
                 }}
                 renderInput={params => {
                   return (

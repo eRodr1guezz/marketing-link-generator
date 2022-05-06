@@ -1,17 +1,18 @@
 //TODO: convert all action types to SCREAMING_SNAKE_CASE
 //TODO: decide if we need to keep or trash the classes
 import { drivers } from "../internal";
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
   messages: "",
   errors: "",
   url: "",
-  disabledFields: true,
-  bitlyUrlField: [],
   bitlyAccessTokenField: "",
   generatedDrivers: [],
   urlCollection: [],
-  childUrls: [],
+  campaignName: '',
+  campaignLastGenerated: null,
+  campaignList: [],
 };
 
 export class InstanceUrl extends URL {
@@ -24,30 +25,30 @@ export class InstanceUrl extends URL {
 
 export function urlBuildReducer(state, action) {
   if (action.type === "REMOVE_PARAM") {
-    const urlCopy = new URL(state.url);
+    const url = new URL(state.url);
 
-    if (!urlCopy.searchParams.get("utm_" + action.paramType)) {
+    if (!url.searchParams.get("utm_" + action.paramType)) {
       return {
         ...state,
-        errors: "Cannot remove a parameter that is not there!",
+        errors: "Cannot remove a parameter that is not there.",
       };
     }
 
-    urlCopy.searchParams.delete("utm_" + action.paramType);
+    url.searchParams.delete("utm_" + action.paramType);
 
     return {
       ...state,
-      url: urlCopy.href,
+      url: url.href,
     };
   } else if (action.type === "APPEND_PARAM") {
     const { paramType, param } = action;
-    const urlCopy = new URL(state.url);
+    const url = new URL(state.url);
 
     if (state.url === "") {
       return {
         ...state,
         errors:
-          "Cannot generate a URL without a URL provided! Please provide a valid URL in order to proceed.",
+          "Cannot generate a URL without a URL provided! Please provide a valid URL to proceed.",
       };
     }
 
@@ -68,20 +69,20 @@ export function urlBuildReducer(state, action) {
       };
     }
 
-    if (urlCopy.searchParams.has(`utm_${paramType}`)) {
-      urlCopy.searchParams.delete(`utm_${paramType}`);
-      urlCopy.searchParams.append(`utm_${paramType}`, param);
+    if (url.searchParams.has(`utm_${paramType}`)) {
+      url.searchParams.delete(`utm_${paramType}`);
+      url.searchParams.append(`utm_${paramType}`, param);
 
       return {
         ...state,
-        url: urlCopy.href,
+        url: url.href,
       };
     } else {
-      urlCopy.searchParams.append(`utm_${paramType}`, param);
+      url.searchParams.append(`utm_${paramType}`, param);
 
       return {
         ...state,
-        url: urlCopy.href,
+        url: url.href,
       };
     }
   } else if (action.type === "SET_URL") {
@@ -89,20 +90,11 @@ export function urlBuildReducer(state, action) {
       ...state,
       url: action.value,
     };
-  } else if (action.type === "copyUrl") {
-    console.log(action.value);
-    if (state.url === "") {
-      return {
-        ...state,
-        errors: "No URL provided! Please provide a URL and try again.",
-      };
-    } else {
-      navigator.clipboard.writeText(action.value);
-    }
+  } else if (action.type === "SET_CAMPAIGN_NAME") {
     return {
       ...state,
-      messages: "Successfully copied the URL to your clipboard!",
-    };
+      campaignName: encodeURI(action.value).toLowerCase()
+    }
   } else if (action.type === "SET_ERROR") {
     return {
       ...state,
@@ -112,11 +104,6 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       messages: action.value,
-    };
-  } else if (action.type === "setBitlyAccessToken") {
-    return {
-      ...state,
-      bitlyAccessTokenField: action.value,
     };
   } else if (action.type === "updateSelectedUrl") {
     const updatedUrl = new InstanceUrl(action.href, action.id);
@@ -175,35 +162,39 @@ export function urlBuildReducer(state, action) {
         (url) => !url.href.includes(driverType)
       ),
     };
-  } else if(action.type === "GENERATE_URL_CAMPAIGN") {
-    //action generates a collection of URLs referred to as a "Campaign"
+  } else if (action.type === "GENERATE_URL_CAMPAIGN") {
+    let generatedCampaign = state.campaignList.length > 0 ? [...state.campaignList] : []
     let campaignDrivers = []
+    let campaignId = uuidv4()
+    let createdAt = new Date().toISOString()
 
-    drivers.forEach(driver => { 
-      if(state[driver.param] !== [] && state[driver.param] !== undefined)
-      campaignDrivers.push(state[driver.param])
+    drivers.forEach(driver => {
+      if (state[driver.param] !== [] && state[driver.param] !== undefined)
+        campaignDrivers.push(state[driver.param])
     })
 
-    let transformedToUrlList = campaignDrivers
+    let createdUrls = campaignDrivers
       .reduce((a, b) => a.concat(b))
-      .map(u => { 
+      .map(u => {
         let url = new InstanceUrl(state.url, null, u.driver)
         url.searchParams.append('utm_medium', u.driver)
         url.searchParams.append('utm_driver_type', u.param)
 
         return url
       })
-    
+
+    generatedCampaign.push(new UrlCampaign(campaignId, decodeURI(state.campaignName), createdUrls, createdAt))
+
     return {
       ...state,
-      messages: `${transformedToUrlList.length} URLs were successfully created!`,
-      urlCollection: transformedToUrlList
+      messages: `${createdUrls.length} URLs were successfully created for campaign ${state.campaignName}!`,
+      urlCollection: createdUrls,
+      campaignLastGenerated: state.campaignList.length > 0 ? state.campaignList[state.campaignList.length - 1].createdAt : { id: campaignId, generatedAt: createdAt },
+      campaignList: generatedCampaign
     }
-  } else if(action.type === 'SHORTEN_URLS') {
+  } else if (action.type === 'SHORTEN_URLS') {
     const { value } = action
 
-    console.log(value)
-    
     return {
       ...state,
       urlCollection: value
@@ -215,6 +206,16 @@ export function urlBuildReducer(state, action) {
       bitlyAccessTokenField: value,
     }
   }
+}
+
+class UrlCampaign {
+  constructor(id, name, urls, createdAt) {
+    this.id = id
+    this.urls = urls
+    this.createdAt = createdAt
+    this.name = name
+  }
+
 }
 
 export { initialState };
