@@ -153,118 +153,119 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            {/* <Box 
-              sx={{ 
+            <Box
+              sx={{
                 height: state.urlCollection.length > 1 ? "160px" : 'auto',
-                overflow: "auto", 
+                overflow: "auto",
                 opacity: state.urlCollection.length === 0 && 0.75,
                 backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
               }}>
               {state.urlCollection && state.urlCollection.length > 0
                 ? state.urlCollection.map((el) => {
-                    const elUrl = new URL(el.href ? el.href : el);
-                    const socialCode =
-                      elUrl.searchParams.get("utm_driver_type");
+                  const elUrl = new URL(el);
 
-                    return (
-                      <Grow
-                        in={state.urlCollection.length > 0}
-                        style={{ transformOrigin: "0 0 0" }}
-                        {...(state.urlCollection.length > 0
-                          ? { timeout: 500 }
-                          : {})}
-                      >
-                        <Box sx={{ padding: ".15rem 1rem" }}>
-                          <Box
-                            key={elUrl}
-                            component="form"
-                            sx={{
-                              p: "2px 4px",
-                              display: "flex",
-                              alignItems: "center",
-                              flexWrap: "wrap",
-                              width: "100%",
-                              border: "solid 1px lightblue",
-                              borderRadius: "8pt",
-                            }}
+                  const socialCode =
+                    elUrl.searchParams.get("utm_driver_type"); //this will not work on bitly shortened links!
+
+                  return (
+                    <Grow
+                      in={state.urlCollection.length > 0}
+                      style={{ transformOrigin: "0 0 0" }}
+                      {...(state.urlCollection.length > 0
+                        ? { timeout: 500 }
+                        : {})}
+                    >
+                      <Box sx={{ padding: ".15rem 1rem" }}>
+                        <Box
+                          key={elUrl}
+                          component="form"
+                          sx={{
+                            p: "2px 4px",
+                            display: "flex",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            width: "100%",
+                            border: "solid 1px lightblue",
+                            borderRadius: "8pt",
+                          }}
+                        >
+                          <IconButton
+                            disableRipple
+                            sx={{ p: "8px" }}
+                            aria-label="driver copy bar"
                           >
-                            <IconButton
-                              disableRipple
-                              sx={{ p: "8px" }}
-                              aria-label="driver copy bar"
-                            >
-                              {!socialIconHandler(socialCode) ? (
-                                <LinkRounded />
-                              ) : (
-                                socialIconHandler(socialCode)
-                              )}
-                            </IconButton>
-                            <InputBase
-                              ref={fieldRef}
-                              sx={{ ml: 1, flex: 1, color: "#555" }}
-                              value={elUrl.href}
-                              inputProps={{
-                                "aria-label": "copy url instance",
-                                style: { fontSize: "smaller" },
-                              }}
-                            />
-                            <Divider
-                              sx={{ height: 28, m: 0.5 }}
-                              orientation="vertical"
-                            />
-                            <IconButton
-                              onClick={() =>
-                                dispatch({
-                                  type: "copyUrl",
-                                  value: elUrl.href,
-                                })
-                              }
-                              sx={{ p: "10px" }}
-                              aria-label="copy url"
-                            >
-                              <Tooltip title="Copy to clipboard">
-                                <ContentCopy />
-                              </Tooltip>
-                            </IconButton>
-                            {state.bitlyUrlField > 0 ? (
-                              <InputBase name="bitlyField" />
-                            ) : null}
-                          </Box>
+                            {!socialIconHandler(socialCode) ? (
+                              <LinkRounded />
+                            ) : (
+                              socialIconHandler(socialCode)
+                            )}
+                          </IconButton>
+                          <InputBase
+                            ref={fieldRef}
+                            sx={{ ml: 1, flex: 1, color: "#555" }}
+                            value={elUrl.href}
+                            inputProps={{
+                              "aria-label": "copy url instance",
+                              style: { fontSize: "smaller" },
+                            }}
+                          />
+                          <Divider
+                            sx={{ height: 28, m: 0.5 }}
+                            orientation="vertical"
+                          />
+                          <IconButton
+                            onClick={() =>
+                              dispatch({
+                                type: "copyUrl",
+                                value: elUrl.href,
+                              })
+                            }
+                            sx={{ p: "10px" }}
+                            aria-label="copy url"
+                          >
+                            <Tooltip title="Copy to clipboard">
+                              <ContentCopy />
+                            </Tooltip>
+                          </IconButton>
+                          {state.bitlyUrlField > 0 ? (
+                            <InputBase name="bitlyField" />
+                          ) : null}
                         </Box>
-                      </Grow>
-                    );
-                  })
+                      </Box>
+                    </Grow>
+                  );
+                })
                 : null}
-            </Box> */}
+            </Box>
             {/* Bitly shortening */}
 
             <Grid item>
-              <Box sx={{ display: 'flex', justifyContent: 'space-evenly'}}>
-              <BitlyTokenModal dispatchHandler={dispatch} />
-              <Button
-                disabled={state.bitlyAccessTokenField === ""}
-                variant="outlined"
-                color="warning"
-                onClick={async () => {
-                  let data = await shortenURL(
-                    state.urlCollection.map(u => u.href),
-                    state.bitlyAccessTokenField
-                  )
+              <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                <BitlyTokenModal dispatchHandler={dispatch} />
+                <Button
+                  disabled={state.bitlyAccessTokenField === ""}
+                  variant="outlined"
+                  color="warning"
+                  onClick={async () => {
+                    let data = await shortenURL(
+                      state.urlCollection.map(u => u.href),
+                      state.bitlyAccessTokenField
+                    )
 
-                  dispatch({
-                    type: "SHORTEN_URLS",
-                    value: data
-                  })
-                }}
-                endIcon={
-                  <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
-                }
-              >
-                Shorten URLs with Bit.ly
-              </Button>
+                    dispatch({
+                      type: "SHORTEN_URLS",
+                      value: data
+                    })
+                  }}
+                  endIcon={
+                    <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
+                  }
+                >
+                  Shorten URLs with Bit.ly
+                </Button>
               </Box>
             </Grid>
-                        
+
             <div
               style={{
                 display: "flex",

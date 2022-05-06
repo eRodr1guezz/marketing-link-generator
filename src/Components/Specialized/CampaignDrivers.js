@@ -14,13 +14,12 @@ import {
 import { DeleteOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import {
-  REMOVE_ALL_DRIVERS_BY_TYPE,
   ADD_CHILD_URL_TO_CAMPAIGN,
   REMOVE_DRIVER,
 } from "../../Reducers/actionTypes";
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
 import { drivers } from "../../internal";
-//TODO: Further refactor down
+
 export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
