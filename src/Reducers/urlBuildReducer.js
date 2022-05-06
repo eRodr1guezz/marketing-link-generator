@@ -161,18 +161,10 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       [driver]: [],
-      urlCollection: state.urlCollection.filter(u => u.driver !== driver),
+      urlCollection: state.urlCollection !== [] && state.urlCollection.filter(u => u.driver !== driver),
       generatedDrivers: state.generatedDrivers.filter(
         (driver) => parseInt(Object.keys(driver)[0]) !== driverId
       ),
-    };
-  } else if (action.type === "REMOVE_ALL_DRIVERS_BY_TYPE") {
-    const { driverType } = action;
-    const collection = state.urlCollection;
-
-    return {
-      ...state,
-      urlCollection: collection.filter((url) => url.type !== driverType),
     };
   } else if (action.type === "REMOVE_URL") {
     const { driverType } = action;
@@ -184,7 +176,7 @@ export function urlBuildReducer(state, action) {
       ),
     };
   } else if(action.type === "GENERATE_URL_CAMPAIGN") {
-    //instead of generating urls on the fly, we generate them on a single user input
+    //action generates a collection of URLs referred to as a "Campaign"
     let campaignDrivers = []
 
     drivers.forEach(driver => { 

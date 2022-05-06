@@ -24,7 +24,6 @@ export function socialIconHandler(param) {
 }
 
 export async function shortenURL(url, access_token) {
-  let result = []
   //should accept a single (or list) of urls to shorten and return a single (or list of) URL instance(s).
   const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
   let headers = {
@@ -32,25 +31,17 @@ export async function shortenURL(url, access_token) {
     Authorization: `Bearer ${access_token}`,
   };
 
-  let response = await url.map((u) => {
-    return fetch(bitlyURL, {
+  return url.map(async u => {
+    const r = await fetch(bitlyURL, {
       method: 'POST',
       headers,
       body: JSON.stringify({ long_url: u }),
-    }).then((response) => response.json().then((data) => {
-      result.push(data.link)
-      return data.link 
-      }));
-  });
+    });
+    const d = await r.json();
+    return d.link;
+  })
 
-  if(Array.isArray(response)) {
-    console.log('its an array')
-    return Promise.all(response)
-  } else {
-    console.log('its just a string')
-    return Promise.resolve(response)
-  }
-
+    // return fetched
   // let innerResponse = await url.map(async (u) => {
   //   let response = await axios.post(bitlyURL, {
   //       data: { long_url: u },

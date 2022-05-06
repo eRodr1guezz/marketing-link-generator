@@ -153,7 +153,7 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            <Box 
+            {/* <Box 
               sx={{ 
                 height: state.urlCollection.length > 1 ? "160px" : 'auto',
                 overflow: "auto", 
@@ -235,7 +235,7 @@ export default function Form() {
                     );
                   })
                 : null}
-            </Box>
+            </Box> */}
             {/* Bitly shortening */}
 
             <Grid item>
@@ -245,15 +245,15 @@ export default function Form() {
                 disabled={state.bitlyAccessTokenField === ""}
                 variant="outlined"
                 color="warning"
-                onClick={() => {
-                  let data = shortenURL(
+                onClick={async () => {
+                  let data = await shortenURL(
                     state.urlCollection.map(u => u.href),
                     state.bitlyAccessTokenField
                   )
 
                   dispatch({
                     type: "SHORTEN_URLS",
-                    value: data,
+                    value: data
                   })
                 }}
                 endIcon={
