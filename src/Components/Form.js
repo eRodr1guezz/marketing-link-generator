@@ -160,7 +160,7 @@ export default function Form() {
                 opacity: state.urlCollection.length === 0 && 0.75,
                 backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
               }}>
-              <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated}</Typography>}</span>
+              <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated.generatedAt}</Typography>}</span>
               {state.urlCollection && state.urlCollection.length > 0
                 ? state.urlCollection.map((el) => {
                   const elUrl = new URL(el);

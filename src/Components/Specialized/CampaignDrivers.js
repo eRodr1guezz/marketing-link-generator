@@ -111,7 +111,6 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
             <FormControl sx={{ m: 1, width: 300 }}>
               <InputLabel>Driver Types</InputLabel>
               <Select
-                // fullWidth
                 multiple
                 value={selectedTypes}
                 onChange={(e) => changeHandler(e)}

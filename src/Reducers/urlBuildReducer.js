@@ -155,7 +155,7 @@ export function urlBuildReducer(state, action) {
     };
   } else if (action.type === "REMOVE_URL") {
     const { driverType } = action;
-    //this is removing urls by DRIVER TYPE - this may not always be the case? need to dive in a bit more here.
+
     return {
       ...state,
       urlCollection: state.urlCollection.filter(
