@@ -1,3 +1,6 @@
+import download from 'downloadjs'
+import { unparse } from 'papaparse'
+import * as jsonexport from "jsonexport/dist"
 import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 
 export function validateUrl(value) {
@@ -58,3 +61,24 @@ export const MenuProps = {
     },
   },
 };
+
+
+export function convertAndExportToCsv(data) {
+  let campaignObject = {}
+
+  let d = data.map(camp => {
+    const { name, id, createdAt, urls } = camp
+    campaignObject.name = name;
+    campaignObject.id = id;
+    campaignObject.createdAt = createdAt;
+    campaignObject.data = urls.map(u => { return { campaign_name: name, drivers: [u.driver], urls: [u.href], created: createdAt } })
+
+    return campaignObject
+  })
+
+  d.forEach(campaign => {
+    let csv = unparse(campaign, { header: true })
+    download(csv, `exportedUrls[${campaign.name}].csv`)
+  })
+
+}

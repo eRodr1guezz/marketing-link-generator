@@ -9,6 +9,7 @@ const initialState = {
   url: "",
   bitlyAccessTokenField: "",
   generatedDrivers: [],
+  selectedDrivers: [],
   urlCollection: [],
   campaignName: '',
   campaignLastGenerated: null,
@@ -142,7 +143,8 @@ export function urlBuildReducer(state, action) {
       ...state,
       generatedDrivers: drivers,
     };
-  } else if (action.type === "REMOVE_DRIVER") {
+  }
+  else if (action.type === "REMOVE_DRIVER") {
     const { driverId, driver } = action;
 
     return {

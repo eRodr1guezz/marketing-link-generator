@@ -4,14 +4,14 @@ import {
   InputLabel,
   Select,
   Box,
-  Grow,
   MenuItem,
   OutlinedInput,
   Chip,
   useTheme,
   IconButton,
+  Tooltip,
 } from "@mui/material";
-import { DeleteOutlined } from "@mui/icons-material";
+import { RemoveCircleOutlineOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import {
   ADD_CHILD_URL_TO_CAMPAIGN,
@@ -25,6 +25,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [driver, setDriver] = useState("");
+  const [driverData, setDriverData] = useState(drivers);
 
   const theme = useTheme();
 
@@ -47,6 +48,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
       <Grid id={driverId} item>
         <Box
           sx={{
+            gap: '1rem',
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -70,7 +72,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
                 );
               }}
             >
-              {drivers.map((el) => (
+              {driverData.map((el) => (
                 <MenuItem
                   value={el.param}
                   key={el.param}
@@ -95,61 +97,52 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
                 })
               }
             >
-              <DeleteOutlined />
+              <Tooltip title='Remove Driver'>
+                <RemoveCircleOutlineOutlined htmlColor="gray" />
+              </Tooltip>
             </IconButton>
           ) : null}
         </Box>
       </Grid>
 
       {driverTypes.length > 0 && (
-        <Grow
-          in={driverTypes.length > 0}
-          style={{ transformOrigin: "0 0 0" }}
-          {...(driverTypes.length > 0 ? { timeout: 500 } : {})}
-        >
-          <Grid item>
-            <FormControl sx={{ m: 1, width: 300 }}>
-              <InputLabel>Driver Types</InputLabel>
-              <Select
-                multiple
-                value={selectedTypes}
-                onChange={(e) => changeHandler(e)}
-                input={<OutlinedInput label="Driver Types" />}
-                renderValue={() => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selectedTypes.map((val) => (
-                      <Grow
-                        key={val}
-                        in={driver.length !== 0}
-                        style={{ transformOrigin: "0 0 0" }}
-                        {...(driver.length !== 0 ? { timeout: 500 } : {})}
-                      >
-                        <Chip
-                          color={"secondary"}
-                          icon={socialIconHandler(val)}
-                          label={val}
-                        />
-                      </Grow>
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                {driverTypes.map(({ label, param }) => {
-                  return (
-                    <MenuItem
-                      key={label}
-                      value={param}
-                      style={getStyles(label, driverTypes, theme)}
-                    >
-                      {label}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              {
-                <Box>
-                  {/* {
+        <Grid item>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel>Driver Types</InputLabel>
+            <Select
+              multiple
+              value={selectedTypes}
+              onChange={(e) => changeHandler(e)}
+              input={<OutlinedInput label="Driver Types" />}
+              renderValue={() => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selectedTypes.map((val) => (
+                    <Chip
+                      key={val}
+                      color={"secondary"}
+                      icon={socialIconHandler(val)}
+                      label={val}
+                    />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {driverTypes.map(({ label, param }) => {
+                return (
+                  <MenuItem
+                    key={label}
+                    value={param}
+                    style={getStyles(label, driverTypes, theme)}
+                  >
+                    {label}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            {
+              <Box>
+                {/* {
                     driverTypes.length > 0 && driverTypes && selectedTypes.map(type => (
                       <CustomParamAccordion
                         title={type}
@@ -158,11 +151,11 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
                       />
                     ))
                   } */}
-                </Box>
-              }
-            </FormControl>
-          </Grid>
-        </Grow>
+              </Box>
+            }
+          </FormControl>
+        </Grid>
+
       )}
     </>
   );

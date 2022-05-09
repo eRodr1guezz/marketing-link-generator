@@ -1,4 +1,3 @@
-import csvDownload from "json-to-csv-export";
 import { useReducer, useEffect, useRef, useState } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
@@ -24,7 +23,7 @@ import {
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
-import { shortenURL, socialIconHandler } from "../Utils";
+import { convertAndExportToCsv, shortenURL, socialIconHandler } from "../Utils";
 import { SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
@@ -91,9 +90,10 @@ export default function Form() {
             />
 
             {state.generatedDrivers &&
-              state.generatedDrivers.map((d) => {
+              state.generatedDrivers.map((d, i) => {
                 return (
                   <CampaignDrivers
+                    key={i}
                     driverId={parseInt(Object.keys(d)[0])}
                     dispatchHandler={dispatch}
                     formState={state}
@@ -129,15 +129,10 @@ export default function Form() {
                     Generate URL Campaign
                   </Button>
                   <Button
-                    disabled={state.urlCollection.length === 0}
+                    disabled={state.campaignList.length === 0}
                     color="secondary"
                     onClick={() =>
-                      csvDownload(
-                        JSON.parse(
-                          JSON.stringify(state.urlCollection.map((u) => u.href))
-                        ),
-                        "urls.csv"
-                      )
+                      convertAndExportToCsv(state.campaignList)
                     }
                     variant="contained"
                   >
@@ -155,12 +150,12 @@ export default function Form() {
 
             <Box
               sx={{
+                marginBottom: '1rem',
                 height: state.urlCollection.length > 1 ? "160px" : 'auto',
                 overflow: "auto",
                 opacity: state.urlCollection.length === 0 && 0.75,
                 backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
               }}>
-              <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated.generatedAt}</Typography>}</span>
               {state.urlCollection && state.urlCollection.length > 0
                 ? state.urlCollection.map((el) => {
                   const elUrl = new URL(el);
@@ -250,8 +245,12 @@ export default function Form() {
             </Box>
             {/* Bitly shortening */}
 
+            <Divider />
+            <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated.generatedAt}</Typography>}</span>
+
+
             <Grid item>
-              <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', gap: '1rem' }}>
                 <BitlyTokenModal dispatchHandler={dispatch} />
                 <Button
                   disabled={state.bitlyAccessTokenField === ""}
@@ -274,26 +273,27 @@ export default function Form() {
                 >
                   Shorten ALL URLs
                 </Button>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <HelpOutlineOutlined fontSize="small" color="secondary" />
+                  <Link
+                    underline="always"
+                    variant="body2"
+                    style={{ textAlign: "right", textDecoration: "none" }}
+                    href="mailto:babruzese@medscapelive.com"
+                  >
+                    Issues with the URL builder? Get in touch!
+                  </Link>
+                </div>
               </Box>
             </Grid>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-              }}
-            >
-              <HelpOutlineOutlined fontSize="small" color="secondary" />
-              <Link
-                underline="always"
-                variant="body2"
-                style={{ textAlign: "right", textDecoration: "none" }}
-                href="mailto:babruzese@medscapelive.com"
-              >
-                Issues with the URL builder? Get in touch!
-              </Link>
-            </div>
+
           </Grid>
         </Container>
       </Paper>

@@ -17,19 +17,19 @@ export default function BitlyTokenModal({ dispatchHandler, formState }) {
   };
 
   const handleClose = () => {
-    if(value) {
+    if (value) {
       dispatchHandler({ type: 'SET_BITLY_ACCESS_TOKEN', value })
-      dispatchHandler({ type: 'SET_MESSAGE', value: 'Bit.ly Access Token was successfully set!'})
+      dispatchHandler({ type: 'SET_MESSAGE', value: 'Bit.ly Access Token was successfully set!' })
       setOpen(false);
     } else {
-      dispatchHandler({ type: 'SET_ERROR', value: 'No Access Token was set.'})
+      dispatchHandler({ type: 'SET_ERROR', value: 'No Access Token was set.' })
       setOpen(false)
     }
   };
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} fullWidth>
         Set your bit.ly access token
       </Button>
       <Dialog open={open} onClose={handleClose}>
