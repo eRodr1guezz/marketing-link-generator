@@ -20,12 +20,14 @@ import {
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
 import { drivers } from "../../internal";
 // import CustomParamAccordion from "./CustomParamAccordion";
+//TODO: Custom parameters by driver type in an accordion ui component
+//TODO: Solve the duplicate driver bug (drivers overwrite if accidentally selected twice)
 
 export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
   const [driverTypes, setDriverTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [driver, setDriver] = useState("");
-  const [driverData, setDriverData] = useState(drivers);
+  const [driverData,] = useState(drivers);
 
   const theme = useTheme();
 

@@ -1,6 +1,5 @@
 import download from 'downloadjs'
 import { unparse } from 'papaparse'
-import * as jsonexport from "jsonexport/dist"
 import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 
 export function validateUrl(value) {
