@@ -23,8 +23,8 @@ export default function SimpleSnackbar({ isOpen, message, type }) {
         autoHideDuration={3000}
         action={action}
         anchorOrigin={{
-          horizontal: 'center',
-          vertical: 'top',
+          horizontal: 'left',
+          vertical: 'bottom',
         }}
       >
         <Alert

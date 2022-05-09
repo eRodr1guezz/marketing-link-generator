@@ -40,6 +40,7 @@ export default function Form() {
   const fieldRef = useRef(null);
 
   useEffect(() => {
+    console.log(process.env.BITLY_TOKEN)
     if (state.errors !== "") {
       openSnackBar(state.errors, "error");
     } else if (state.messages !== "") {

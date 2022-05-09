@@ -23,11 +23,11 @@ export function socialIconHandler(param) {
   }
 }
 
-export async function shortenURL(url, access_token) {
+export async function shortenURL(url) {
   const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
   let headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${access_token}`,
+    Authorization: `Bearer ${process.env.REACT_APP_BITLY_TOKEN}`,
   };
 
   return await Promise.all(url.map(async u => {
