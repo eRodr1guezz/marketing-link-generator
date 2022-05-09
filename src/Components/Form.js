@@ -58,7 +58,7 @@ export default function Form() {
         <SimpleSnackbar type={alertType} message={message} isOpen={true} />
       ) : null}
       <Paper elevation={5}>
-        <Container fixed maxWidth="lg">
+        <Container>
           <Grid
             container
             direction="column"
