@@ -3,7 +3,6 @@ const fetch = require('node-fetch')
 
 const handler = async function (event, context) {
   const urls = JSON.parse(event.body)
-  console.log(urls)
 
   if (!context.clientContext && !context.clientContext.identity) {
     return {
@@ -14,7 +13,6 @@ const handler = async function (event, context) {
       }),
     }
   }
-  const { identity, user } = context.clientContext
 
   const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
   let headers = {
@@ -24,38 +22,21 @@ const handler = async function (event, context) {
 
   return {
     statusCode: 200,
-    body: await Promise.all(urls.map(async u => {
-      const r = await fetch(bitlyURL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ long_url: u }),
-      });
-      const d = await r.json();
-      return d.link
-    }))
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify(
+      await Promise.all(urls.map(async u => {
+        const r = await fetch(bitlyURL, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ long_url: u }),
+        });
+        const d = await r.json();
+        return d.link
+      }))
+    )
   }
-
-  // try {
-  //   const response = await fetch('https://api.chucknorris.io/jokes/random')
-  //   if (!response.ok) {
-  //     // NOT res.status >= 200 && res.status < 300
-  //     return { statusCode: response.status, body: response.statusText }
-  //   }
-  //   const data = await response.json()
-
-  //   return {
-  //     statusCode: 200,
-  //     body: JSON.stringify({ identity, user, msg: data.value }),
-  //   }
-  // } catch (error) {
-  //   // output to netlify function log
-  //   console.log(error)
-  //   return {
-  //     statusCode: 500,
-  //     // Could be a custom message or object i.e. JSON.stringify(err)
-  //     body: JSON.stringify({ msg: error.message }),
-  //   }
-  // }
 }
 
 module.exports = { handler }

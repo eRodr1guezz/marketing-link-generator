@@ -1,8 +1,3 @@
-<!-- Version 3.0.3 - updated 03/04/2022 -->
-<!-- 03/03/22 - Use Session storage, update page title conditional for subcat and attendee types -->
-<!-- 03/04/22 - Added better handling of different access group names for the variants of event info -->
-<!-- Registration Page Header Code  -->
-<!-- In order to remove any ambiguity from the potential for classifaction setup variants affecting access groups, I updated the switch statement to use regex so we can catch those keywords (ie. industry) and properly classify. -->
 <div id="metaDataWrapper" style="display: none">
   <div id="attendeeFname">*/fname/*</div>
   <div id="attendeeLname">*/lname/*</div>
@@ -37,62 +32,24 @@
     const role = document.getElementById("virtualEventRole").textContent;
     const attendeeTypeSelection = document.getElementsByName("selectcategoryid");
 
-    // let subcategory = sessionStorage.getItem("subcategory");
-    // let attendeeType = sessionStorage.getItem("attendee_type");
+    let subcategory = sessionStorage.getItem("subcategory");
+    let attendeeType = sessionStorage.getItem("attendee_type");
 
     let url = new URL(window.location.href)
     console.log(url.searchParams.get('session_variable') === 'admin' ? 2 : 0)
-    //in person and virtual
-    //us attendee status
-    //industry
-    //delete member
-    //IID and ALF
-    
-    // access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
-    //in person 
-    // replaces the country conditional question setup
-    
-    // if (country !== "United States") {
-    //   access_group.push("Non-US Attendee");
-    // } else {
-    //   access_group.push("US Attendee");
-    // }
 
-    switch (country) {
-      case 'Germany': 
-        access_group.push('Room A')
-        break;
-      case 'Spain': 
-        access_group.push('Room B')
-        break;
-      case 'France':
-        access_group.push('Room C')
-        break;
-      case 'Italy': 
-        access_group.push('Room D')
-        break;
-      default:
-        access_group.push('Room E')
-        break;
+    access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
+
+    if (country !== "United States") {
+      access_group.push("Non-US Attendee");
+    } else {
+      access_group.push("US Attendee");
     }
 
-    // if (/industry/gi.test(subcategory)) {
-    //   access_group.push("Industry");
-    //   access_group.push("Game: Excluded");
-    // }
-
-    // if (/exhibitor/gi.test(subcategory)) {
-    //   access_group.push('Exhibitor');
-    //   access_group.push("Game: Excluded");
-    // }
-
-    // if (/faculty/gi.test(subcategory)) {
-    //   access_group.push("Faculty");
-    // }
-
-    // if (/complimentary/gi.test(subcategory)) {
-    //   access_group.push('Complimentary');
-    // }
+    if (/industry/gi.test(subcategory)) {
+      access_group.push("Industry");
+      access_group.push("Game: Excluded");
+    }
 
     const attendee = {
       first_name,
@@ -103,7 +60,7 @@
       staff: staff == "*/custom1/*" ? 0 : staff,
       badge: badge == "*/custom2/*" ? 0 : badge,
       // role: role == "*/custom3/*" ? 0 : role,
-      role: url.searchParams.get('session_variable') === 'admin' ? 2 : role,
+      role: url.searchParams.get('session_variable') === 'admin' ? 2 : 0,
       access_groups: access_group.length > 0 ? access_group.map((el) => el.trim()).toString() : '',
     };
 
@@ -137,18 +94,20 @@
 <!-- Look & Feel -> Custom Code -> Custom HTML <HEAD> code -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const optionList = document.getElementsByClassName("category-selection-tr");
-    const inputs = document.querySelectorAll('input')
+    if (window.document.body.classList.contains('category') || window.document.body.classList.contains('newreg')) {
+      const optionList = document.getElementsByClassName("category-selection-tr");
+      const inputs = document.querySelectorAll('input')
 
-    for (let option of optionList) {
-      for (let td of option.childNodes) {
-        for (let input of td.childNodes) {
-          input.addEventListener("click", (e) => {
-            sessionStorage.setItem(
-              document.title.includes('Select Category') ? "subcategory" : "attendee_type",
-              e.target.labels[0].innerText.split("$")[0].trim()
-            );
-          });
+      for (let option of optionList) {
+        for (let td of option.childNodes) {
+          for (let input of td.childNodes) {
+            input.addEventListener("click", (e) => {
+              sessionStorage.setItem(
+                document.title.includes('Select Category') ? "subcategory" : "attendee_type",
+                e.target.labels[0].innerText.split("$")[0].trim()
+              );
+            });
+          }
         }
       }
     }

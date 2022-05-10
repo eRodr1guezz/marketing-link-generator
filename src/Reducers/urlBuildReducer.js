@@ -1,7 +1,7 @@
 //TODO: convert all action types to SCREAMING_SNAKE_CASE
 //TODO: decide if we need to keep or trash the classes
 import { drivers } from "../internal";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   messages: "",
@@ -11,7 +11,7 @@ const initialState = {
   generatedDrivers: [],
   selectedDrivers: [],
   urlCollection: [],
-  campaignName: '',
+  campaignName: "",
   campaignLastGenerated: null,
   campaignList: [],
 };
@@ -94,8 +94,8 @@ export function urlBuildReducer(state, action) {
   } else if (action.type === "SET_CAMPAIGN_NAME") {
     return {
       ...state,
-      campaignName: encodeURI(action.value).toLowerCase()
-    }
+      campaignName: encodeURI(action.value).toLowerCase(),
+    };
   } else if (action.type === "SET_ERROR") {
     return {
       ...state,
@@ -121,13 +121,15 @@ export function urlBuildReducer(state, action) {
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
     const { value, driver } = action; //the param
 
-    let values = value.map((val) => { return { param: val, driver } })
+    let values = value.map((val) => {
+      return { param: val, driver };
+    });
 
     return {
       ...state,
       disabledFields: false,
-      [driver]: values
-    }
+      [driver]: values,
+    };
   } else if (action.type === "ADD_NEW_DRIVER") {
     const { driverId } = action;
     let previous = state.generatedDrivers;
@@ -143,14 +145,15 @@ export function urlBuildReducer(state, action) {
       ...state,
       generatedDrivers: drivers,
     };
-  }
-  else if (action.type === "REMOVE_DRIVER") {
+  } else if (action.type === "REMOVE_DRIVER") {
     const { driverId, driver } = action;
 
     return {
       ...state,
       [driver]: [],
-      urlCollection: state.urlCollection !== [] && state.urlCollection.filter(u => u.driver !== driver),
+      urlCollection:
+        state.urlCollection !== [] &&
+        state.urlCollection.filter((u) => u.driver !== driver),
       generatedDrivers: state.generatedDrivers.filter(
         (driver) => parseInt(Object.keys(driver)[0]) !== driverId
       ),
@@ -165,59 +168,85 @@ export function urlBuildReducer(state, action) {
       ),
     };
   } else if (action.type === "GENERATE_URL_CAMPAIGN") {
-    let generatedCampaign = state.campaignList.length > 0 ? [...state.campaignList] : []
-    let campaignDrivers = []
-    let campaignId = uuidv4()
-    let createdAt = new Date().toISOString()
+    let generatedCampaign =
+      state.campaignList.length > 0 ? [...state.campaignList] : [];
+    let campaignDrivers = [];
+    let campaignId = uuidv4();
+    let createdAt = new Date().toISOString();
 
-    drivers.forEach(driver => {
+    drivers.forEach((driver) => {
       if (state[driver.param] !== [] && state[driver.param] !== undefined)
-        campaignDrivers.push(state[driver.param])
-    })
+        campaignDrivers.push(state[driver.param]);
+    });
 
     let createdUrls = campaignDrivers
       .reduce((a, b) => a.concat(b))
-      .map(u => {
-        let url = new InstanceUrl(state.url, null, u.driver)
-        url.searchParams.append('utm_medium', u.driver)
-        url.searchParams.append('utm_driver_type', u.param)
+      .map((u) => {
+        let url = new InstanceUrl(state.url, null, u.driver);
+        url.searchParams.append("utm_medium", u.driver);
+        url.searchParams.append("utm_driver_type", u.param);
 
-        return url
-      })
+        return url;
+      });
 
-    generatedCampaign.push(new UrlCampaign(campaignId, decodeURI(state.campaignName), createdUrls, createdAt))
+    generatedCampaign.push(
+      new UrlCampaign(
+        campaignId,
+        decodeURI(state.campaignName),
+        createdUrls,
+        createdAt
+      )
+    );
 
     return {
       ...state,
       messages: `${createdUrls.length} URLs were successfully created for campaign ${state.campaignName}!`,
       urlCollection: createdUrls,
-      campaignLastGenerated: state.campaignList.length > 0 ? state.campaignList[state.campaignList.length - 1].createdAt : { id: campaignId, generatedAt: createdAt },
-      campaignList: generatedCampaign
-    }
-  } else if (action.type === 'SHORTEN_URLS') {
-    const { value } = action
+      campaignLastGenerated:
+        state.campaignList.length > 0
+          ? state.campaignList[state.campaignList.length - 1].createdAt
+          : { id: campaignId, generatedAt: createdAt },
+      campaignList: generatedCampaign,
+    };
+  } else if (action.type === "SHORTEN_URLS") {
+    const { value } = action;
 
     return {
       ...state,
-      urlCollection: value
-    }
-  } else if (action.type === 'SET_BITLY_ACCESS_TOKEN') {
-    const { value } = action
+      urlCollection: value,
+    };
+  } else if (action.type === "SET_BITLY_ACCESS_TOKEN") {
+    const { value } = action;
     return {
       ...state,
       bitlyAccessTokenField: value,
-    }
+    };
   }
 }
 
 class UrlCampaign {
-  constructor(id, name, urls, createdAt) {
-    this.id = id
-    this.urls = urls
-    this.createdAt = createdAt
-    this.name = name
+  constructor(id, name, urls, createdAt, shortenedUrls) {
+    this.id = id;
+    this.name = name;
+    this.urls = urls;
+    this.createdAt = createdAt;
+    this.shortenedUrls = shortenedUrls;
   }
 
+  async shortenAllUrls() {
+    let shortenedUrls = await fetch(
+      process.env.NODE_ENV === "development"
+        ? process.env.REACT_APP_BITLY_DEV_URL
+        : process.env.REACT_APP_BITLY_PROD_URL,
+      {
+        method: "POST",
+        body: JSON.stringify(this.urls.map((u) => u.href)),
+      }
+    );
+    let response = await shortenedUrls.json();
+
+    this.shortenedUrls = response;
+  }
 }
 
 export { initialState };

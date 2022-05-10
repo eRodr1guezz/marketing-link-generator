@@ -23,7 +23,7 @@ import {
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
-import { convertAndExportToCsv, shortenURL, socialIconHandler } from "../Utils";
+import { convertAndExportToCsv, socialIconHandler } from "../Utils";
 import { SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
@@ -31,7 +31,6 @@ import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect";
 import { UrlInput } from "./Specialized/UrlInput";
 import { CampaignNameInput } from "./Specialized/CampaignNameInput";
 import { BitlyIcon } from "../bitlyIcon";
-import BitlyTokenModal from "./Specialized/BitlyTokenModal";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
@@ -39,8 +38,10 @@ export default function Form() {
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
   const fieldRef = useRef(null);
 
+  const devUrl = 'http://localhost:9999/.netlify/functions/url-shorten'
+  const prodUrl = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten'
+
   useEffect(() => {
-    console.log(process.env.BITLY_TOKEN)
     if (state.errors !== "") {
       openSnackBar(state.errors, "error");
     } else if (state.messages !== "") {
@@ -252,20 +253,23 @@ export default function Form() {
 
             <Grid item>
               <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', gap: '1rem' }}>
-                <BitlyTokenModal dispatchHandler={dispatch} />
+                {/* <BitlyTokenModal dispatchHandler={dispatch} /> */}
                 <Button
-                  disabled={state.bitlyAccessTokenField === ""}
+                  // disabled={state.bitlyAccessTokenField === ""}
                   variant="outlined"
                   color="warning"
                   onClick={async () => {
-                    let data = await shortenURL(
-                      state.urlCollection.map(u => u.href),
-                      state.bitlyAccessTokenField
-                    )
+                    let data =
+                      await fetch(process.env.NODE_ENV === 'development' ? devUrl : prodUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(state.urlCollection.map(u => u.href))
+                      })
+
+                    let response = await data.json()
 
                     dispatch({
                       type: "SHORTEN_URLS",
-                      value: data
+                      value: response
                     })
                   }}
                   endIcon={
