@@ -98,9 +98,9 @@ export function CampaignCard({
           );
         })}
       </CardContent>
-      <CardActionArea sx={{ padding: '1rem'}}>
-        <Button>Shorten URLs</Button>
-        <Button>Export to CSV</Button>
+      <CardActionArea sx={{ padding: '1rem', display: 'flex', justifyContent: 'space-evenly' }}>
+        <Button color="secondary" endIcon={<BitlyIcon />} variant="outlined">Shorten URLs</Button>
+        <Button color="warning" variant="outlined">Export to CSV</Button>
       </CardActionArea>
     </Card>
   );
