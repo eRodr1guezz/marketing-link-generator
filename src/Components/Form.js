@@ -15,6 +15,8 @@ import {
   Divider,
   ButtonGroup,
   Grow,
+  Card,
+  CardHeader,
 } from "@mui/material";
 import {
   ContentCopy,
@@ -31,6 +33,8 @@ import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect";
 import { UrlInput } from "./Specialized/UrlInput";
 import { CampaignNameInput } from "./Specialized/CampaignNameInput";
 import { BitlyIcon } from "../bitlyIcon";
+import { drivers } from "../internal";
+import { CampaignCard } from "./CampaignCard";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
@@ -38,8 +42,9 @@ export default function Form() {
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
   const fieldRef = useRef(null);
 
-  const devUrl = 'http://localhost:9999/.netlify/functions/url-shorten'
-  const prodUrl = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten'
+  const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
+  const prodUrl =
+    "https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten";
 
   useEffect(() => {
     if (state.errors !== "") {
@@ -122,25 +127,13 @@ export default function Form() {
 
             <Grid item>
               <Box sx={{ paddingTop: "1rem" }}>
-                <ButtonGroup fullWidth>
-                  <Button
-                    disabled={state.disabledFields}
-                    onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
-                    variant="contained"
-                  >
-                    Generate URL Campaign
-                  </Button>
-                  <Button
-                    disabled={state.campaignList.length === 0}
-                    color="secondary"
-                    onClick={() =>
-                      convertAndExportToCsv(state.campaignList)
-                    }
-                    variant="contained"
-                  >
-                    Export URLs to CSV
-                  </Button>
-                </ButtonGroup>
+                <Button
+                  fullWidth
+                  onClick={() => dispatch({ type: "GENERATE_URL_CAMPAIGN" })}
+                  variant="contained"
+                >
+                  Generate URL Campaign
+                </Button>
               </Box>
             </Grid>
 
@@ -150,127 +143,49 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            <Box
-              sx={{
-                marginBottom: '1rem',
-                height: state.urlCollection.length > 1 ? "160px" : 'auto',
-                overflow: "auto",
-                opacity: state.urlCollection.length === 0 && 0.75,
-                backgroundColor: state.urlCollection.length === 0 && 'lightgrey'
-              }}>
-              {state.urlCollection && state.urlCollection.length > 0
-                ? state.urlCollection.map((el) => {
-                  const elUrl = new URL(el);
-
-                  const socialCode =
-                    elUrl.searchParams.get("utm_driver_type"); //this will not work on bitly shortened links!
-
-                  return (
-                    <Grow
-                      key={elUrl}
-                      in={state.urlCollection.length > 0}
-                      style={{ transformOrigin: "0 0 0" }}
-                      {...(state.urlCollection.length > 0
-                        ? { timeout: 500 }
-                        : {})}
-                    >
-                      <Box sx={{ padding: ".15rem 1rem" }}>
-                        <Box
-                          component="form"
-                          sx={{
-                            p: "2px 4px",
-                            display: "flex",
-                            alignItems: "center",
-                            flexWrap: "wrap",
-                            width: "100%",
-                            border: "solid 1px lightblue",
-                            borderRadius: "8pt",
-                          }}
-                        >
-                          <IconButton
-                            disableRipple
-                            sx={{ p: "8px" }}
-                            aria-label="driver copy bar"
-                          >
-                            {!socialIconHandler(socialCode) ? (
-                              <LinkRounded />
-                            ) : (
-                              socialIconHandler(socialCode)
-                            )}
-                          </IconButton>
-                          <InputBase
-                            ref={fieldRef}
-                            sx={{ ml: 1, flex: 1, color: "#555" }}
-                            value={elUrl.href}
-                            inputProps={{
-                              "aria-label": "copy url instance",
-                              style: { fontSize: "smaller" },
-                            }}
-                          />
-                          <Divider
-                            sx={{ height: 28, m: 0.5 }}
-                            orientation="vertical"
-                          />
-                          <IconButton
-                            onClick={() => {
-                              navigator.clipboard.writeText(elUrl.href);
-                              dispatch({ type: SET_MESSAGE, value: 'URL successfully copied to your clipboard!' })
-                            }}
-                            sx={{ p: "10px" }}
-                            aria-label="copy url"
-                          >
-                            <Tooltip title="Copy to clipboard">
-                              <ContentCopy />
-                            </Tooltip>
-                          </IconButton>
-                          <Divider
-                            sx={{ height: 28, m: 0.5 }}
-                            orientation="vertical"
-                          />
-                          <IconButton
-                            onClick={() => {
-                              dispatch({ type: SET_MESSAGE, value: 'URL successfully shortened with Bit.ly!' })
-                            }}
-                            sx={{ p: "10px" }}
-                            aria-label="copy url"
-                          >
-                            <Tooltip title="Shorten URL">
-                              <BitlyIcon htmlColor={'#ba68c8'} />
-                            </Tooltip>
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    </Grow>
-                  );
-                })
-                : null}
-            </Box>
-            {/* Bitly shortening */}
-
-            <Divider />
-            <span style={{ textAlign: 'right', color: '#777' }}>{state.campaignLastGenerated && <Typography variant="body2">Last Campaign generated at: {state.campaignLastGenerated.generatedAt}</Typography>}</span>
-
+            {state.campaignList.length > 0 &&
+              state.campaignList.map((c) => {
+                console.log(c)
+                return (
+                <CampaignCard
+                  id={c.id}
+                  subheader={c.createdAt}
+                  dispatchHandler={dispatch}
+                  title={c.name}
+                  urlList={c.urls}
+                />)
+              })}
 
             <Grid item>
-              <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', gap: '1rem' }}>
-                {/* <BitlyTokenModal dispatchHandler={dispatch} /> */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
                 <Button
                   // disabled={state.bitlyAccessTokenField === ""}
                   variant="outlined"
                   color="warning"
                   onClick={async () => {
-                    let data =
-                      await fetch(process.env.NODE_ENV === 'development' ? devUrl : prodUrl, {
-                        method: 'POST',
-                        body: JSON.stringify(state.urlCollection.map(u => u.href))
-                      })
+                    let data = await fetch(
+                      process.env.NODE_ENV === "development" ? devUrl : prodUrl,
+                      {
+                        method: "POST",
+                        body: JSON.stringify(
+                          state.urlCollection.map((u) => u.href)
+                        ),
+                      }
+                    );
 
-                    let response = await data.json()
+                    let response = await data.json();
 
                     dispatch({
                       type: "SHORTEN_URLS",
-                      value: response
-                    })
+                      value: response,
+                    });
                   }}
                   endIcon={
                     <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
@@ -297,8 +212,6 @@ export default function Form() {
                 </div>
               </Box>
             </Grid>
-
-
           </Grid>
         </Container>
       </Paper>
