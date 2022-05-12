@@ -1,46 +1,23 @@
-# Getting Started with Create React App
+# Welcome to the Campaign URL Builder!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The purpose of this URL generator tool is to help you quickly and easily create trackable URLs for your project that utilize the organizations unique marketing parameters.
 
-## Available Scripts
+If you ever run into a bug/issue with the builder, please feel free to reach out to me directly any time @ brent.abruzese@gmail.com! You can also send me a DM on Slack!
 
-In the project directory, you can run:
+All you'll need to get started with the builder is a base URL! This will be the URL of the website you are using in your project.
 
-### `yarn start`
+After that, you'll simply select what areas of the Business this will be for - ie. MedscapeLive or Medscape etc. Upon selecting that Business unit, another dropdown will emerge with a selection of Business Unit Subcategories. This will allow you to further dial into the unique area of the organization your project lives.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+There is also a Therapeutic Area dropdown that can be toggled on or off if necessary - this will allow you to choose the Therapeutic area of the project, ie. Derm.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+At this point, the project has generated a "Root URL" under the hood. That Root URL will be the new basis for all the generated URLs you create when adding Campaign Drivers!
 
-### `yarn test`
+A "Driver" is the unique method you're using in your marketing campaign - for example, Email or Social Media. After a driver is created, the tool will also allow you to generate URLs for individual platforms, ie. Facebook or Twitter for Social Media, or define whether an Email is internal or external etc.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Note: You can add as many drivers as you'd like as long as you do not duplicate them!
 
-### `yarn build`
+Once you've chosen your drivers, you can click "Generate URL Campaign" to create your unique collection of URLs! This will display right on the bottom of the form under "Results". You are also given the option of exporting the results to a CSV file that can be opened in your favorite text editor or spreadsheet software, ie. Microsoft Excel/Apple Numbers!
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+You may also notice that there's a feature that allows you to shorten your URLs with Bit.ly! Once you've generated your URLs, simply click the button that says "Shorten URLS" and the results will reflect the new shortened URL! If you shorten a URL and need to reference it's original state, simply click the icon to the left of the URL and the original URL will be displayed in a window for you to view/copy!
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+I'm very excited to share this project with you! As of today, 05/11/22, it's officially available to begin demoing/using for projects you have. If you have any feedback or concerns don't hesitate to ask, I'd love to know what you think! Thank you!!
