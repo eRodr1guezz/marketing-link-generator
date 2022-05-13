@@ -1,3 +1,4 @@
+import { ArrowRightAlt } from "@mui/icons-material";
 import { CardContent, CardHeader, Box, Button } from "@mui/material";
 import { BitlyIcon } from "../bitlyIcon";
 import { convertAndExportToCsv } from "../Utils";
@@ -23,12 +24,19 @@ export function CampaignCard({
         marginBottom: "1rem",
       }}
       id={id}>
-      <CardHeader
-        titleTypographyProps={{ fontWeight: "bolder", fontSize: "24pt" }}
-        subheaderTypographyProps={{ sx: { content: '"HUH: "' } }}
-        title={title}
-        subheader={subheader}
-      />
+      <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+        <CardHeader
+          titleTypographyProps={{ fontWeight: "bolder", fontSize: "24pt" }}
+          title={title}
+          subheader={subheader}
+        />
+        <Button
+          endIcon={<ArrowRightAlt />}
+          onClick={() => convertAndExportToCsv(formState.campaignList.filter(c => c.id === id))}
+          variant="text">
+          Export to CSV
+        </Button>
+      </Box>
       <CardContent>
         <Box sx={{ display: "flex", gap: ".75rem", flexDirection: "column" }}>
           {formState[id + "shortenedUrls"] &&
@@ -76,9 +84,10 @@ export function CampaignCard({
           justifyContent: "space-evenly",
         }}>
         <Button
+          fullWidth
           color='secondary'
           endIcon={<BitlyIcon />}
-          variant='outlined'
+          variant='contained'
           onClick={async () => {
             let data = await fetch(
               process.env.NODE_ENV === "development" ? devUrl : prodUrl,
@@ -97,12 +106,6 @@ export function CampaignCard({
             });
           }}>
           Shorten ALL Campaign URLs
-        </Button>
-        <Button
-          onClick={() => convertAndExportToCsv(formState.campaignList.filter(c => c.id === id))}
-          color='warning'
-          variant='outlined'>
-          Export to CSV
         </Button>
       </Box>
     </Box>
