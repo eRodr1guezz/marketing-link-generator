@@ -14,6 +14,7 @@ const initialState = {
   campaignName: "",
   campaignLastGenerated: null,
   campaignList: [],
+  shortenedUrls: [],
 };
 
 export class InstanceUrl extends URL {
@@ -168,6 +169,13 @@ export function urlBuildReducer(state, action) {
       ),
     };
   } else if (action.type === "GENERATE_URL_CAMPAIGN") {
+    if (state.campaignList.some(c => c.name === state.campaignName)) {
+      return {
+        ...state,
+        errors: 'You have already created a campaign with that name. Try providing a different campaign name.'
+      }
+    }
+
     let generatedCampaign =
       state.campaignList.length > 0 ? [...state.campaignList] : [];
     let campaignDrivers = [];
@@ -194,14 +202,15 @@ export function urlBuildReducer(state, action) {
         campaignId,
         decodeURI(state.campaignName),
         createdUrls,
-        createdAt
+        createdAt,
+        []
       )
     );
 
     return {
       ...state,
       messages: `${createdUrls.length} URLs were successfully created for campaign ${state.campaignName}!`,
-      urlCollection: createdUrls,
+      urlCollection: [],
       campaignLastGenerated:
         state.campaignList.length > 0
           ? state.campaignList[state.campaignList.length - 1].createdAt
@@ -209,11 +218,12 @@ export function urlBuildReducer(state, action) {
       campaignList: generatedCampaign,
     };
   } else if (action.type === "SHORTEN_URLS") {
-    const { value } = action;
+    const { value, campId } = action;
 
     return {
       ...state,
-      urlCollection: value,
+      messages: `You have successfully shortened ${value.length} URLs!`,
+      [campId + 'shortenedUrls']: value,
     };
   } else if (action.type === "SET_BITLY_ACCESS_TOKEN") {
     const { value } = action;
@@ -233,20 +243,6 @@ class UrlCampaign {
     this.shortenedUrls = shortenedUrls;
   }
 
-  async shortenAllUrls() {
-    let shortenedUrls = await fetch(
-      process.env.NODE_ENV === "development"
-        ? process.env.REACT_APP_BITLY_DEV_URL
-        : process.env.REACT_APP_BITLY_PROD_URL,
-      {
-        method: "POST",
-        body: JSON.stringify(this.urls.map((u) => u.href)),
-      }
-    );
-    let response = await shortenedUrls.json();
-
-    this.shortenedUrls = response;
-  }
 }
 
 export { initialState };

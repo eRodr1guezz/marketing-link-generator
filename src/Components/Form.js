@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef, useState } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
 import SimpleSnackbar from "./Snackbar";
 import {
@@ -9,42 +9,26 @@ import {
   Grid,
   Paper,
   Typography,
-  Tooltip,
-  IconButton,
-  InputBase,
   Divider,
-  ButtonGroup,
-  Grow,
-  Card,
-  CardHeader,
 } from "@mui/material";
 import {
-  ContentCopy,
   HelpOutlineOutlined,
-  LinkRounded,
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
 import useSnackbar from "../Hooks/useSnackbar";
-import { convertAndExportToCsv, socialIconHandler } from "../Utils";
 import { SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
 import { CampaignDrivers } from "./Specialized/CampaignDrivers";
 import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
 import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect";
 import { UrlInput } from "./Specialized/UrlInput";
 import { CampaignNameInput } from "./Specialized/CampaignNameInput";
-import { BitlyIcon } from "../bitlyIcon";
-import { drivers } from "../internal";
 import { CampaignCard } from "./CampaignCard";
+import HelpModal from "./Specialized/HelpModal";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
   const [increment, setIncrement] = useState(1);
   const { isOpen, alertType, message, openSnackBar } = useSnackbar();
-  const fieldRef = useRef(null);
-
-  const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
-  const prodUrl =
-    "https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten";
 
   useEffect(() => {
     if (state.errors !== "") {
@@ -79,9 +63,12 @@ export default function Form() {
               borderRadius: "8pt",
             }}
           >
-            <Typography sx={{ fontWeight: 800 }} variant="h3">
-              Campaign URL Builder
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontWeight: 800 }} variant="h3">
+                Campaign URL Builder
+              </Typography>
+              <HelpModal />
+            </Box>
 
             <UrlInput dispatchHandler={dispatch} formState={state} />
             <CampaignNameInput formState={state} dispatchHandler={dispatch} />
@@ -90,11 +77,12 @@ export default function Form() {
               formState={state}
               dispatchHandler={dispatch}
             />
-            <CampaignDrivers
-              driverId={10000}
-              formState={state}
-              dispatchHandler={dispatch}
-            />
+            {state.url !== '' &&
+              <CampaignDrivers
+                driverId={10000}
+                formState={state}
+                dispatchHandler={dispatch}
+              />}
 
             {state.generatedDrivers &&
               state.generatedDrivers.map((d, i) => {
@@ -145,15 +133,16 @@ export default function Form() {
 
             {state.campaignList.length > 0 &&
               state.campaignList.map((c) => {
-                console.log(c)
                 return (
-                <CampaignCard
-                  id={c.id}
-                  subheader={c.createdAt}
-                  dispatchHandler={dispatch}
-                  title={c.name}
-                  urlList={c.urls}
-                />)
+                  <CampaignCard
+                    key={c.id}
+                    id={c.id}
+                    subheader={'Created: ' + c.createdAt}
+                    dispatchHandler={dispatch}
+                    formState={state}
+                    title={c.name}
+                    urlList={c.urls}
+                  />)
               })}
 
             <Grid item>
@@ -165,34 +154,6 @@ export default function Form() {
                   gap: "1rem",
                 }}
               >
-                <Button
-                  // disabled={state.bitlyAccessTokenField === ""}
-                  variant="outlined"
-                  color="warning"
-                  onClick={async () => {
-                    let data = await fetch(
-                      process.env.NODE_ENV === "development" ? devUrl : prodUrl,
-                      {
-                        method: "POST",
-                        body: JSON.stringify(
-                          state.urlCollection.map((u) => u.href)
-                        ),
-                      }
-                    );
-
-                    let response = await data.json();
-
-                    dispatch({
-                      type: "SHORTEN_URLS",
-                      value: response,
-                    });
-                  }}
-                  endIcon={
-                    <BitlyIcon htmlColor="#e4def" sx={{ paddingTop: "2px" }} />
-                  }
-                >
-                  Shorten ALL URLs
-                </Button>
                 <div
                   style={{
                     display: "flex",

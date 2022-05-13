@@ -64,7 +64,7 @@ export const MenuProps = {
 
 export function convertAndExportToCsv(data) {
   let campaignObject = {}
-
+  console.log(data)
   let d = data.map(camp => {
     const { name, id, createdAt, urls } = camp
     campaignObject.name = name;

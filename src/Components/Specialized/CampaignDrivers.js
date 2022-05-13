@@ -107,7 +107,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
         </Box>
       </Grid>
 
-      {driverTypes.length > 0 && (
+      {driver && driverTypes.length > 0 && (
         <Grid item>
           <FormControl sx={{ m: 1, width: 300 }}>
             <InputLabel>Driver Types</InputLabel>

@@ -27,13 +27,15 @@ const handler = async function (event, context) {
     },
     body: JSON.stringify(
       await Promise.all(urls.map(async u => {
+
         const r = await fetch(bitlyURL, {
           method: 'POST',
           headers,
           body: JSON.stringify({ long_url: u }),
         });
         const d = await r.json();
-        return d.link
+
+        return { oldUrl: d.long_url, shortUrl: d.link }
       }))
     )
   }
