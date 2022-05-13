@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { parse } from 'papaparse'
-import Form from './Form'
-import { Icon } from '@mui/material';
+import Form from '../Form/Form'
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const Input = styled('input')({
   display: 'none',

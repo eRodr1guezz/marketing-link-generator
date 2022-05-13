@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { HelpCenterRounded } from "@mui/icons-material";
 
-export default function HelpModal({ dispatchHandler, formState }) {
+export default function HelpModal() {
   const [open, setOpen] = useState(false);
   const [value,] = useState("");
 

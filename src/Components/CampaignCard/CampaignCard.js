@@ -1,8 +1,9 @@
 import { ArrowRightAlt } from "@mui/icons-material";
 import { CardContent, CardHeader, Box, Button } from "@mui/material";
-import { BitlyIcon } from "../bitlyIcon";
-import { convertAndExportToCsv } from "../Utils";
-import { LinkResultListItem } from "./LinkResultListItem";
+import { BitlyIcon } from "../../bitlyIcon";
+import { convertAndExportToCsv } from "../../Utils";
+import { LinkResultListItem } from "../LinkResultListItem/LinkResultListItem";
+import styles from './campaignCard.module.css'
 
 const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
 const prodUrl =
@@ -18,13 +19,9 @@ export function CampaignCard({
 }) {
   return (
     <Box
-      sx={{
-        padding: "0rem 1.5rem",
-        border: "1px dotted #999",
-        marginBottom: "1rem",
-      }}
+      className={styles.container}
       id={id}>
-      <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+      <Box className={styles.flexAlign}>
         <CardHeader
           titleTypographyProps={{ fontWeight: "bolder", fontSize: "24pt" }}
           title={title}

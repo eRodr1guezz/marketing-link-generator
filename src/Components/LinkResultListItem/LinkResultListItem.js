@@ -1,29 +1,21 @@
 import { Box, IconButton, InputBase, Divider, Tooltip } from "@mui/material";
-import { socialIconHandler } from "../Utils";
+import { socialIconHandler } from "../../Utils";
 import { LinkRounded, ContentCopy } from "@mui/icons-material";
-import { BitlyIcon } from "../bitlyIcon";
-import { SET_MESSAGE } from "../Reducers/actionTypes";
+import { BitlyIcon } from "../../bitlyIcon";
+import { SET_MESSAGE } from "../../Reducers/actionTypes";
+import styles from './linkResultListItem.module.css'
 
 export function LinkResultListItem({
-  formState,
   dispatchHandler,
   href,
   social,
   shortened,
-  backgroundColor,
 }) {
   return (
     <Box
       component='form'
-      sx={{
-        p: "2px 4px",
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        width: "100%",
-        border: "solid 1px black",
-        borderRadius: "8pt",
-      }}>
+      className={styles.container}
+    >
       <IconButton disableRipple sx={{ p: "8px" }} aria-label='driver copy bar'>
         {!socialIconHandler(social) ? (
           <LinkRounded />

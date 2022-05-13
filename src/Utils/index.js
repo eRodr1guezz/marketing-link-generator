@@ -23,24 +23,6 @@ export function socialIconHandler(param) {
   }
 }
 
-export async function shortenURL(url) {
-  const bitlyURL = `https://api-ssl.bitly.com/v4/shorten`;
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.REACT_APP_BITLY_TOKEN}`,
-  };
-
-  return await Promise.all(url.map(async u => {
-    const r = await fetch(bitlyURL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ long_url: u }),
-    });
-    const d = await r.json();
-    return d.link;
-  }))
-}
-
 export function getStyles(name, driverName, theme) {
   return {
     fontWeight:

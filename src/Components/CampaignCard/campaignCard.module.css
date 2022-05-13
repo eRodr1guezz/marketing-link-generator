@@ -1,0 +1,16 @@
+.container {
+  padding: 0rem 1.5rem;
+  border: 1px dotted #999;
+  margin-bottom: 1rem;
+}
+
+.flexAlign {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header {
+  font-weight: bolder;
+  font-size: 24pt;
+}

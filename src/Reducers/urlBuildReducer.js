@@ -1,5 +1,3 @@
-//TODO: convert all action types to SCREAMING_SNAKE_CASE
-//TODO: decide if we need to keep or trash the classes
 import { drivers } from "../internal";
 import { v4 as uuidv4 } from "uuid";
 
@@ -107,7 +105,7 @@ export function urlBuildReducer(state, action) {
       ...state,
       messages: action.value,
     };
-  } else if (action.type === "updateSelectedUrl") {
+  } else if (action.type === "UPDATE_SELECTED_URL") {
     const updatedUrl = new InstanceUrl(action.href, action.id);
     updatedUrl.searchParams.append("utm_id", action.value);
 
@@ -120,7 +118,13 @@ export function urlBuildReducer(state, action) {
       generatedUrls: state.generatedUrls,
     };
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
-    const { value, driver } = action; //the param
+    const { value, driver } = action;
+    if (state[driver]) {
+      return {
+        ...state,
+        errors: 'That driver already exists - please do not duplicate drivers on a single campaign.'
+      }
+    }
 
     let values = value.map((val) => {
       return { param: val, driver };
@@ -179,7 +183,7 @@ export function urlBuildReducer(state, action) {
     if (!state.selectedDrivers) {
       return {
         ...state,
-        errors: 'You must select at least on Campaign Driver before generating a Campaign!'
+        errors: 'You must select at least one Campaign Driver before generating a Campaign!'
       }
     }
 

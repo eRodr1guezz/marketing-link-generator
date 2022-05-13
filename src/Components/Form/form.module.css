@@ -1,0 +1,14 @@
+.container {
+  gap: 1rem;
+  flex-direction: column !important;
+  display: flex;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8pt;
+}
+
+.flexAlign {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useState } from "react";
-import { urlBuildReducer, initialState } from "../Reducers/urlBuildReducer";
-import SimpleSnackbar from "./Snackbar";
+import { urlBuildReducer, initialState } from "../../Reducers/urlBuildReducer";
+import SimpleSnackbar from "../Snackbar";
 import {
   Link,
   Button,
@@ -15,15 +15,16 @@ import {
   HelpOutlineOutlined,
   AddCircleOutlineTwoTone,
 } from "@mui/icons-material";
-import useSnackbar from "../Hooks/useSnackbar";
-import { SET_ERROR, SET_MESSAGE } from "../Reducers/actionTypes";
-import { CampaignDrivers } from "./Specialized/CampaignDrivers";
-import { BusinessUnitsSelect } from "./Specialized/BusinessUnitsSelect";
-import { TherapeuticAreasSelect } from "./Specialized/TherapeuticAreasSelect";
-import { UrlInput } from "./Specialized/UrlInput";
-import { CampaignNameInput } from "./Specialized/CampaignNameInput";
-import { CampaignCard } from "./CampaignCard";
-import HelpModal from "./Specialized/HelpModal";
+import useSnackbar from "../../Hooks/useSnackbar";
+import { SET_ERROR, SET_MESSAGE } from "../../Reducers/actionTypes";
+import { CampaignDrivers } from "../Specialized/CampaignDrivers";
+import { BusinessUnitsSelect } from "../Specialized/BusinessUnitsSelect";
+import { TherapeuticAreasSelect } from "../Specialized/TherapeuticAreasSelect";
+import { UrlInput } from "../Specialized/UrlInput";
+import { CampaignNameInput } from "../Specialized/CampaignNameInput";
+import { CampaignCard } from "../CampaignCard/CampaignCard";
+import styles from './form.module.css'
+import HelpModal from "../Specialized/HelpModal";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
@@ -50,21 +51,10 @@ export default function Form() {
       ) : null}
       <Paper elevation={5}>
         <Container>
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignContent="center"
-            alignItems="stretch"
-            rowGap={1.75}
-            sx={{
-              backgroundColor: "#fff",
-              padding: "2rem",
-              borderRadius: "8pt",
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography sx={{ fontWeight: 800 }} variant="h3">
+          <Grid className={styles.container}>
+
+            <Box className={styles.flexAlign}>
+              <Typography component="h1" sx={{ fontWeight: 800 }} variant="h3">
                 Campaign URL Builder
               </Typography>
               <HelpModal />
@@ -132,10 +122,10 @@ export default function Form() {
             </Divider>
 
             {state.campaignList.length > 0 &&
-              state.campaignList.map((c) => {
+              state.campaignList.map((c, i) => {
                 return (
                   <CampaignCard
-                    key={c.id}
+                    key={i}
                     id={c.id}
                     subheader={'Created: ' + c.createdAt}
                     dispatchHandler={dispatch}
