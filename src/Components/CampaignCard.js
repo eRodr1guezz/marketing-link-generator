@@ -43,7 +43,6 @@ export function CampaignCard({
             formState[id + "shortenedUrls"].length > 0
             ? formState[id + "shortenedUrls"].map(({ oldUrl, shortUrl }) => {
               const old = new URL(oldUrl);
-              // const short = new URL(shortUrl)
               const socialCode = old.searchParams.get("utm_driver_type");
               return (
                 <Box
@@ -69,6 +68,7 @@ export function CampaignCard({
               const socialCode = u.searchParams.get("utm_driver_type");
               return (
                 <LinkResultListItem
+                  backgroundColor={'lightgrey'}
                   href={u.href}
                   social={socialCode}
                   dispatchHandler={dispatchHandler}

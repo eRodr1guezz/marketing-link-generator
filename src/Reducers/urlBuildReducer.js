@@ -9,7 +9,7 @@ const initialState = {
   url: "",
   bitlyAccessTokenField: "",
   generatedDrivers: [],
-  selectedDrivers: [],
+  selectedDrivers: false,
   urlCollection: [],
   campaignName: "",
   campaignLastGenerated: null,
@@ -176,6 +176,13 @@ export function urlBuildReducer(state, action) {
       }
     }
 
+    if (!state.selectedDrivers) {
+      return {
+        ...state,
+        errors: 'You must select at least on Campaign Driver before generating a Campaign!'
+      }
+    }
+
     let generatedCampaign =
       state.campaignList.length > 0 ? [...state.campaignList] : [];
     let campaignDrivers = [];
@@ -231,6 +238,11 @@ export function urlBuildReducer(state, action) {
       ...state,
       bitlyAccessTokenField: value,
     };
+  } else if (action.type === 'SET_DRIVER') {
+    return {
+      ...state,
+      selectedDrivers: action.value
+    }
   }
 }
 

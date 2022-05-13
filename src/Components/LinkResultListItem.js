@@ -4,10 +4,17 @@ import { LinkRounded, ContentCopy } from "@mui/icons-material";
 import { BitlyIcon } from "../bitlyIcon";
 import { SET_MESSAGE } from "../Reducers/actionTypes";
 
-export function LinkResultListItem({ formState, dispatchHandler, href, social, shortened }) {
+export function LinkResultListItem({
+  formState,
+  dispatchHandler,
+  href,
+  social,
+  shortened,
+  backgroundColor,
+}) {
   return (
     <Box
-      component="form"
+      component='form'
       sx={{
         p: "2px 4px",
         display: "flex",
@@ -16,13 +23,8 @@ export function LinkResultListItem({ formState, dispatchHandler, href, social, s
         width: "100%",
         border: "solid 1px black",
         borderRadius: "8pt",
-      }}
-    >
-      <IconButton
-        disableRipple
-        sx={{ p: "8px" }}
-        aria-label="driver copy bar"
-      >
+      }}>
+      <IconButton disableRipple sx={{ p: "8px" }} aria-label='driver copy bar'>
         {!socialIconHandler(social) ? (
           <LinkRounded />
         ) : (
@@ -37,7 +39,7 @@ export function LinkResultListItem({ formState, dispatchHandler, href, social, s
           style: { fontSize: "smaller" },
         }}
       />
-      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
       <IconButton
         onClick={() => {
           navigator.clipboard.writeText(href);
@@ -47,15 +49,14 @@ export function LinkResultListItem({ formState, dispatchHandler, href, social, s
           });
         }}
         sx={{ p: "10px" }}
-        aria-label="copy url"
-      >
-        <Tooltip title="Copy to clipboard">
+        aria-label='copy url'>
+        <Tooltip title='Copy to clipboard'>
           <ContentCopy />
         </Tooltip>
       </IconButton>
-      {!shortened &&
+      {!shortened && (
         <>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
           <IconButton
             onClick={() => {
               dispatchHandler({
@@ -64,14 +65,13 @@ export function LinkResultListItem({ formState, dispatchHandler, href, social, s
               });
             }}
             sx={{ p: "10px" }}
-            aria-label="copy url"
-          >
-            <Tooltip title="Shorten URL">
+            aria-label='copy url'>
+            <Tooltip title='Shorten URL'>
               <BitlyIcon htmlColor={"black"} />
             </Tooltip>
           </IconButton>
         </>
-      }
+      )}
     </Box>
-  )
+  );
 }

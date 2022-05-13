@@ -65,6 +65,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
               value={driver}
               onChange={(e) => {
                 setDriver(e.target.value);
+                dispatchHandler({ type: 'SET_DRIVER', value: true })
                 if (selectedTypes.length > 0) {
                   setSelectedTypes([]);
                   dispatchHandler({ type: REMOVE_DRIVER, driver });
