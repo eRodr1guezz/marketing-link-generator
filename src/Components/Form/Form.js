@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useState } from "react";
 import { urlBuildReducer, initialState } from "../../Reducers/urlBuildReducer";
-import SimpleSnackbar from "../Snackbar";
+import SimpleSnackbar from "../Snackbar/Snackbar";
 import {
   Link,
   Button,
@@ -17,14 +17,14 @@ import {
 } from "@mui/icons-material";
 import useSnackbar from "../../Hooks/useSnackbar";
 import { SET_ERROR, SET_MESSAGE } from "../../Reducers/actionTypes";
-import { CampaignDrivers } from "../Specialized/CampaignDrivers";
-import { BusinessUnitsSelect } from "../Specialized/BusinessUnitsSelect";
-import { TherapeuticAreasSelect } from "../Specialized/TherapeuticAreasSelect";
-import { UrlInput } from "../Specialized/UrlInput";
-import { CampaignNameInput } from "../Specialized/CampaignNameInput";
+import { CampaignDrivers } from "../CampaignDrivers/CampaignDrivers";
+import { BusinessUnitsSelect } from "../BusinessUnitsSelect/BusinessUnitsSelect";
+import { TherapeuticAreasSelect } from "../TherapeuticAreasSelect/TherapeuticAreasSelect";
+import { UrlInput } from "../UrlInput/UrlInput";
+import { CampaignNameInput } from "../CampaignNameInput/CampaignNameInput";
 import { CampaignCard } from "../CampaignCard/CampaignCard";
 import styles from './form.module.css'
-import HelpModal from "../Specialized/HelpModal";
+import HelpModal from "../HelpModal/HelpModal";
 
 export default function Form() {
   const [state, dispatch] = useReducer(urlBuildReducer, initialState);
