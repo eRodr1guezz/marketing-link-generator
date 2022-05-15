@@ -4,8 +4,8 @@ import { APPEND_PARAM } from '../../Reducers/actionTypes'
 import { businessUnits, businessUnitSubCategories } from '../../internal'
 
 export function BusinessUnitsSelect({ formState, dispatchHandler }) {
-  const [value, setValue] = useState()
-  const [subValue, setSubValue] = useState()
+  const [value, setValue] = useState('')
+  const [subValue, setSubValue] = useState('')
 
   return (
     <>
@@ -16,7 +16,7 @@ export function BusinessUnitsSelect({ formState, dispatchHandler }) {
             disabled={formState.url === ''}
             label='Business Units'
             name='businessUnits'
-            value={value || ''}
+            value={value}
             onChange={(e) => setValue(e.target.value)}>
             {businessUnits.map(({ label, param }) => (
               <MenuItem
@@ -50,7 +50,7 @@ export function BusinessUnitsSelect({ formState, dispatchHandler }) {
                   disabled={formState.url === ''}
                   label='Subcategory'
                   name='businessUnitSubCategories'
-                  value={subValue || ""}
+                  value={subValue}
                   onChange={(e) => setSubValue(e.target.value)}>
                   {businessUnitSubCategories.map(({ label, param }) => (
                     <MenuItem

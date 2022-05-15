@@ -119,13 +119,7 @@ export function urlBuildReducer(state, action) {
     };
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
     const { value, driver } = action;
-    if (state[driver]) {
-      return {
-        ...state,
-        errors: 'That driver already exists - please do not duplicate drivers on a single campaign.'
-      }
-    }
-
+  
     let values = value.map((val) => {
       return { param: val, driver };
     });
@@ -192,6 +186,7 @@ export function urlBuildReducer(state, action) {
     let campaignDrivers = [];
     let campaignId = uuidv4();
     let createdAt = new Date().toISOString();
+    let rootUrl = state.url
 
     drivers.forEach((driver) => {
       if (state[driver.param] !== [] && state[driver.param] !== undefined)
@@ -201,7 +196,8 @@ export function urlBuildReducer(state, action) {
     let createdUrls = campaignDrivers
       .reduce((a, b) => a.concat(b))
       .map((u) => {
-        let url = new InstanceUrl(state.url, null, u.driver);
+        let url = new InstanceUrl(rootUrl, null, u.driver);
+        
         url.searchParams.append("utm_medium", u.driver);
         url.searchParams.append("utm_driver_type", u.param);
 
@@ -215,8 +211,7 @@ export function urlBuildReducer(state, action) {
         createdUrls,
         createdAt,
         []
-      )
-    );
+      ));
 
     return {
       ...state,
