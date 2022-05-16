@@ -86,7 +86,6 @@ export function CampaignCard({
           ? formState[id + "shortenedUrls"].map(({ oldUrl, shortUrl }) => {
             const old = new URL(oldUrl);
             const socialCode = old.searchParams.get("utm_driver_type");
-            const driver = old.searchParams.get('utm_medium')
 
             return (
               <>
