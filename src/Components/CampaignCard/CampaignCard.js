@@ -17,6 +17,7 @@ import { convertAndExportToCsv } from "../../Utils";
 import { LinkResultListItem } from "../LinkResultListItem/LinkResultListItem";
 import styles from "./campaignCard.module.css";
 import { useEffect } from "react";
+import { drivers } from "../../internal";
 
 const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
 const prodUrl =
@@ -32,7 +33,6 @@ export function CampaignCard({
 }) {
 
   useEffect(() => {
-    console.log(id)
     return () => {
       dispatchHandler({ type: "REMOVE_CAMPAIGN_CLEANUP", value: id, drivers: urlList.map(u => u.driver) })
     }
@@ -86,6 +86,8 @@ export function CampaignCard({
           ? formState[id + "shortenedUrls"].map(({ oldUrl, shortUrl }) => {
             const old = new URL(oldUrl);
             const socialCode = old.searchParams.get("utm_driver_type");
+            const driver = old.searchParams.get('utm_medium')
+
             return (
               <>
                 <Box
@@ -132,16 +134,21 @@ export function CampaignCard({
               </>
             );
           })
-          : urlList.map((url) => {
+          : urlList.map((url, i) => {
             const u = new URL(url);
             const socialCode = u.searchParams.get("utm_driver_type");
+            const driver = u.searchParams.get('utm_medium')
             return (
-              <LinkResultListItem
-                backgroundColor={"lightgrey"}
-                href={u.href}
-                social={socialCode}
-                dispatchHandler={dispatchHandler}
-              />
+              <>
+                <small>{drivers.filter(d => d.param === driver)[0].driver}</small>
+                <LinkResultListItem
+                  key={url}
+                  backgroundColor={"lightgrey"}
+                  href={u.href}
+                  social={socialCode}
+                  dispatchHandler={dispatchHandler}
+                />
+              </>
             );
           })}
         <Button
