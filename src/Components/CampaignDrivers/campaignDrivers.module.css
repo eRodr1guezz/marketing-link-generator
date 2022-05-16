@@ -1,0 +1,4 @@
+.deleteIcon:hover {
+  transform: rotate(0.5turn);
+  transition: all 1s ease-in-out;
+}

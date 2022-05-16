@@ -11,7 +11,7 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { RemoveCircleOutlineOutlined } from "@mui/icons-material";
+import { RemoveCircle } from "@mui/icons-material";
 import { useState } from "react";
 import {
   ADD_CHILD_URL_TO_CAMPAIGN,
@@ -19,6 +19,7 @@ import {
 } from "../../Reducers/actionTypes";
 import { MenuProps, getStyles, socialIconHandler } from "../../Utils";
 import { drivers } from "../../internal";
+import styles from './campaignDrivers.module.css'
 // import CustomParamAccordion from "./CustomParamAccordion";
 //TODO: Custom parameters by driver type in an accordion ui component
 //TODO: Solve the duplicate driver bug (drivers overwrite if accidentally selected twice)
@@ -92,6 +93,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
           </FormControl>
           {driverId && driverId !== 10000 ? (
             <IconButton
+              className={styles.deleteIcon}
               onClick={() =>
                 dispatchHandler({
                   type: REMOVE_DRIVER,
@@ -101,7 +103,7 @@ export function CampaignDrivers({ dispatchHandler, formState, driverId }) {
               }
             >
               <Tooltip title='Remove Driver'>
-                <RemoveCircleOutlineOutlined htmlColor="gray" />
+                <RemoveCircle color="error" />
               </Tooltip>
             </IconButton>
           ) : null}

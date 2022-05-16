@@ -209,7 +209,7 @@ export function urlBuildReducer(state, action) {
 
     return {
       ...state,
-      messages: `${createdUrls.length} URLs were successfully created for campaign ${state.campaignName}!`,
+      messages: `${createdUrls.length} URLs were successfully created for campaign ${decodeURI(state.campaignName)}!`,
       urlCollection: [],
       campaignLastGenerated:
         state.campaignList.length > 0
