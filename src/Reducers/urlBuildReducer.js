@@ -87,7 +87,7 @@ export function urlBuildReducer(state, action) {
   } else if (action.type === "SET_CAMPAIGN_NAME") {
     return {
       ...state,
-      campaignName: encodeURI(action.value).toLowerCase(),
+      campaignName: decodeURI(action.value),
     };
   } else if (action.type === "SET_ERROR") {
     return {
@@ -140,10 +140,12 @@ export function urlBuildReducer(state, action) {
     };
   } else if (action.type === "REMOVE_DRIVER") {
     const { driverId, driver } = action;
+    let copy = state
+
+    delete copy[driver]
 
     return {
-      ...state,
-      [driver]: [],
+      ...copy,
       urlCollection:
         state.urlCollection !== [] &&
         state.urlCollection.filter((u) => u.driver !== driver),
@@ -242,6 +244,16 @@ export function urlBuildReducer(state, action) {
     return {
       ...state,
       selectedDrivers: action.value
+    }
+  } else if (action.type === 'REMOVE_CAMPAIGN_CLEANUP') {
+    const { value } = action
+    let copy = state
+    if (value) {
+      delete copy[value + 'shortenedUrls']
+    }
+
+    return {
+      ...copy
     }
   }
 }

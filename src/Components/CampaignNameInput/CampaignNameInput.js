@@ -19,7 +19,7 @@ export function CampaignNameInput({ formState, dispatchHandler }) {
             dispatchHandler({
               type: APPEND_PARAM,
               paramType: "campaign",
-              param: e.currentTarget.value
+              param: e.currentTarget.value.toLowerCase()
             });
             dispatchHandler({ type: SET_CAMPAIGN_NAME, value: e.currentTarget.value })
           }}

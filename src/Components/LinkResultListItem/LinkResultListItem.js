@@ -1,6 +1,6 @@
-import { Box, IconButton, InputBase, Divider, Tooltip } from "@mui/material";
+import { Box, IconButton, InputBase, Divider, Tooltip, Typography } from "@mui/material";
 import { socialIconHandler } from "../../Utils";
-import { LinkRounded, ContentCopy } from "@mui/icons-material";
+import { ContentCopy } from "@mui/icons-material";
 // import { BitlyIcon } from "../../bitlyIcon";
 import { SET_MESSAGE } from "../../Reducers/actionTypes";
 import styles from "./linkResultListItem.module.css";
@@ -9,13 +9,13 @@ export function LinkResultListItem({
   dispatchHandler,
   href,
   social,
-  // shortened,
+  shortened,
 }) {
   return (
     <Box component='form' className={styles.container}>
       <IconButton disableRipple sx={{ p: "8px" }} aria-label='driver copy bar'>
         {!socialIconHandler(social) ? (
-          <LinkRounded htmlColor={'black'} />
+          !shortened ? <Typography sx={{ color: 'purple', fontSize: 'small', fontWeight: 'bolder' }}>{social}</Typography> : null
         ) : (
           socialIconHandler(social)
         )}
@@ -42,24 +42,6 @@ export function LinkResultListItem({
           <ContentCopy htmlColor="black" />
         </Tooltip>
       </IconButton>
-      {/* {!shortened && (
-        <>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
-          <IconButton
-            onClick={() => {
-              dispatchHandler({
-                type: SET_MESSAGE,
-                value: "URL successfully shortened with Bit.ly!",
-              });
-            }}
-            sx={{ p: "10px" }}
-            aria-label='copy url'>
-            <Tooltip title='Shorten URL'>
-              <BitlyIcon htmlColor={"black"} />
-            </Tooltip>
-          </IconButton>
-        </>
-      )} */}
     </Box>
-  );
+  )
 }

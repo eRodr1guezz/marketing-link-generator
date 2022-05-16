@@ -1,4 +1,8 @@
-import { ArrowRightAlt, RemoveCircleOutlined } from "@mui/icons-material";
+import {
+  ArrowDownwardSharp,
+  ArrowRightAlt,
+  RemoveCircleOutlined,
+} from "@mui/icons-material";
 import {
   CardContent,
   Box,
@@ -6,11 +10,13 @@ import {
   Typography,
   Card,
   IconButton,
+  Divider,
 } from "@mui/material";
 import { BitlyIcon } from "../../bitlyIcon";
 import { convertAndExportToCsv } from "../../Utils";
 import { LinkResultListItem } from "../LinkResultListItem/LinkResultListItem";
 import styles from "./campaignCard.module.css";
+import { useEffect } from "react";
 
 const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
 const prodUrl =
@@ -24,6 +30,15 @@ export function CampaignCard({
   title,
   subheader,
 }) {
+
+  useEffect(() => {
+    console.log(id)
+    return () => {
+      dispatchHandler({ type: "REMOVE_CAMPAIGN_CLEANUP", value: id, drivers: urlList.map(u => u.driver) })
+    }
+  }, [id, dispatchHandler, urlList])
+
+
   return (
     <Card key={id} sx={{ padding: ".75rem 1rem" }} raised id={id}>
       <CardContent className={styles.contentContainer}>
@@ -73,13 +88,47 @@ export function CampaignCard({
             const socialCode = old.searchParams.get("utm_driver_type");
             return (
               <>
-                <LinkResultListItem href={old} shortened={true} />
-                <LinkResultListItem
-                  href={shortUrl}
-                  dispatchHandler={dispatchHandler}
-                  social={socialCode ? socialCode : null}
-                  shortened={true}
-                />
+                <Box
+                  key={oldUrl}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    alignItems: "center",
+                  }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignSelf: "flex-start",
+                      fontWeight: "bolder",
+                      color: "purple",
+                      paddingBottom: "4px",
+                      paddingLeft: "4px",
+                    }}>
+                    {socialCode}
+                    <Divider />
+                  </Box>
+                  <LinkResultListItem
+                    dispatchHandler={dispatchHandler}
+                    fullWidth
+                    href={old}
+                    shortened={true}
+                  />
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    ...Shortened to
+                    <ArrowDownwardSharp
+                      sx={{ paddingTop: '4px' }}
+                      fontSize={"small"}
+                    />
+                  </Box>
+                  <LinkResultListItem
+                    href={shortUrl}
+                    dispatchHandler={dispatchHandler}
+                    social={socialCode ? socialCode : null}
+                    shortened={true}
+                  />
+                  <Divider />
+                </Box>
               </>
             );
           })
