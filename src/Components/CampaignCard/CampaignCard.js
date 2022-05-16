@@ -1,9 +1,16 @@
-import { ArrowRightAlt } from "@mui/icons-material";
-import { CardContent, CardHeader, Box, Button } from "@mui/material";
+import { ArrowRightAlt, RemoveCircleOutlined } from "@mui/icons-material";
+import {
+  CardContent,
+  Box,
+  Button,
+  Typography,
+  Card,
+  IconButton,
+} from "@mui/material";
 import { BitlyIcon } from "../../bitlyIcon";
 import { convertAndExportToCsv } from "../../Utils";
 import { LinkResultListItem } from "../LinkResultListItem/LinkResultListItem";
-import styles from './campaignCard.module.css'
+import styles from "./campaignCard.module.css";
 
 const devUrl = "http://localhost:9999/.netlify/functions/url-shorten";
 const prodUrl =
@@ -18,68 +25,76 @@ export function CampaignCard({
   subheader,
 }) {
   return (
-    <Box
-      className={styles.container}
-      id={id}>
-      <Box className={styles.flexAlign}>
-        <CardHeader
-          titleTypographyProps={{ fontWeight: "bolder", fontSize: "24pt" }}
-          title={title}
-          subheader={subheader}
-        />
-        <Button
-          endIcon={<ArrowRightAlt />}
-          onClick={() => convertAndExportToCsv(formState.campaignList.filter(c => c.id === id))}
-          variant="text">
-          Export to CSV
-        </Button>
-      </Box>
-      <CardContent>
-        <Box sx={{ display: "flex", gap: ".75rem", flexDirection: "column" }}>
-          {formState[id + "shortenedUrls"] &&
-            formState[id + "shortenedUrls"].length > 0
-            ? formState[id + "shortenedUrls"].map(({ oldUrl, shortUrl }) => {
-              const old = new URL(oldUrl);
-              const socialCode = old.searchParams.get("utm_driver_type");
-              return (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: ".25rem",
-                  }}>
-                  <LinkResultListItem href={old} shortened={true} />
-                  <div style={{ width: "75%" }}>
-                    <LinkResultListItem
-                      href={shortUrl}
-                      dispatchHandler={dispatchHandler}
-                      social={socialCode ? socialCode : null}
-                      shortened={true}
-                    />
-                  </div>
-                </Box>
-              );
-            })
-            : urlList.map((url) => {
-              const u = new URL(url);
-              const socialCode = u.searchParams.get("utm_driver_type");
-              return (
-                <LinkResultListItem
-                  backgroundColor={'lightgrey'}
-                  href={u.href}
-                  social={socialCode}
-                  dispatchHandler={dispatchHandler}
-                />
-              );
-            })}
+    <Card key={id} sx={{ padding: ".75rem 1rem" }} raised id={id}>
+      <CardContent className={styles.contentContainer}>
+        <Box className={styles.header}>
+          <Box>
+            <Typography
+              variant='h3'
+              style={{
+                fontSize: title.length < 10 ? 36 : "larger",
+                fontWeight: "bolder",
+              }}>
+              {title}
+            </Typography>
+            <Typography variant='h6' color='saddlebrown' fontSize='smaller'>
+              {subheader}
+            </Typography>
+            <Button
+              color='warning'
+              sx={{ flexGrow: 2, marginTop: ".75rem", marginBottom: ".5rem" }}
+              endIcon={<ArrowRightAlt />}
+              onClick={() =>
+                convertAndExportToCsv(
+                  formState.campaignList.filter((c) => c.id === id)
+                )
+              }
+              size='small'
+              variant='contained'>
+              Export to CSV
+            </Button>
+          </Box>
+
+          <IconButton
+            onClick={() =>
+              dispatchHandler({
+                type: "DELETE_CAMPAIGN",
+                value: id,
+              })
+            }
+            sx={{ alignSelf: "flex-start" }}>
+            <RemoveCircleOutlined className={styles.deleteIcon} color='error' />
+          </IconButton>
         </Box>
-      </CardContent>
-      <Box
-        sx={{
-          padding: "1rem",
-          display: "flex",
-          justifyContent: "space-evenly",
-        }}>
+        {formState[id + "shortenedUrls"] &&
+          formState[id + "shortenedUrls"].length > 0
+          ? formState[id + "shortenedUrls"].map(({ oldUrl, shortUrl }) => {
+            const old = new URL(oldUrl);
+            const socialCode = old.searchParams.get("utm_driver_type");
+            return (
+              <>
+                <LinkResultListItem href={old} shortened={true} />
+                <LinkResultListItem
+                  href={shortUrl}
+                  dispatchHandler={dispatchHandler}
+                  social={socialCode ? socialCode : null}
+                  shortened={true}
+                />
+              </>
+            );
+          })
+          : urlList.map((url) => {
+            const u = new URL(url);
+            const socialCode = u.searchParams.get("utm_driver_type");
+            return (
+              <LinkResultListItem
+                backgroundColor={"lightgrey"}
+                href={u.href}
+                social={socialCode}
+                dispatchHandler={dispatchHandler}
+              />
+            );
+          })}
         <Button
           fullWidth
           color='secondary'
@@ -104,7 +119,7 @@ export function CampaignCard({
           }}>
           Shorten ALL Campaign URLs
         </Button>
-      </Box>
-    </Box>
+      </CardContent>
+    </Card>
   );
 }

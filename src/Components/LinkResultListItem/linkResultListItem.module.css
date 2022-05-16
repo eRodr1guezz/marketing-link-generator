@@ -1,8 +1,6 @@
 .container {
-  padding: 2px 4px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   width: 100%;
   border: solid 1px black;
   border-radius: 8pt;

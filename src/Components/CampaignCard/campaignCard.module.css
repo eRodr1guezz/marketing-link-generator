@@ -1,16 +1,21 @@
-.container {
-  padding: 0rem 1.5rem;
-  border: 1px dotted #999;
-  margin-bottom: 1rem;
-}
-
-.flexAlign {
+.contentContainer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  row-gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  margin-top: 0rem;
 }
 
 .header {
-  font-weight: bolder;
-  font-size: 24pt;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deleteIcon:hover {
+  transform: rotate(0.5turn);
+  transition: all 1s ease-in-out;
 }

@@ -11,13 +11,13 @@ export function validateUrl(value) {
 export function socialIconHandler(param) {
   switch (param) {
     case "twi":
-      return <Twitter />;
+      return <Twitter htmlColor="#1DA1F2" />;
     case "li":
-      return <LinkedIn />;
+      return <LinkedIn htmlColor="#0072B1" />;
     case "fb":
-      return <Facebook />;
+      return <Facebook htmlColor="#4267B2" />;
     case "in":
-      return <Instagram />;
+      return <Instagram htmlColor="#8a3ab9" />;
     default:
       return null;
   }

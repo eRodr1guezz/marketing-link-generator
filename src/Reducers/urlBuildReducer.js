@@ -1,5 +1,7 @@
 import { drivers } from "../internal";
 import { v4 as uuidv4 } from "uuid";
+import { UrlCampaign } from "../Entities/UrlCampaign";
+import { InstanceUrl } from "../Entities/InstanceUrl";
 
 const initialState = {
   messages: "",
@@ -14,14 +16,6 @@ const initialState = {
   campaignList: [],
   shortenedUrls: [],
 };
-
-export class InstanceUrl extends URL {
-  constructor(url, driverId, driver) {
-    super(url);
-    this.driverId = driverId;
-    this.driver = driver;
-  }
-}
 
 export function urlBuildReducer(state, action) {
   if (action.type === "REMOVE_PARAM") {
@@ -119,7 +113,7 @@ export function urlBuildReducer(state, action) {
     };
   } else if (action.type === "ADD_CHILD_URL_TO_CAMPAIGN") {
     const { value, driver } = action;
-  
+
     let values = value.map((val) => {
       return { param: val, driver };
     });
@@ -185,7 +179,7 @@ export function urlBuildReducer(state, action) {
       state.campaignList.length > 0 ? [...state.campaignList] : [];
     let campaignDrivers = [];
     let campaignId = uuidv4();
-    let createdAt = new Date().toISOString();
+    let createdAt = new Date().toTimeString();
     let rootUrl = state.url
 
     drivers.forEach((driver) => {
@@ -197,7 +191,7 @@ export function urlBuildReducer(state, action) {
       .reduce((a, b) => a.concat(b))
       .map((u) => {
         let url = new InstanceUrl(rootUrl, null, u.driver);
-        
+
         url.searchParams.append("utm_medium", u.driver);
         url.searchParams.append("utm_driver_type", u.param);
 
@@ -223,6 +217,13 @@ export function urlBuildReducer(state, action) {
           : { id: campaignId, generatedAt: createdAt },
       campaignList: generatedCampaign,
     };
+  } else if (action.type === "DELETE_CAMPAIGN") {
+    const { value } = action
+    return {
+      ...state,
+      messages: 'Campaign successfully removed!',
+      campaignList: state.campaignList.filter(c => c.id !== value)
+    }
   } else if (action.type === "SHORTEN_URLS") {
     const { value, campId } = action;
 
@@ -243,17 +244,6 @@ export function urlBuildReducer(state, action) {
       selectedDrivers: action.value
     }
   }
-}
-
-class UrlCampaign {
-  constructor(id, name, urls, createdAt, shortenedUrls) {
-    this.id = id;
-    this.name = name;
-    this.urls = urls;
-    this.createdAt = createdAt;
-    this.shortenedUrls = shortenedUrls;
-  }
-
 }
 
 export { initialState };

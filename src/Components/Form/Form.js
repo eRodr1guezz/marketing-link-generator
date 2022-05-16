@@ -121,19 +121,23 @@ export default function Form() {
               </Typography>
             </Divider>
 
-            {state.campaignList.length > 0 &&
-              state.campaignList.map((c, i) => {
-                return (
-                  <CampaignCard
-                    key={i}
-                    id={c.id}
-                    subheader={'Created: ' + c.createdAt}
-                    dispatchHandler={dispatch}
-                    formState={state}
-                    title={c.name}
-                    urlList={c.urls}
-                  />)
-              })}
+            <Grid item>
+              <Box sx={{ gap: '1rem', display: 'flex', flexDirection: 'column' }}>
+                {state.campaignList && state.campaignList.length > 0 &&
+                  state.campaignList.map(c => {
+                    return (
+                      <CampaignCard
+                        id={c.id}
+                        key={c.id}
+                        subheader={'Created: ' + c.createdAt}
+                        dispatchHandler={dispatch}
+                        formState={state}
+                        title={c.name}
+                        urlList={c.urls}
+                      />)
+                  })}
+              </Box>
+            </Grid>
 
             <Grid item>
               <Box
