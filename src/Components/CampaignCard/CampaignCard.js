@@ -31,16 +31,18 @@ export function CampaignCard({
   title,
   subheader,
 }) {
-
   useEffect(() => {
     return () => {
-      dispatchHandler({ type: "REMOVE_CAMPAIGN_CLEANUP", value: id, drivers: urlList.map(u => u.driver) })
-    }
-  }, [id, dispatchHandler, urlList])
-
+      dispatchHandler({
+        type: "REMOVE_CAMPAIGN_CLEANUP",
+        value: id,
+        drivers: urlList.map((u) => u.driver),
+      });
+    };
+  }, [id, dispatchHandler, urlList]);
 
   return (
-    <Card key={id} sx={{ padding: ".75rem 1rem" }} raised id={id}>
+    <Card sx={{ padding: ".75rem 1rem" }} raised id={id}>
       <CardContent className={styles.contentContainer}>
         <Box className={styles.header}>
           <Box>
@@ -52,7 +54,7 @@ export function CampaignCard({
               }}>
               {title}
             </Typography>
-            <Typography variant='h6' color='saddlebrown' fontSize='smaller'>
+            <Typography variant='h6' color='#666' fontSize=' smaller'>
               {subheader}
             </Typography>
             <Button
@@ -61,7 +63,7 @@ export function CampaignCard({
               endIcon={<ArrowRightAlt />}
               onClick={() =>
                 convertAndExportToCsv(
-                  formState.campaignList.filter((c) => c.id === id)
+                  formState.campaignList.filter((c) => c.id === id), formState[id + 'shortenedUrls'] && formState[id + 'shortenedUrls']
                 )
               }
               size='small'
@@ -115,10 +117,10 @@ export function CampaignCard({
                     href={old}
                     shortened={true}
                   />
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
                     ...Shortened to
                     <ArrowDownwardSharp
-                      sx={{ paddingTop: '4px' }}
+                      sx={{ paddingTop: "4px" }}
                       fontSize={"small"}
                     />
                   </Box>
@@ -136,10 +138,14 @@ export function CampaignCard({
           : urlList.map((url, i) => {
             const u = new URL(url);
             const socialCode = u.searchParams.get("utm_driver_type");
-            const driver = u.searchParams.get('utm_medium')
+            const driver = u.searchParams.get("utm_medium");
             return (
               <>
-                <small>{drivers.filter(d => d.param === driver)[0].driver}</small>
+                <small>
+                  <strong>
+                    {drivers.filter((d) => d.param === driver)[0].driver}
+                  </strong>
+                </small>
                 <LinkResultListItem
                   key={url}
                   backgroundColor={"lightgrey"}

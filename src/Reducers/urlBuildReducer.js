@@ -140,6 +140,7 @@ export function urlBuildReducer(state, action) {
     };
   } else if (action.type === "REMOVE_DRIVER") {
     const { driverId, driver } = action;
+
     let copy = state
 
     delete copy[driver]

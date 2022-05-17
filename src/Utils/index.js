@@ -46,16 +46,24 @@ export const MenuProps = {
 };
 
 
-export function convertAndExportToCsv(data) {
+export function convertAndExportToCsv(data, urlPairs) {
   let campaignObject = {}
-  console.log(data)
+
   let d = data.map(camp => {
     const { name, id, createdAt, urls } = camp
     campaignObject.name = name;
     campaignObject.id = id;
     campaignObject.createdAt = createdAt;
-    campaignObject.data = urls.map(u => { return { campaign_name: name, drivers: [u.driver], urls: [u.href], created: createdAt } })
 
+    campaignObject.data = urls.map(u => {
+      return {
+        campaign_name: name,
+        drivers: [u.driver],
+        urls: [u.href],
+        shortened: urlPairs ? urlPairs.filter(url => url.oldUrl === u.href)[0].shortUrl : '',
+        created: createdAt
+      }
+    })
     return campaignObject
   })
 

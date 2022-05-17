@@ -1,4 +1,11 @@
-import { Box, IconButton, InputBase, Divider, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputBase,
+  Divider,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { socialIconHandler } from "../../Utils";
 import { ContentCopy } from "@mui/icons-material";
 // import { BitlyIcon } from "../../bitlyIcon";
@@ -15,7 +22,26 @@ export function LinkResultListItem({
     <Box component='form' className={styles.container}>
       <IconButton disableRipple sx={{ p: "8px" }} aria-label='driver copy bar'>
         {!socialIconHandler(social) ? (
-          !shortened ? <Typography sx={{ color: 'purple', fontSize: 'small', fontWeight: 'bolder' }}>{social}</Typography> : null
+          !shortened ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "50%",
+                backgroundColor: "lavender",
+                padding: "4px 8px",
+              }}>
+              <Typography
+                sx={{
+                  color: "purple",
+                  fontSize: "small",
+                  fontWeight: "bolder",
+                }}>
+                {social}
+              </Typography>
+            </Box>
+          ) : null
         ) : (
           socialIconHandler(social)
         )}
@@ -39,9 +65,9 @@ export function LinkResultListItem({
         }}
         aria-label='copy url'>
         <Tooltip title='Copy to clipboard'>
-          <ContentCopy htmlColor="black" />
+          <ContentCopy htmlColor='black' />
         </Tooltip>
       </IconButton>
     </Box>
-  )
+  );
 }
