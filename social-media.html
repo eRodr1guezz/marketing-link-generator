@@ -25,14 +25,11 @@
 </style>
 
 <script>
-  const apiKey = "AAAAAAAAAAAAAAAAAAAAAFLycgEAAAAAmkWteNs0IURxKkr7%2FWhOIk6Lslc%3DMy7TfunNzuCWplL3z0NK8eC57ooHQRVFN5r22YBETqe04BiMF9"
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
-  }
   window.addEventListener('DOMContentLoaded', (event) => {
     async function getTwitterData() {
-      let response = await fetch(`https://api.twitter.com/2/tweets/search/recent?query=from:twitterdev`, { headers, mode: 'no-cors' })
+      const url = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten'
+      
+      let response = await fetch(url)
 
       let res = response.json()
       

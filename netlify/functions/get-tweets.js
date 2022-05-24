@@ -18,20 +18,16 @@ const handler = async function (event, context) {
     'Authorization': `Bearer ${apiKey}`
   }
 
-  async function getTwitterData() {
     let response = await fetch(`https://api.twitter.com/2/tweets/search/recent?query=from:twitterdev`, { headers })
 
     let res = response.json()
     
-    return res
-  }
-
   return {
     statusCode: 200,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
-    body: JSON.stringify(getTwitterData())
+    body: JSON.stringify(res)
   }
 }
 
