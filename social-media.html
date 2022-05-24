@@ -25,18 +25,21 @@
 </style>
 
 <script>
-  window.addEventListener('DOMContentLoaded', (event) => {
-    async function getTwitterData() {
-      const url = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/url-shorten'
-      
-      let response = await fetch(url)
+  window.addEventListener('DOMContentLoaded', async (event) => {
 
-      let res = response.json()
+      const url = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets'
       
-      console.log(res)
-    }
-    
-    getTwitterData()
+      const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }})
+
+      const res = response.json()
+
+      const tweets = res.data.map(tw => {
+        const tweetWrapper = document.createElement('div')
+        tweetWrapper.innerText = tw.text
+      })
+
+      const socialMediaWrapper = document.querySelector('.social-media-wrapper')
+      socialMediaWrapper.appendChild(tweets)
 
   });
 

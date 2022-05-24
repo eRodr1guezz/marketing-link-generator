@@ -15,12 +15,12 @@ const handler = async function (event, context) {
   const apiKey = "AAAAAAAAAAAAAAAAAAAAAFLycgEAAAAAmkWteNs0IURxKkr7%2FWhOIk6Lslc%3DMy7TfunNzuCWplL3z0NK8eC57ooHQRVFN5r22YBETqe04BiMF9"
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
+    Authorization: `Bearer ${apiKey}`
   }
 
-    let response = await fetch(`https://api.twitter.com/2/tweets/search/recent?query=from:twitterdev`, { headers })
+    let response = await fetch(`https://api.twitter.com/2/users/16892009/tweets?tweet.fields=text&user.fields=username,profile_image_url&media.fields=preview_image_url,url`, { headers })
 
-    let res = response.json()
+    let res = await response.json()
     
   return {
     statusCode: 200,
