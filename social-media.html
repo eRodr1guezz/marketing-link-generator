@@ -25,23 +25,29 @@
 </style>
 
 <script>
-  window.addEventListener('DOMContentLoaded', async (event) => {
+  window.addEventListener('DOMContentLoaded', async e => {
+    const url = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets'
+    const devUrl = 'http://localhost:9999/.netlify/functions/get-tweets'
 
-      const url = 'https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets'
-      
-      const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }})
+    const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }})
 
-      const res = response.json()
+    const res = await response.json()
 
-      const tweets = res.data.map(tw => {
-        const tweetWrapper = document.createElement('div')
-        tweetWrapper.innerText = tw.text
-      })
+    const tweetWrapper = document.createElement('ul')
+    
+    const list = res.data.map(tw => {  
+      const tweetText = document.createElement('li')
+      tweetText.innerText = tw.text
 
-      const socialMediaWrapper = document.querySelector('.social-media-wrapper')
-      socialMediaWrapper.appendChild(tweets)
+      return tweetText
+    })
 
-  });
+    list.forEach(l => tweetWrapper.appendChild(l))
+
+    const socialMediaWrapper = document.querySelector('.social-media-wrapper')
+    
+    socialMediaWrapper.appendChild(tweetWrapper)
+  })
 
 </script>
 
@@ -52,4 +58,5 @@
       Some content
     </div>
   </div>
+
 </main>
