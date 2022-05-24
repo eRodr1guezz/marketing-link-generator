@@ -11,6 +11,12 @@ const handler = async function (event, context) {
       }),
     }
   }
+  
+  const apiKey = "AAAAAAAAAAAAAAAAAAAAAFLycgEAAAAAmkWteNs0IURxKkr7%2FWhOIk6Lslc%3DMy7TfunNzuCWplL3z0NK8eC57ooHQRVFN5r22YBETqe04BiMF9"
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  }
 
   async function getTwitterData() {
     let response = await fetch(`https://api.twitter.com/2/tweets/search/recent?query=from:twitterdev`, { headers })
