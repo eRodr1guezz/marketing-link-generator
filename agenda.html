@@ -4,7 +4,7 @@
     --color-secondary: #39bac9;
     --color-tertiary: #f7aa34;
     --font-primary: Roboto, sans-serif;
-    --font-body: 14px;
+    --font-secondary: Roboto, sans-serif;
   }
 
   .heading-large {
@@ -156,10 +156,6 @@
     width: 100%;
   }
 
-  /* .program-info-wrap-active {
-    transform: scale(150%);
-  } */
-
   .program-timepoint {
     clip-path: circle();
     width: 10px;
@@ -190,7 +186,7 @@
     }
   }
 
-  .program-timebar {
+  /* .program-timebar {
     height: 300px;
     background-color: var(--color-primary);
     width: 1px;
@@ -198,28 +194,65 @@
     position: absolute;
     margin-left: 4px;
     z-index: 1;
-  }
+  } */
 
   .program-info-title {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: lighter;
     font-family: "Roboto", sans-serif;
     color: black;
     transition: all ease 500ms;
     -webkit-transition: all ease 500ms;
-    cursor: pointer;
     margin-bottom: 0.5rem;
+  }
+
+  .program-title {
+    font-size: 18px;
+    font-weight: lighter;
+    font-family: "Roboto", sans-serif;
+    color: black;
+  }
+
+  .program-subtitle {
+    font-size: 14px;
+    font-weight: normal;
+    color: var(--color-secondary);
+  }
+
+  .featured-badge {
+    font-variant-caps: all-small-caps;
+    font-size: smaller;
+    padding: .25rem 1rem;
+    font-weight: 100;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 1rem;
+    color: white;
+    background-color: #005a8ba8;
+    border-radius: 12pt;
+  }
+
+  .star {
+    box-sizing: border-box;
+    background-color: rgb(228, 244, 159);
+    padding-top: 2px;
+    height: 10px;
+    width: 10px;
+    -webkit-clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   }
 
   .program-info-subtitle {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    padding: .25rem;
     gap: 0.75rem;
     font-family: "Roboto", sans-serif;
-    font-variant-caps: all-small-caps;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 200;
     color: black;
   }
 
@@ -230,12 +263,21 @@
   }
 
   .inactive {
-    opacity: .5;
+    opacity: .25;
+  }
+
+  .upcoming {
+    opacity: .75;
   }
 
   .enlarged {
     font-size: 32px;
     font-weight: bolder;
+  }
+
+  .enlarged-img {
+    width: 64px;
+    height: 64px;
   }
 
   .program-info-dropdown {
@@ -244,12 +286,38 @@
     word-wrap: normal;
   }
 
+  .program-info-topic {
+    font-size: small;
+    font-weight: normal;
+    word-wrap: break-word;
+    padding-top: 6px;
+  }
+
   .program-multi-speaker {
     width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 1rem;
+  }
+
+  .speaker-info-wrapper {
+
+  }
+
+  .speaker-name {
+  
+  }
+
+  .enlarged-txt {
+    font-size: 24px;
+  }
+
+  .speaker-title {
+    padding: 4px 1px;
+    font-size: 12px;
+    font-weight: 600;
+    color:#005a8b;
   }
 </style>
 
@@ -277,27 +345,32 @@
       speaker: {
         firstName: "Blakely",
         lastName: "Jaishri",
+        isFeatured: true,
         title: "MD, PhD.",
         img: "https://events.medscapelive.org/file_uploads/f5724a1f9f9fc78550f6137395a4c9f2_blakeley_jaishri.jpg",
       },
     },
     {
       title:
-        "Case 1: Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-      subtitle: "",
+        "Case 1 - Lorem",
+      subtitle: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+      
+      topic: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
       startTime: new Date("Feb 19 2023 12:00"),
       endTime: new Date("Feb 19 2023 12:50"),
       speaker: {
         firstName: "April",
         lastName: "Armstrong",
+        isFeatured: true,
         title: "MD, MPH",
         img: "https://i.pravatar.cc/150?img=1",
       },
     },
     {
       title:
-        "Case 2: Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-      subtitle: "",
+        "Case 2: More lorem",
+      subtitle: "Ipsum dolor, sit amet consectetur adipisicing elit.",
+      topic: "Ipsum dolor, sit amet consectetur adipisicing elit. ipsum dolor, sit amet consectetur adipisicing elit. ipsum dolor, sit amet consectetur adipisicing elit.",
       startTime: new Date("Feb 19 2023 12:00"),
       endTime: new Date("Feb 19 2023 12:50"),
       speaker: {
@@ -325,9 +398,11 @@
       subtitle: "",
       startTime: new Date("Feb 19 2023 12:50"),
       endTime: new Date("Feb 19 2023 12:55"),
+      topic: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
       speaker: {
         firstName: "April",
         lastName: "Armstrong",
+        isFeatured: true,
         title: "MD, MPH",
         img: "https://i.pravatar.cc/150?img=1",
       },
@@ -341,12 +416,14 @@
         {
           firstName: "Melodie",
           lastName: "Young",
+          isFeatured: false,
           title: "MSN, ANP-C",
           img: "https://i.pravatar.cc/150?img=2",
         },
         {
           firstName: "Mark",
           lastName: "Lebwohl",
+          isFeatured: false,
           title: "MD",
           img: "https://i.pravatar.cc/150?img=3",
         },
@@ -355,10 +432,9 @@
   ];
 
 
-
   window.addEventListener("DOMContentLoaded", (e) => {
     const currentDateTime = new Date();
-    const mockTime = new Date('Feb 19 2023 12:30');
+    const mockTime = new Date('Feb 19 2023 12:00');
 
     function checkPrevSessionTime(s, prev) {
       if (prev === undefined || prev === null) {
@@ -373,6 +449,7 @@
         .filter((s) => new Date(s.startTime) > currentDateTime)
         .map((session, i) => {
 
+          //START TIME FUNCTIONS
           const startTime = new Date(session.startTime).toLocaleTimeString(
             "en-US",
             { hour: "2-digit", minute: "2-digit" }
@@ -384,6 +461,9 @@
           );
 
           const previousIndex = i > 0 ? i : false;
+          const lastIndex =  i === agenda.length - 1;
+
+          const nextSessionStartTime = !lastIndex ? agenda[i + 1].startTime : null
 
           const previousStartTime = previousIndex
             ? new Date(agenda[previousIndex - 1].startTime).toLocaleTimeString(
@@ -392,7 +472,8 @@
             )
             : undefined;
 
-          const isActive = session.startTime >= mockTime && session.startTime < session.endTime;
+          const isActive = session.startTime >= mockTime && session.startTime < session.endTime && session.endTime > nextSessionStartTime;
+          //END TIME FUNCTIONS
 
           const programTimeline = document.createElement("ul");
           programTimeline.className = "program-timeline";
@@ -409,6 +490,7 @@
             : "";
 
           programTimeline.appendChild(programSchedule);
+          isActive ? programTimeline.classList.add('current') : null
 
           const programProgress = document.createElement("li");
           programProgress.className = "program-progress";
@@ -432,9 +514,15 @@
           !isActive ? programInfoWrap.classList.add('inactive') : null
 
           const programInfoTitle = document.createElement("div");
-
           programInfoTitle.className = "program-info-title";
-          programInfoTitle.innerText = session.title;
+          programInfoTitle.textContent = session.title;
+
+          const programInfoTopic = document.createElement("div");
+          programInfoTopic.className = "program-info-topic";
+          programInfoTopic.innerText = session.topic ? session.topic : null
+          
+          session.topic ? programInfoTitle.appendChild(programInfoTopic) : null
+          
           isActive ? programInfoTitle.classList.add('enlarged') : null
 
           const programInfoSubtitle = document.createElement("div");
@@ -442,19 +530,29 @@
 
           if (session.speaker.length > 1) {
             const div = document.createElement("div");
+            //if we have multiple speakers....
             const speakers = session.speaker.map((sp) => {
+              // set the speakers image
               const speakerImage = document.createElement("img");
               speakerImage.className = "program-speaker-avatar";
+              isActive ? speakerImage.classList.add('enlarged-img') : null;
+
               speakerImage.src = sp.img
                 ? sp.img
                 : "https://www.placecage.com/100/100";
 
-              const speakerInfo = document.createElement("span");
-
-              speakerInfo.innerText = `${sp.firstName} ${sp.lastName}, ${sp.title}`;
-
+              //set the speakers info
+              const speakerInfo = document.createElement("div");
+              const speakerTitle = document.createElement("div");
+              
+              speakerTitle.className = 'speaker-title'
+              speakerTitle.innerText = sp.title
+              speakerInfo.innerText = `${sp.firstName} ${sp.lastName}`;
+              speakerInfo.appendChild(speakerTitle)
+              
               const speakerDiv = document.createElement("div");
               speakerDiv.className = "program-multi-speaker"
+              
               speakerDiv.appendChild(speakerImage);
               speakerDiv.appendChild(speakerInfo);
 
@@ -467,12 +565,21 @@
           } else {
             const speakerImage = document.createElement("img");
             speakerImage.className = "program-speaker-avatar";
+            isActive ? speakerImage.classList.add('enlarged-img') : null;
+            
+            const speakerTitle = document.createElement("div");
+            speakerTitle.className = 'speaker-title'
+            speakerTitle.innerText = session.speaker.title
+            
             speakerImage.src = session.speaker.img
               ? session.speaker.img
               : "https://www.placecage.com/200/200";
 
             const speakerInfo = document.createElement("span");
-            speakerInfo.innerText = `${session.speaker.firstName} ${session.speaker.lastName}, ${session.speaker.title}`;
+                        
+            speakerInfo.innerText = `${session.speaker.firstName} ${session.speaker.lastName}`;
+            speakerInfo.appendChild(speakerTitle);
+            
             programInfoSubtitle.appendChild(speakerImage);
             programInfoSubtitle.appendChild(speakerInfo);
           }
