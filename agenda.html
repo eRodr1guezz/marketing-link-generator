@@ -1,0 +1,515 @@
+<style>
+  :root {
+    --color-primary: #005a8b;
+    --color-secondary: #39bac9;
+    --color-tertiary: #f7aa34;
+    --font-primary: Roboto, sans-serif;
+    --font-body: 14px;
+  }
+
+  .heading-large {
+    font-size: 7rem !important;
+  }
+
+  .heading-medium {
+    font-size: 3rem !important;
+  }
+
+  .heading-small {
+    font-size: 2rem !important;
+  }
+
+  .button-primary {
+    margin: 45px 0;
+    transition: 0.5s;
+  }
+
+  h1 {
+    font-size: 2.105em;
+  }
+
+  h2 {
+    font-size: 1.789em;
+  }
+
+  h3 {
+    font-size: 1em;
+  }
+
+  h4 {
+    font-size: 18px;
+    color: #000;
+    font-family: var(--font-primary);
+  }
+
+  a,
+  a:visited {
+    text-decoration: none;
+    color: #007cb0;
+  }
+
+  ul {
+    color: black;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .divider-bar {
+    width: 2px;
+    background-color: rgba(151, 151, 151, 0.23);
+    display: block;
+    margin: 0 5px;
+    min-height: 190px;
+  }
+
+  /*** PROGRAM ***/
+
+  .program-title .program-subtitle {
+    font-family: "Roboto", sans-serif;
+    text-transform: initial;
+    font-size: 22px;
+    line-height: 26px;
+    margin-left: 22px;
+    color: black;
+  }
+
+  .program-timeline {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: row nowrap;
+    padding-bottom: 43px;
+    overflow: hidden;
+    margin-top: -13px;
+  }
+
+  .program-timeline:first-child {
+    margin-top: 0;
+  }
+
+  .program-timeline:last-child .program-timebar {
+    display: none;
+  }
+
+  .program-timeline ul {
+    margin-left: 20px;
+  }
+
+  .program-timeline ul li {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    list-style: initial;
+  }
+
+  .program-timeline:hover li span.program-timepoint {
+    border: 0px solid #333132;
+    transition: all ease 500ms;
+    -webkit-transition: all ease 500ms;
+    transform: scale(125%);
+  }
+
+  .program-schedule {
+    text-align: right;
+    width: 300px;
+    color: #585858;
+  }
+
+  .program-schedule span {
+    font-family: var(--font-primary);
+    font-size: 40px;
+    line-height: 33px;
+    color: black;
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .town-hall-program .program-timeline-wrap {
+    padding-top: 31px;
+  }
+
+  .town-hall-program .program-schedule span {
+    letter-spacing: -1px;
+  }
+
+  .town-hall-program .program-schedule span span {
+    margin-left: -5px;
+    letter-spacing: 0;
+    font-size: 15px;
+    font-weight: initial;
+  }
+
+  .town-hall-program .program-progress {
+    padding: 10px 23px 0;
+    padding-top: 10px;
+    display: flex;
+    justify-content: center;
+    transition: all ease 800ms;
+    -webkit-transition: all ease 800ms;
+  }
+
+  .town-hall-program .program-info-wrap {
+    padding-top: 5px;
+    width: 100%;
+  }
+
+  /* .program-info-wrap-active {
+    transform: scale(150%);
+  } */
+
+  .program-timepoint {
+    clip-path: circle();
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: var(--color-secondary);
+    position: relative;
+    z-index: 2;
+    transition: ease-in-out 500ms;
+  }
+
+  .pulsate {
+    animation-name: pulsate;
+    animation-duration: 500ms;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes pulsate {
+    from {
+      background-color: darkred;
+      transform: scale(100%);
+    }
+
+    to {
+      background-color: red;
+      transform: scale(150%);
+    }
+  }
+
+  .program-timebar {
+    height: 300px;
+    background-color: var(--color-primary);
+    width: 1px;
+    display: block;
+    position: absolute;
+    margin-left: 4px;
+    z-index: 1;
+  }
+
+  .program-info-title {
+    font-size: 22px;
+    font-weight: lighter;
+    font-family: "Roboto", sans-serif;
+    color: black;
+    transition: all ease 500ms;
+    -webkit-transition: all ease 500ms;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+  }
+
+  .program-info-subtitle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    font-family: "Roboto", sans-serif;
+    font-variant-caps: all-small-caps;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+  }
+
+  .program-speaker-avatar {
+    height: 48px;
+    width: 48px;
+    clip-path: circle();
+  }
+
+  .inactive {
+    opacity: .5;
+  }
+
+  .enlarged {
+    font-size: 32px;
+    font-weight: bolder;
+  }
+
+  .program-info-dropdown {
+    position: absolute;
+    width: 60%;
+    word-wrap: normal;
+  }
+
+  .program-multi-speaker {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+  }
+</style>
+
+<script>
+  const agenda = [
+    {
+      title: "Registration",
+      subtitle: "",
+      date: new Date("Feb 19 2023"),
+      startTime: new Date("Feb 19 2023 11:30"),
+      endTime: new Date("Feb 19 2023 12:00"),
+      speaker: {
+        firstName: "Blakely",
+        lastName: "Jaishri",
+        title: "MD, PhD.",
+        img: "https://events.medscapelive.org/file_uploads/f5724a1f9f9fc78550f6137395a4c9f2_blakeley_jaishri.jpg",
+      },
+    },
+    {
+      title: "Welcome and Introductions",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:00"),
+      endTime: new Date("Feb 19 2023 12:50"),
+      topic: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
+      speaker: {
+        firstName: "Blakely",
+        lastName: "Jaishri",
+        title: "MD, PhD.",
+        img: "https://events.medscapelive.org/file_uploads/f5724a1f9f9fc78550f6137395a4c9f2_blakeley_jaishri.jpg",
+      },
+    },
+    {
+      title:
+        "Case 1: Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:00"),
+      endTime: new Date("Feb 19 2023 12:50"),
+      speaker: {
+        firstName: "April",
+        lastName: "Armstrong",
+        title: "MD, MPH",
+        img: "https://i.pravatar.cc/150?img=1",
+      },
+    },
+    {
+      title:
+        "Case 2: Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:00"),
+      endTime: new Date("Feb 19 2023 12:50"),
+      speaker: {
+        firstName: "Melodie",
+        lastName: "Young",
+        title: "MSN, ANP-C",
+        img: "https://i.pravatar.cc/150?img=2",
+      },
+    },
+    {
+      title:
+        "Case 3: Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:00"),
+      endTime: new Date("Feb 19 2023 12:50"),
+      speaker: {
+        firstName: "Mark",
+        lastName: "Lebwohl",
+        title: "MD",
+        img: "https://i.pravatar.cc/150?img=3",
+      },
+    },
+    {
+      title: "Closing Remarks",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:50"),
+      endTime: new Date("Feb 19 2023 12:55"),
+      speaker: {
+        firstName: "April",
+        lastName: "Armstrong",
+        title: "MD, MPH",
+        img: "https://i.pravatar.cc/150?img=1",
+      },
+    },
+    {
+      title: "Q&A",
+      subtitle: "",
+      startTime: new Date("Feb 19 2023 12:55"),
+      endTime: new Date("Feb 19 2023 13:30"),
+      speaker: [
+        {
+          firstName: "Melodie",
+          lastName: "Young",
+          title: "MSN, ANP-C",
+          img: "https://i.pravatar.cc/150?img=2",
+        },
+        {
+          firstName: "Mark",
+          lastName: "Lebwohl",
+          title: "MD",
+          img: "https://i.pravatar.cc/150?img=3",
+        },
+      ],
+    },
+  ];
+
+
+
+  window.addEventListener("DOMContentLoaded", (e) => {
+    const currentDateTime = new Date();
+    const mockTime = new Date('Feb 19 2023 12:30');
+
+    function checkPrevSessionTime(s, prev) {
+      if (prev === undefined || prev === null) {
+        return false;
+      }
+
+      return s === prev;
+    }
+
+    function buildAgenda(a) {
+      const activeSessions = a
+        .filter((s) => new Date(s.startTime) > currentDateTime)
+        .map((session, i) => {
+
+          const startTime = new Date(session.startTime).toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit" }
+          );
+
+          const endTime = new Date(session.endTime).toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit" }
+          );
+
+          const previousIndex = i > 0 ? i : false;
+
+          const previousStartTime = previousIndex
+            ? new Date(agenda[previousIndex - 1].startTime).toLocaleTimeString(
+              "en-US",
+              { hour: "2-digit", minute: "2-digit" }
+            )
+            : undefined;
+
+          const isActive = session.startTime >= mockTime && session.startTime < session.endTime;
+
+          const programTimeline = document.createElement("ul");
+          programTimeline.className = "program-timeline";
+          const programSchedule = document.createElement("li");
+          programSchedule.className = "program-schedule";
+          //if programs occur concurrently, we do not want to list all the times in the left hand column - just the first program occuring at the given time. this checks equality of the previous program and, if equal, displays nothing. otherwise it displays the time.
+          programSchedule.innerHTML = !checkPrevSessionTime(
+            startTime,
+            previousStartTime
+          )
+            ? `<span>${startTime.split(" ")[0]
+            }<span style="font-size: 14px; margin-left: 4px">${startTime.split(" ")[1]
+            }</span></span>`
+            : "";
+
+          programTimeline.appendChild(programSchedule);
+
+          const programProgress = document.createElement("li");
+          programProgress.className = "program-progress";
+          const emptySpan = document.createElement("span");
+
+          const programTimepoint = document.createElement("span");
+          programTimepoint.classList.add('program-timepoint');
+          isActive ? programTimepoint.classList.add('pulsate') : null;
+          const programTimebar = document.createElement("span");
+          programTimebar.className = "program-timebar";
+
+          emptySpan.appendChild(programTimepoint);
+          emptySpan.appendChild(programTimebar);
+
+          programProgress.appendChild(emptySpan);
+
+          programTimeline.appendChild(programProgress);
+
+          const programInfoWrap = document.createElement("li");
+          programInfoWrap.classList.add('program-info-wrap');
+          !isActive ? programInfoWrap.classList.add('inactive') : null
+
+          const programInfoTitle = document.createElement("div");
+
+          programInfoTitle.className = "program-info-title";
+          programInfoTitle.innerText = session.title;
+          isActive ? programInfoTitle.classList.add('enlarged') : null
+
+          const programInfoSubtitle = document.createElement("div");
+          programInfoSubtitle.className = "program-info-subtitle";
+
+          if (session.speaker.length > 1) {
+            const div = document.createElement("div");
+            const speakers = session.speaker.map((sp) => {
+              const speakerImage = document.createElement("img");
+              speakerImage.className = "program-speaker-avatar";
+              speakerImage.src = sp.img
+                ? sp.img
+                : "https://www.placecage.com/100/100";
+
+              const speakerInfo = document.createElement("span");
+
+              speakerInfo.innerText = `${sp.firstName} ${sp.lastName}, ${sp.title}`;
+
+              const speakerDiv = document.createElement("div");
+              speakerDiv.className = "program-multi-speaker"
+              speakerDiv.appendChild(speakerImage);
+              speakerDiv.appendChild(speakerInfo);
+
+              return speakerDiv;
+            });
+
+            speakers.forEach((s) => div.appendChild(s));
+
+            programInfoSubtitle.appendChild(div);
+          } else {
+            const speakerImage = document.createElement("img");
+            speakerImage.className = "program-speaker-avatar";
+            speakerImage.src = session.speaker.img
+              ? session.speaker.img
+              : "https://www.placecage.com/200/200";
+
+            const speakerInfo = document.createElement("span");
+            speakerInfo.innerText = `${session.speaker.firstName} ${session.speaker.lastName}, ${session.speaker.title}`;
+            programInfoSubtitle.appendChild(speakerImage);
+            programInfoSubtitle.appendChild(speakerInfo);
+          }
+
+          programInfoWrap.appendChild(programInfoTitle);
+          programInfoWrap.appendChild(programInfoSubtitle);
+
+          programTimeline.appendChild(programInfoWrap);
+
+          return programTimeline;
+        });
+
+      activeSessions.forEach((el) => {
+        const baseTimeline = document.querySelector(".program-timeline-wrap");
+
+        baseTimeline.appendChild(el);
+      });
+    }
+
+    buildAgenda(agenda);
+  });
+</script>
+
+<div class="agenda">
+  <div class="page-padding">
+    <div class="container-large">
+      <div class="town-hall-program town-hall--subsection">
+        <div class="program-title">
+          <span>Program</span>
+          <span class="program-subtitle">February 19 2023</span>
+        </div>
+        <div id="daily-agenda-container">
+          <div class="program-timeline-wrap">
+            <!-- Dynamic content is appended here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

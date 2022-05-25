@@ -4,7 +4,7 @@ const handler = async function (event, context) {
   let url =
     "https://api.twitter.com/2/users/16892009/tweets?tweet.fields=text&user.fields=username,profile_image_url&media.fields=preview_image_url,url";
 
-  const testUrl = "https://api.twitter.com/2/users/16892009/tweets?expansions=author_id&tweet.fields=text&user.fields=created_at,name,username,profile_image_url,url&media.fields=preview_image_url,url"
+  const testUrl = "https://api.twitter.com/2/tweets/search/recent?query=muppetbabies&expansions=author_id&tweet.fields=id,text&user.fields=id,username,profile_image_url&media.fields=height,preview_image_url,url,width"
   if (!context.clientContext && !context.clientContext.identity) {
     return {
       statusCode: 500,
