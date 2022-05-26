@@ -55,14 +55,6 @@
     margin: 0;
   }
 
-  .divider-bar {
-    width: 2px;
-    background-color: rgba(151, 151, 151, 0.23);
-    display: block;
-    margin: 0 5px;
-    min-height: 190px;
-  }
-
   /*** PROGRAM ***/
 
   .program-title .program-subtitle {
@@ -84,6 +76,7 @@
     padding-bottom: 43px;
     overflow: hidden;
     margin-top: -13px;
+    margin-bottom: 1rem;
   }
 
   .program-timeline:first-child {
@@ -112,6 +105,10 @@
   }
 
   .program-schedule {
+    display: flex;
+    justify-content: flex-end;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
     text-align: right;
     width: 300px;
     color: #585858;
@@ -287,9 +284,10 @@
   }
 
   .program-info-topic {
+    text-align: justify;
     font-size: small;
     font-weight: normal;
-    word-wrap: break-word;
+    width: 75%;
     padding-top: 6px;
   }
 
@@ -352,9 +350,8 @@
     },
     {
       title:
-        "Case 1 - Lorem",
+        "Case 1: Lorem",
       subtitle: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-      
       topic: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
       startTime: new Date("Feb 19 2023 12:00"),
       endTime: new Date("Feb 19 2023 12:50"),
@@ -480,6 +477,7 @@
           const programSchedule = document.createElement("li");
           programSchedule.className = "program-schedule";
           //if programs occur concurrently, we do not want to list all the times in the left hand column - just the first program occuring at the given time. this checks equality of the previous program and, if equal, displays nothing. otherwise it displays the time.
+          !isActive ? programSchedule.classList.add('inactive') : null;
           programSchedule.innerHTML = !checkPrevSessionTime(
             startTime,
             previousStartTime
@@ -498,7 +496,7 @@
 
           const programTimepoint = document.createElement("span");
           programTimepoint.classList.add('program-timepoint');
-          isActive ? programTimepoint.classList.add('pulsate') : null;
+          isActive ? programTimepoint.classList.add('pulsate') : programTimepoint.classList.add('inactive');
           const programTimebar = document.createElement("span");
           programTimebar.className = "program-timebar";
 
