@@ -38,7 +38,7 @@
     let url = new URL(window.location.href)
     console.log(url.searchParams.get('session_variable') === 'admin' ? 2 : 0)
 
-    // access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
+    access_group.push(!attendeeType.includes('Attendee') ? attendeeType.concat(' Attendee') : attendeeType);
 
     if (country !== "United States") {
       access_group.push("Non-US Attendee");
@@ -46,10 +46,10 @@
       access_group.push("US Attendee");
     }
 
-    // if (/industry/gi.test(subcategory)) {
-    //   access_group.push("Industry");
-    //   access_group.push("Game: Excluded");
-    // }
+    if (/industry/gi.test(subcategory)) {
+      access_group.push("Industry");
+      access_group.push("Game: Excluded");
+    }
 
     const attendee = {
       first_name,

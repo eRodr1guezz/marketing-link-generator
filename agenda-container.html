@@ -1,0 +1,321 @@
+<style>
+    /* :root {
+      --color-primary: #005a8b;
+      --color-secondary: #39bac9;
+      --color-tertiary: #f7aa34;
+      --font-primary: nunito-sans, sans-serif;
+      --font-secondary: Roboto, sans-serif;
+    }
+  
+    .heading-large {
+      font-size: 7rem !important;
+    }
+  
+    .heading-medium {
+      font-size: 3rem !important;
+    }
+  
+    .heading-small {
+      font-size: 2rem !important;
+    }
+  
+    .button-primary {
+      margin: 45px 0;
+      transition: 0.5s;
+    }
+  
+    h1 {
+      font-size: 2.105em;
+    }
+  
+    h2 {
+      font-size: 1.789em;
+    }
+  
+    h3 {
+      font-size: 1em;
+    }
+  
+    h4 {
+      font-size: 18px;
+      color: #000;
+      font-family: var(--font-primary);
+    }
+  
+    a,
+    a:visited {
+      text-decoration: none;
+      color: var(--color-secondary);
+    } */
+  
+    /* ul {
+      color: black;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    } */
+  
+    ul {
+      list-style: none;
+    }
+  
+    /*** PROGRAM ***/
+  
+    .agenda {
+      padding: 1rem;
+    }
+  
+    .container-large {
+      padding: 1rem;
+      border: solid 1px black;
+      height: 300px;
+      overflow: scroll;
+      scroll-behavior: auto;
+    }
+  
+    .program-title .program-subtitle {
+      font-family: var(--font-primary);
+      text-transform: initial;
+      font-size: 22px;
+      line-height: 26px;
+      margin-left: 22px;
+      color: black;
+    }
+  
+    @media screen and (max-width: 600px) {
+      .program-schedule {
+        width: auto;
+        order: 0
+      }
+      .program-timeline {
+        flex-wrap: wrap;
+      }
+    }
+  
+    .program-timeline {
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      flex-flow: row nowrap;
+      padding-bottom: 43px;
+      overflow: hidden;
+      margin-top: -13px;
+      margin-bottom: 1rem;
+    }
+  
+    .program-timeline:first-child {
+      margin-top: 0;
+    }
+  
+    .program-timeline:last-child .program-timebar {
+      display: none;
+    }
+  
+    .program-timeline ul {
+      margin-left: 20px;
+      color: black;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+  
+    .program-timeline ul li {
+      font-family: var(--font-primary);
+      font-size: 16px;
+      list-style: initial;
+    }
+  
+    .program-timeline:hover li span.program-timepoint {
+      border: 0px solid #333132;
+      transition: all ease 500ms;
+      -webkit-transition: all ease 500ms;
+      transform: scale(125%);
+    }
+  
+    .program-schedule {
+      display: flex;
+      justify-content: flex-end;
+      /* flex-direction: column; */
+      flex-wrap: wrap;
+      text-align: right;
+      width: 300px;
+      color: #585858;
+    }
+  
+    .program-schedule span {
+      font-family: var(--font-primary);
+      font-size: 40px;
+      line-height: 33px;
+      color: black;
+      display: inline-block;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+  
+    .town-hall-program .program-timeline-wrap {
+      padding-top: 31px;
+    }
+  
+    .town-hall-program .program-schedule span {
+      letter-spacing: -1px;
+    }
+  
+    .town-hall-program .program-schedule span span {
+      margin-left: -5px;
+      letter-spacing: 0;
+      font-size: 15px;
+      font-weight: initial;
+    }
+  
+    .town-hall-program .program-progress {
+      padding: 10px 23px 0;
+      padding-top: 10px;
+      display: flex;
+      justify-content: center;
+      transition: all ease 800ms;
+      -webkit-transition: all ease 800ms;
+    }
+  
+    .town-hall-program .program-info-wrap {
+      padding-top: 5px;
+      width: 100%;
+    }
+  
+    .program-timepoint {
+      clip-path: circle();
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      background-color: var(--color-secondary);
+      position: relative;
+      z-index: 2;
+      transition: ease-in-out 500ms;
+    }
+  
+    .pulsate {
+      animation-name: pulsate;
+      animation-duration: 500ms;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+    }
+  
+    @keyframes pulsate {
+      from {
+        background-color: darkred;
+        transform: scale(100%);
+      }
+  
+      to {
+        background-color: red;
+        transform: scale(150%);
+      }
+    }
+  
+    /* .program-timebar {
+      height: 300px;
+      background-color: var(--color-primary);
+      width: 1px;
+      display: block;
+      position: absolute;
+      margin-left: 4px;
+      z-index: 1;
+    } */
+  
+    .program-info-title {
+      font-size: 18px;
+      font-weight: lighter;
+      font-family: var(--font-primary);
+      color: black;
+      transition: all ease 500ms;
+      -webkit-transition: all ease 500ms;
+      margin-bottom: 0.5rem;
+    }
+  
+    .program-title {
+      font-size: 18px;
+      font-weight: lighter;
+      font-family: var(--font-primary);
+      color: black;
+    }
+  
+    .program-subtitle {
+      font-size: 14px;
+      font-weight: normal;
+      color: var(--color-secondary);
+    }
+  
+    .program-info-subtitle {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: .25rem;
+      gap: 0.75rem;
+      font-family: var(--font-primary);
+      font-size: 20px;
+      font-weight: 200;
+      color: black;
+    }
+  
+    .program-speaker-avatar {
+      height: 48px;
+      width: 48px;
+      clip-path: circle();
+    }
+  
+    .inactive {
+      opacity: .25;
+    }
+  
+    .upcoming {
+      opacity: .75;
+    }
+  
+    .enlarged {
+      font-size: 32px;
+      font-weight: bolder;
+    }
+  
+    .enlarged-img {
+      width: 64px;
+      height: 64px;
+    }
+  
+    .program-info-dropdown {
+      position: absolute;
+      width: 60%;
+      word-wrap: normal;
+    }
+  
+    .program-info-wrapper {
+      display: block;
+    }
+  
+    .program-info-topic {
+      text-align: justify;
+      font-size: small;
+      font-weight: normal;
+      width: 75%;
+      padding-top: 6px;
+    }
+  
+    .program-multi-speaker {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+    }
+  
+    .enlarged-txt {
+      font-size: 24px;
+    }
+  
+    .speaker-title {
+      padding: 4px 1px;
+      font-size: 16px;
+      font-weight: 600;
+      color:#005a8b;
+    }
+  </style>
