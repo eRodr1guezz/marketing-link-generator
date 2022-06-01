@@ -24,10 +24,10 @@ function buildAgenda(day) {
 
   const today = testAgenda.filter(
     ({ date }) => date.getDay() === mockTime.getDay()
-  )[0].sessions.filter(s => new Date(s.startTime) !== mockTime);
+  )[0].sessions;
 
   const activeSessions = today
-    .filter((s) => new Date(s.startTime) > currentDateTime)
+    .filter((s) => new Date(s.startTime) <= mockTime)
     .map((session, i) => {
       //START TIME FUNCTIONS
       const startTime = new Date(session.startTime).toLocaleTimeString(
