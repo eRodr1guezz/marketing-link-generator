@@ -246,6 +246,12 @@ let drivers = [
     driver: "Faculty Recruitment",
     param: "partfac",
     id: {},
+    type: [
+      { label: "brochure", param: "broch" },
+      { label: "ad", param: "ads" },
+      { label: "journal", param: "jrl" },
+      { label: "postcard", param: "pc" },
+    ],
     custom1: {
       types: {},
     },

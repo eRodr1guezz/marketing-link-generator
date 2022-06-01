@@ -98,12 +98,50 @@ function buildAgenda(day) {
 
       //END SESSION CHAIR AND AGENDA HEADING SECTION
 
+      const dailyAgendaContainer = `
+          <div class="program-timeline-wrap">
+            <ul class="program-timeline current">
+              <li class="program-schedule current">
+              <span>
+              ${startTime.split(" ")[0]}
+              <span style="font-size: 14px; margin-left: 4px">
+              ${startTime.split(" ")[1]}
+              </span>
+              </span>
+              </li>
+              <li class="program-progress">
+              <span>
+                <span class="program-timepoint pulsate">
+                </span>
+                <span class="program-timebar">
+                </span>
+              </span>
+            </li>
+          <li class="program-info-wrap current">
+            <div class="program-info-title enlarged">Welcome and Introductions</div>
+            <div class="program-info-subtitle">
+              <div class="speaker-container"><img class="program-speaker-avatar enlarged-img"
+                  src="https://events.medscapelive.org/file_uploads/f5724a1f9f9fc78550f6137395a4c9f2_blakeley_jaishri.jpg">
+                <div>Blakely Jaishri<div class="speaker-title">MD, PhD.</div>
+                </div>
+              </div>
+            </div>
+            <div class="program-info-topic">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque
+              obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus,
+              nam est. Delectus!<div class="time-span">Ends at: 12:50 PM</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      `
+
       const programTimeline = document.createElement("ul");
       programTimeline.className = "program-timeline";
 
       if (isActive) {
         programTimeline.classList.add("current");
       }
+
       const programSchedule = document.createElement("li");
       programSchedule.className = "program-schedule";
       //if programs occur concurrently, we do not want to list all the times in the left hand column - just the first program occuring at the given time. this checks equality of the previous program and, if equal, displays nothing. otherwise it displays the time.
