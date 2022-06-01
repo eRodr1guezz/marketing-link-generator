@@ -83,18 +83,31 @@ function buildAgenda(day) {
 
       const programHeader = document.querySelector('.program-header')
       //refactor the rest of this abomination to look like below
+
       programHeader.innerHTML = `
         <h1 class="program-title">${todaysSession.title}</h1>
         <span class="program-subtitle"></span>
         <div class="program-date">${todaysSession.date.toDateString('en-US')}</div>
-        <div class="session-speaker">
-          <div class="session-speaker-info">
-            Session Speaker:
-            <div style="font-weight: bold; padding-top: 3px">${todaysSession.sessionChair[0].firstName} ${todaysSession.sessionChair[0].lastName}, ${todaysSession.sessionChair[0].title}</div>
-          </div>
-          <img class="chair-speaker-avatar" src="${todaysSession.sessionChair[0].img}" alt="photo of keynote speaker for todays session"/>
-        </div>
+        <ul class="session-speaker">
+        Chair Speakers:
+        </ul>
       `
+      
+      todaysSession.sessionChair.forEach(sp => { 
+        const ss = document.querySelector('.session-speaker');
+        const speakerImage = document.createElement('img');
+        const speakerBox = document.createElement('li');
+        
+        speakerImage.className = 'chair-speaker-avatar';
+        speakerImage.src = sp.img
+        speakerImage.alt = "photo of keynote speaker for todays session"
+        
+        speakerBox.style = "width: 100%; display: flex; align-items: center; justify-content: space-between; font-size: 1.3em"
+        speakerBox.innerHTML = `<span>${sp.firstName} ${sp.lastName}, ${sp.title}</span>`
+        speakerBox.appendChild(speakerImage);
+        
+        ss.appendChild(speakerBox);
+      })
 
       //END SESSION CHAIR AND AGENDA HEADING SECTION
 
@@ -217,7 +230,7 @@ function buildAgenda(day) {
 
       programInfoWrap.appendChild(programInfoTitle);
       programInfoWrap.appendChild(programInfoSubtitle)
-      programInfoWrap.appendChild(programInfoTopic)
+      // programInfoWrap.appendChild(programInfoTopic)
 
       programTimeline.appendChild(programInfoWrap);
 

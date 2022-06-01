@@ -233,7 +233,9 @@ ul {
 
 .program-title {
   font-size: 18px;
-  font-weight: lighter;
+  margin-bottom: 0.384em;
+  margin-top: 0;
+  /* font-weight: lighter; */
   font-family: var(--font-primary);
   color: black;
 }
@@ -265,19 +267,19 @@ ul {
 .session-speaker {
   margin-top: 2rem;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   gap: 1rem;
-  text-align: right;
-  /* flex-direction: column; */
+  /* text-align: right; */
+  flex-direction: column;
 }
 
 .session-speaker-info {
-  font-size: 1.75em;
+  font-size: 1.95em;
 }
 
 .chair-speaker-avatar {
-  height: 100px;
-  width: 90px;
+  height: 72px;
+  width: 72px;
   clip-path: circle();
 }
 
@@ -307,7 +309,7 @@ ul {
 }
 
 .enlarged {
-  font-size: 32px;
+  font-size: 25px;
   font-weight: bolder;
 }
 

@@ -4,12 +4,35 @@ const testAgenda = [
     id: 1,
     date: new Date("Feb 19 2023"),
     sessionChair: [{
-      firstName: "Linda",
+      firstName: "Linda F.",
       lastName: "Stein Gold",
       isFeatured: true,
       title: "MD",
-      img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1750354",
-    }],
+      img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1683320",
+    },
+    {
+      firstName: "Lawrence F.",
+      lastName: "Eichenfield",
+      isFeatured: true,
+      title: "MD",
+      img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1561101",
+    },
+    {
+      firstName: "Michael S.",
+      lastName: "Kaminer",
+      isFeatured: true,
+      title: "MD",
+      img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1567542",
+    },
+    {
+      firstName: "Jacqueline D.",
+      lastName: "Watchmaker",
+      isFeatured: true,
+      title: "MD",
+      img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1728362",
+    },
+
+  ],
     sessions: [
       {
         title: "Atopic Dermatitis",
