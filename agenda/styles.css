@@ -149,6 +149,8 @@ ul {
 
 .town-hall-program .program-timeline-wrap {
   padding-top: 31px;
+  margin: 0 auto;
+  width: 800px;
 }
 
 .town-hall-program .program-schedule span {
@@ -177,8 +179,8 @@ ul {
 }
 
 .town-hall-program {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
+  /* display: grid; */
+  /* grid-template-columns: 1fr 3fr; */
 }
 
 .program-timepoint {
@@ -267,36 +269,79 @@ ul {
 .session-speaker {
   margin-top: 2rem;
   display: flex;
+  /* display: flex; */
   /* align-items: center; */
-  gap: 1rem;
+  /* gap: 1rem; */
   /* text-align: right; */
-  flex-direction: column;
+  /* flex-direction: column; */
 }
 
 .session-speaker-info {
   font-size: 1.95em;
 }
 
+.speaker-box {
+  width: 100%;
+  font-size: 1.3em;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .chair-speaker-avatar {
-  height: 72px;
-  width: 72px;
+  height: 120px;
+  width: 120px;
   clip-path: circle();
 }
 
 .program-header {
-  display: flex;
-  flex-direction: column;
+  /* display: flex; */
+  /* flex-direction: row; */
   width: 100%;
-  align-items: flex-end;
+  /* align-items: flex-end; */
+}
+
+@media screen and (max-width: 1154px) {
+  .session-speaker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 490px) {
+  .session-speaker {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .speaker-name {
+    font-size: medium;
+  }
+
+  .chair-speaker-avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .program-title {
+    font-size: 1.25em;
+  }
+
+  .program-timeline-wrap {
+    width: 100%;
+  }
 }
 
 .program-date {
   /* order: 3; */
+  text-align: center;
   font-size: 2em;
 }
 
 .program-title {
-  text-align: right;
+  text-align: center;
   font-size: 3rem;
 }
 

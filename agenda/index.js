@@ -24,7 +24,7 @@ function buildAgenda(day) {
 
   const today = testAgenda.filter(
     ({ date }) => date.getDay() === mockTime.getDay()
-  )[0].sessions.filter(s => new Date(s.startTime) > currentDateTime);
+  )[0].sessions.filter(s => new Date(s.startTime) !== mockTime);
 
   const activeSessions = today
     .filter((s) => new Date(s.startTime) > currentDateTime)
@@ -88,24 +88,24 @@ function buildAgenda(day) {
         <h1 class="program-title">${todaysSession.title}</h1>
         <span class="program-subtitle"></span>
         <div class="program-date">${todaysSession.date.toDateString('en-US')}</div>
+        <span style="text-align: center">Chair Speakers:</span>
         <ul class="session-speaker">
-        Chair Speakers:
         </ul>
       `
-      
-      todaysSession.sessionChair.forEach(sp => { 
+
+      todaysSession.sessionChair.forEach(sp => {
         const ss = document.querySelector('.session-speaker');
         const speakerImage = document.createElement('img');
         const speakerBox = document.createElement('li');
-        
+
         speakerImage.className = 'chair-speaker-avatar';
         speakerImage.src = sp.img
         speakerImage.alt = "photo of keynote speaker for todays session"
-        
-        speakerBox.style = "width: 100%; display: flex; align-items: center; justify-content: space-between; font-size: 1.3em"
-        speakerBox.innerHTML = `<span>${sp.firstName} ${sp.lastName}, ${sp.title}</span>`
+
+        speakerBox.className = "speaker-box"
+        speakerBox.innerHTML = `<span class="speaker-name">${sp.firstName} ${sp.lastName}, ${sp.title}</span>`
         speakerBox.appendChild(speakerImage);
-        
+
         ss.appendChild(speakerBox);
       })
 

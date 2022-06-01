@@ -247,10 +247,7 @@ let drivers = [
     param: "partfac",
     id: {},
     type: [
-      { label: "brochure", param: "broch" },
-      { label: "ad", param: "ads" },
-      { label: "journal", param: "jrl" },
-      { label: "postcard", param: "pc" },
+      { label: "E-Mail", param: "em" },
     ],
     custom1: {
       types: {},
