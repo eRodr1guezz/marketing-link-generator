@@ -95,7 +95,7 @@ const testAgenda = [
           "Case 3: Consectetur adipisicing elit",
         subtitle: "",
         topic: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus.",
-        startTime: new Date("Feb 19 2023 12:00"),
+        startTime: new Date("Feb 19 2023 12:30"),
         endTime: new Date("Feb 19 2023 12:50"),
         speaker: [{
           firstName: "Mark",
