@@ -255,9 +255,16 @@ ul {
 }
 
 .chair-speaker-avatar {
-  height: 120px;
-  width: 120px;
+  height: 96px;
+  width: 96px;
   clip-path: circle();
+}
+
+.chair-speaker-avatar::before {
+  content: " ";
+  background-color: green;
+  position: absolute;
+  width: inherit;
 }
 
 .program-header {
