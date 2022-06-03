@@ -213,6 +213,7 @@ let drivers = [
     param: "part",
     type: [
       { label: "E-Mail", param: "em" },
+      { label: "Digital Ad", param: "dig_ad" }
     ],
     custom1: {
       type: [],
