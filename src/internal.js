@@ -211,7 +211,9 @@ let drivers = [
   {
     driver: "3rd Party Partnership Promotions - Digital Delivery",
     param: "part",
-    type: [],
+    type: [
+      { label: "E-Mail", param: "em" },
+    ],
     custom1: {
       type: [],
     },
@@ -223,6 +225,9 @@ let drivers = [
     driver: "Clickable PDF",
     param: "partpdf",
     id: {},
+    type: [
+      { label: "E-Mail", param: "em" },
+    ],
     custom1: {
       types: {},
     },
@@ -233,7 +238,7 @@ let drivers = [
   {
     driver: "Rep Recruitment",
     param: "cp",
-    type: [],
+    type: [{ label: "E-Mail", param: "em" },],
     details: null,
     custom1: {
       types: [],

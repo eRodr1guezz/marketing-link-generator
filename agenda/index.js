@@ -7,7 +7,7 @@ const checkPrevSessionTime = (s, prev) =>
 
 function buildAgenda(day) {
   const currentDateTime = new Date();
-  const mockTime = new Date("Feb 19 2023 12:00");
+  const mockTime = new Date("Feb 19 2023 7:00");
 
   //START FULL PAGE FUNCTIONALITY
   //
@@ -27,7 +27,7 @@ function buildAgenda(day) {
   )[0].sessions;
 
   const activeSessions = today
-    .filter((s) => new Date(s.startTime) <= mockTime)
+    .filter((s) => new Date(s.startTime) >= mockTime)
     .map((session, i) => {
       //START TIME FUNCTIONS
       const startTime = new Date(session.startTime).toLocaleTimeString(
@@ -85,13 +85,13 @@ function buildAgenda(day) {
       //refactor the rest of this abomination to look like below
 
       programHeader.innerHTML = `
-        <h1 class="program-title">${todaysSession.title}</h1>
-        <span class="program-subtitle"></span>
+        <div class="program-title">${todaysSession.title}</div>
         <div class="program-date">${todaysSession.date.toDateString('en-US')}</div>
-        <span style="text-align: center">Chair Speakers:</span>
         <ul class="session-speaker">
         </ul>
       `
+
+      console.log(todaysSession.sessionChair)
 
       todaysSession.sessionChair.forEach(sp => {
         const ss = document.querySelector('.session-speaker');
@@ -102,7 +102,7 @@ function buildAgenda(day) {
         speakerImage.src = sp.img
         speakerImage.alt = "photo of keynote speaker for todays session"
 
-        speakerBox.className = "speaker-box"
+        speakerBox.className = "speaker-box webflow-card"
         speakerBox.innerHTML = `<span class="speaker-name">${sp.firstName} ${sp.lastName}, ${sp.title}</span>`
         speakerBox.appendChild(speakerImage);
 
@@ -117,6 +117,7 @@ function buildAgenda(day) {
       if (isActive) {
         programTimeline.classList.add("current");
       }
+
       const programSchedule = document.createElement("li");
       programSchedule.className = "program-schedule";
       //if programs occur concurrently, we do not want to list all the times in the left hand column - just the first program occuring at the given time. this checks equality of the previous program and, if equal, displays nothing. otherwise it displays the time.
@@ -130,7 +131,7 @@ function buildAgenda(day) {
         ? `<span>${startTime.split(" ")[0]
         }<span style="font-size: 14px; margin-left: 4px">${startTime.split(" ")[1]
         }</span></span>`
-        : "";
+        : `<span style="display: none"></span></span>`;
 
       programTimeline.appendChild(programSchedule);
       if (isActive) {
@@ -166,7 +167,7 @@ function buildAgenda(day) {
 
       const programInfoTitle = document.createElement("div");
       programInfoTitle.className = "program-info-title";
-      programInfoTitle.textContent = session.title;
+      programInfoTitle.innerHTML = `Topic: <strong>${session.title}</strong>`;
 
       const programInfoTopic = document.createElement("div");
       programInfoTopic.className = "program-info-topic";
@@ -230,7 +231,7 @@ function buildAgenda(day) {
 
       programInfoWrap.appendChild(programInfoTitle);
       programInfoWrap.appendChild(programInfoSubtitle)
-      // programInfoWrap.appendChild(programInfoTopic)
+      programInfoWrap.appendChild(programInfoTopic)
 
       programTimeline.appendChild(programInfoWrap);
 

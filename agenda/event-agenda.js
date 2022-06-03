@@ -32,13 +32,13 @@ const testAgenda = [
       img: "https://na-admin.eventscloud.com/image.php?acc=8388&id=1728362",
     },
 
-  ],
+    ],
     sessions: [
       {
         title: "Atopic Dermatitis",
         subtitle: "",
-        startTime: new Date("Feb 19 2023 11:30"),
-        endTime: new Date("Feb 19 2023 12:00"),
+        startTime: new Date("Feb 19 2023 7:00"),
+        endTime: new Date("Feb 19 2023 8:30"),
         speaker: [{
           firstName: "Blakely",
           lastName: "Jaishri",
@@ -48,10 +48,10 @@ const testAgenda = [
         }],
       },
       {
-        title: "Welcome and Introductions",
+        title: "Rosacea",
         subtitle: "",
-        startTime: new Date("Feb 19 2023 12:00"),
-        endTime: new Date("Feb 19 2023 12:50"),
+        startTime: new Date("Feb 19 2023 8:35"),
+        endTime: new Date("Feb 19 2023 9:30"),
         topic:
           "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
         speaker: [{
@@ -63,11 +63,11 @@ const testAgenda = [
         }],
       },
       {
-        title: "Case 1: Lorem",
+        title: "Hyperhidrosis",
         subtitle: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
         topic: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-        startTime: new Date("Feb 19 2023 12:00"),
-        endTime: new Date("Feb 19 2023 12:50"),
+        startTime: new Date("Feb 19 2023 9:35"),
+        endTime: new Date("Feb 19 2023 10:30"),
         speaker: [{
           firstName: "April",
           lastName: "Armstrong",
@@ -77,11 +77,11 @@ const testAgenda = [
         }],
       },
       {
-        title: "Case 2: More lorem",
+        title: "Acne",
         subtitle: "Ipsum dolor, sit amet consectetur adipisicing elit.",
         topic:
           "Ipsum dolor, sit amet consectetur adipisicing elit. ipsum dolor, sit amet consectetur adipisicing elit. ipsum dolor, sit amet consectetur adipisicing elit.",
-        startTime: new Date("Feb 19 2023 12:00"),
+        startTime: new Date("Feb 19 2023 12:30"),
         endTime: new Date("Feb 19 2023 12:50"),
         speaker: [{
           firstName: "Melodie",
@@ -92,10 +92,10 @@ const testAgenda = [
       },
       {
         title:
-          "Case 3: Consectetur adipisicing elit",
+          "Vitiligo",
         subtitle: "",
         topic: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus.",
-        startTime: new Date("Feb 19 2023 12:00"),
+        startTime: new Date("Feb 19 2023 12:45"),
         endTime: new Date("Feb 19 2023 12:50"),
         speaker: [{
           firstName: "Mark",
@@ -103,58 +103,6 @@ const testAgenda = [
           title: "MD",
           img: "https://i.pravatar.cc/150?img=3",
         }],
-      },
-      {
-        title: "Overlapping Test Session",
-        subtitle: "",
-        startTime: new Date("Feb 19 2023 12:30"),
-        endTime: new Date("Feb 19 2023 13:30"),
-        topic:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
-        speaker: [{
-          firstName: "April",
-          lastName: "Armstrong",
-          isFeatured: true,
-          title: "MD, MPH",
-          img: "https://i.pravatar.cc/150?img=1",
-        }],
-      },
-      {
-        title: "Closing Remarks",
-        subtitle: "",
-        startTime: new Date("Feb 19 2023 12:50"),
-        endTime: new Date("Feb 19 2023 12:55"),
-        topic:
-          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
-        speaker: [{
-          firstName: "April",
-          lastName: "Armstrong",
-          isFeatured: true,
-          title: "MD, MPH",
-          img: "https://i.pravatar.cc/150?img=1",
-        }],
-      },
-      {
-        title: "Q&A",
-        subtitle: "",
-        startTime: new Date("Feb 19 2023 12:55"),
-        endTime: new Date("Feb 19 2023 13:30"),
-        speaker: [
-          {
-            firstName: "Melodie",
-            lastName: "Young",
-            isFeatured: false,
-            title: "MSN, ANP-C",
-            img: "https://i.pravatar.cc/150?img=2",
-          },
-          {
-            firstName: "Mark",
-            lastName: "Lebwohl",
-            isFeatured: false,
-            title: "MD",
-            img: "https://i.pravatar.cc/150?img=3",
-          },
-        ],
       },
     ],
   },
@@ -171,10 +119,70 @@ const testAgenda = [
     }],
     sessions: [
       {
-        title: "Another Session Test Oye",
+        title: "Psoriasis",
         subtitle: "",
-        startTime: new Date("Feb 20 2023 12:50"),
-        endTime: new Date("Feb 20 2023 12:55"),
+        startTime: new Date("Feb 20 2023 7:00"),
+        endTime: new Date("Feb 20 2023 8:00"),
+        topic:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
+        speaker: [{
+          firstName: "April",
+          lastName: "Armstrong",
+          isFeatured: true,
+          title: "MD, MPH",
+          img: "https://i.pravatar.cc/150?img=1",
+        }],
+      },
+      {
+        title: "Scar & Keloids",
+        subtitle: "",
+        startTime: new Date("Feb 20 2023 7:00"),
+        endTime: new Date("Feb 20 2023 8:00"),
+        topic:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
+        speaker: [{
+          firstName: "April",
+          lastName: "Armstrong",
+          isFeatured: true,
+          title: "MD, MPH",
+          img: "https://i.pravatar.cc/150?img=1",
+        }],
+      },
+      {
+        title: "Hidradenitis Suppurativas",
+        subtitle: "",
+        startTime: new Date("Feb 20 2023 7:00"),
+        endTime: new Date("Feb 20 2023 8:00"),
+        topic:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
+        speaker: [{
+          firstName: "April",
+          lastName: "Armstrong",
+          isFeatured: true,
+          title: "MD, MPH",
+          img: "https://i.pravatar.cc/150?img=1",
+        }],
+      },
+      {
+        title: "Psoriasis",
+        subtitle: "",
+        startTime: new Date("Feb 20 2023 7:00"),
+        endTime: new Date("Feb 20 2023 8:00"),
+        topic:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
+        speaker: [{
+          firstName: "April",
+          lastName: "Armstrong",
+          isFeatured: true,
+          title: "MD, MPH",
+          img: "https://i.pravatar.cc/150?img=1",
+        }],
+      },
+      {
+        title: "Psoriasis",
+        subtitle: "",
+        startTime: new Date("Feb 20 2023 7:00"),
+        endTime: new Date("Feb 20 2023 8:00"),
         topic:
           "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia neque obcaecati, libero debitis dignissimos voluptatibus in ipsum veritatis soluta fugit consequatur delectus, nam est. Delectus!",
         speaker: [{
