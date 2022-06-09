@@ -1,11 +1,10 @@
 import { render } from '@testing-library/react'
-import Form from './Components/Form/Form'
 
-const WrapperProvider = ({ children }) => {
+const Wrapper = ({ children }) => <div>{children}</div>
+
+const WrapperProvider = ({ children, props }) => {
   return (
-    <Form>
-      { children }
-    </Form>
+    <Wrapper props={props}>{children}</Wrapper>
   )
 }
 

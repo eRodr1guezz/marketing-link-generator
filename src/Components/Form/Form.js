@@ -54,7 +54,7 @@ export default function Form() {
           <Grid className={styles.container}>
 
             <Box className={styles.flexAlign}>
-              <Typography component="h1" sx={{ fontWeight: 800 }} variant="h3">
+              <Typography data-testid={"form-title"} component="h1" sx={{ fontWeight: 800 }} variant="h3">
                 Campaign URL Builder
               </Typography>
               <HelpModal />

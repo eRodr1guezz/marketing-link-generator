@@ -59,5 +59,10 @@
   "devDependencies": {
     "@cypress/react": "^5.12.5",
     "@cypress/webpack-dev-server": "^1.8.4"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "src(.*)$": "<rootDir>/src$1"
+    }
   }
 }
