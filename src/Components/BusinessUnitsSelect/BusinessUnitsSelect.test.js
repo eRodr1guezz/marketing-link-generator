@@ -1,7 +1,8 @@
-// import ReactDOM from 'react-dom';
-// import { BusinessUnitsSelect } from './BusinessUnitsSelect'
+import React from 'react';
+import { render } from '@testing-library/react';
+import { BusinessUnitsSelect } from './BusinessUnitsSelect'
 
-// it('renders without crashing', () => {
-//   const div = document.createElement('div');
-//   ReactDOM.render(<BusinessUnitsSelect />, div);
-// });
+it('renders without crashing', () => {
+  // const div = document.createElement('div');
+  render(<BusinessUnitsSelect />);
+});
