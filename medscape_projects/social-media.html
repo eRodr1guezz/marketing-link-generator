@@ -6,12 +6,15 @@
   }
 
   #social-container {
-    height: 100%;
-    background: rgb(0, 92, 139);
-    background: linear-gradient(90deg, rgba(0, 92, 139, 1) 0%, rgba(65, 188, 201, 1) 100%);
+    margin-top: 3rem;
+    /* background: rgb(0, 92, 139);
+    background: linear-gradient(90deg,
+        rgba(0, 92, 139, 1) 0%,
+        rgba(65, 188, 201, 1) 100%); */
   }
 
   #social-media-wrapper {
+    -webkit-font-smoothing: antialiased;
     width: 1200px;
     margin: 0 auto;
     display: block;
@@ -20,24 +23,34 @@
   .tweet-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    align-items: flex-start;
     gap: 1.5rem;
   }
 
-  li {
+  .tweet {
     display: flex;
     flex-direction: column;
-    background-color: rgba(65, 188, 201, .25);
+    background-color: rgba(65, 188, 201, 0.25);
     list-style: none;
-  }
-
-  .tweet {
     font-family: sans-serif;
-    padding: 2rem;
     color: white;
+    padding-bottom: 1rem;
   }
 
   .tweet-content {
-    text-align: center;
+    font-family: nunito-sans, sans-serif;
+    font-weight: bold;
+    text-align: left;
+    /* margin-bottom: 30px; */
+    padding: 2rem;
+  }
+
+  .tweet-media-header {
+    width: auto;
+  }
+
+  .no-img-font {
+    font-size: 22px;
   }
 
   /* .tweet:hover {
@@ -52,11 +65,20 @@
   }
 
   .tweet-foot {
-    justify-self: flex-end;
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
     gap: 0.25rem;
+    padding: 0.5rem 2rem;
+    font-family: josefin-sans, sans-serif;
+    font-weight: bold;
+  }
+
+  .twitter-icon {
+    margin-left: auto;
+    opacity: 0.25;
+    width: 26px;
+    height: 24px;
+    background-image: url("https://uploads-ssl.webflow.com/629e47136630ca3f6cafa972/629e47136630ca07ebafa98d_ic-header-twitter.svg");
   }
 </style>
 
@@ -65,71 +87,94 @@
     const url = `https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets`;
     const devUrl = "http://localhost:9999/.netlify/functions/get-tweets";
 
-    const response = await fetch(devUrl, {
+    const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
     });
 
     const res = await response.json();
 
-    console.log(res)
+    console.log(res);
 
-    const wrapper = document.querySelector('#social-media-wrapper')
-    const tweetGrid = document.querySelector('.tweet-grid')
+    const wrapper = document.querySelector("#social-media-wrapper");
+    const tweetGrid = document.querySelector(".tweet-grid");
 
     res.data.forEach((tw, i) => {
-      const linkRegex = /(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-&?=%.]+/g;
-      const links = tw.text.matchAll(linkRegex);
+      if (i < 6) {
 
-      // append links to the foot of the tweet
-      // for (let val of links) {
-      //   const link = val[0];
-      //   const linkHtml = `<a href=${link}>${link}</a>`
-      //   tweetFooter.append(linkHtml);
-      // }
+        const linkRegex = /(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-&?=%.]+/g;
+        const links = tw.text.matchAll(linkRegex);
 
-      //left off tuesday jun 14th 5:29pm on getting media attachments to head of tweet
+        // for (let val of links) {
+        //   const link = val[0];
+        //   const linkHtml = `<a href=${link}>${link}</a>`
+        //   tweetFooter.append(linkHtml);
+        // }
 
-      const tweetBodyContent = tw.text.replaceAll(linkRegex, "")
-      const tweet = document.createElement('li')
-      const tweetFooter = document.createElement('footer')
-      const tweetMediaHeader = document.createElement('img')
-      tweetMediaHeader.src = res.data[i].attachments.media_keys[0]
+        const tweetBodyContent = tw.text.replaceAll(linkRegex, "");
+        const tweet = document.createElement("li");
+        const tweetFooter = document.createElement("footer");
+        const tweetMediaHeader = document.createElement("img");
+        const tweetContent = document.createElement("div");
 
-      tweetMediaHeader.className = 'tweet-media-header'
-      res.includes.users.filter(user => user.id === res.data[i].author_id)[0].profile_image_url
+        if (res.data[i].hasOwnProperty('attachments')) {
+          tweetMediaHeader.src = res.includes.media.filter(
+            (result) =>
+              result.media_key === res.data[i].attachments.media_keys[0]
+          )[0].url
+        } else {
+          tweetContent.classList.toggle('no-img-font')
+        }
 
-      const tweetAvatar = document.createElement('img')
-      tweetAvatar.className = 'user-avatar'
-      tweetAvatar.src = res.includes.users.filter(user => user.id === res.data[i].author_id)[0].profile_image_url
+        tweetMediaHeader.className = "tweet-media-header";
+        res.includes.users.filter((user) => user.id === res.data[i].author_id)[0]
+          .profile_image_url;
 
-      tweet.appendChild(tweetMediaHeader)
+        const tweetAvatar = document.createElement("img");
+        tweetAvatar.className = "user-avatar";
+        tweetAvatar.src = res.includes.users.filter(
+          (user) => user.id === res.data[i].author_id
+        )[0].profile_image_url;
 
-      tweet.className = 'tweet'
-      const tweetContent = document.createElement('div')
-      tweetContent.className = 'tweet-content'
-      tweetContent.innerText = tweetBodyContent
-      tweetMediaHeader.appendChild(tweetContent)
-      tweetFooter.appendChild(tweetAvatar)
+        tweet.appendChild(tweetMediaHeader);
 
+        tweet.className = "tweet";
 
-      tweet.appendChild(tweetContent)
+        tweetContent.className = "tweet-content";
+        tweetContent.innerText = tweetBodyContent;
+        tweetMediaHeader.appendChild(tweetContent);
 
-      tweetGrid.appendChild(tweet)
+        const socialIcon = document.createElement("div");
+        socialIcon.className = "twitter-icon";
 
-      tweet.appendChild(tweetFooter)
-      // userAvatar.src = res.includes.users[i].profile_image_url;
+        const userName = document.createElement("div");
+        const timeStamp = document.createElement("div");
 
+        timeStamp.innerText = "5 days ago";
+        userName.appendChild(timeStamp);
+
+        userName.className = "user-name";
+        userName.innerText =
+          "@" +
+          res.includes.users.filter(
+            (user) => user.id === res.data[i].author_id
+          )[0].username;
+
+        tweetFooter.appendChild(tweetAvatar);
+        tweetFooter.className = "tweet-foot";
+        tweetFooter.appendChild(userName);
+        tweetFooter.appendChild(socialIcon);
+
+        tweet.appendChild(tweetContent);
+        tweetGrid.appendChild(tweet);
+        tweet.appendChild(tweetFooter);
+      }
     });
 
-    // for (let i = 0; i < 5; i++) {
-    //   wrapper.appendChild(list[i]);
-    // }
   });
 </script>
 
-<main id="social-container">
+<section id="social-container">
   <div id="social-media-wrapper">
-    <ul class="tweet-grid">
-    </ul>
+    <ul class="tweet-grid"></ul>
   </div>
-</main>
+</section>
