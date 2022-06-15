@@ -1,6 +1,7 @@
 <script>
   window.addEventListener('DOMContentLoaded', function () {
-    let url = new URL(window.location.href);
+    const url = new URL(window.location.href);
+    const hasUtmParams = url.searchParams.has('utm_source') || url.searchParams.has('utm_source_type') || url.searchParams.has('utm_medium') || url.searchParams.has('utm_therapeutic_area')
 
     //function pulls all utm tags from the url and puts them in session storage
     function getAndStoreParams() {
@@ -10,8 +11,9 @@
         }
       }
     }
-    //function grabs params from session storage and appends them to the url - returns the url href string
-    function getFromSSAndCreateUrl() {
+
+    //function grabs params from local storage and appends them to the url - returns the url href string
+    function getFromLSAndCreateUrl() {
       for (let [key, val] of Object.entries(sessionStorage)) {
         if (url.searchParams.has(key)) {
           break;
@@ -22,17 +24,68 @@
       return url.href
     }
 
-    if (!url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source') === null) {
+    if (!hasUtmParams && sessionStorage.getItem('utm_source') === null) {
       return console.log('direct hit - no marketing tags anywhere')
     }
 
-    if (url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source') === null) {
+    if (hasUtmParams || hasUtmParams && sessionStorage.getItem('utm_source') === null) {
       getAndStoreParams()
-      return window.location.href = getFromSSAndCreateUrl()
+      return window.location.href = getFromLSAndCreateUrl()
     }
 
-    if (!url.searchParams.has('utm_source') && sessionStorage.getItem('utm_source')) {
-      return window.location.href = getFromSSAndCreateUrl()
+    if (!hasUtmParams && sessionStorage.getItem('utm_source')) {
+      return window.location.href = getFromLSAndCreateUrl()
+    }
+  })
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location.href)
+    const searchParams = url.searchParams.has('utm_source') || url.searchParams.has('utm_source_type') || url.searchParams.has('utm_medium') || url.searchParams.has('utm_therapeutic_area') ? url.searchParams : null
+
+    if (searchParams) {
+      const allRegBtns = document.querySelectorAll('data-id="ga-register"')
+      const linkHref = allRegBtns[0].href
+      const newRegUrl = new URL(linkHref)
+
+      allRegBtns.forEach(el => {
+        for (let [key, val] of searchParams.entries()) {
+          newRegUrl.searchParams.set(key, val)
+        }
+
+        el.setAttribute('href', newRegUrl.href)
+      })
+    }
+  })
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    //check if the url has the utm params
+    const url = new URL(window.location.href)
+    const referrer = new URL(document.referrer)
+
+    if (hasUtmParams(url)) {
+      //if it does do nothing
+      return
+    } else {
+      //if it doesnt, check if the referrer does
+      if (hasUtmParams(referrer.href)) {
+        //if the referrer does, take those params out of that url, create a new url with the current page url and those params and reload to it
+        referrer.searchParams.forEach((val, key) => {
+          url.searchParams.set(key, val)
+        })
+        window.location.replace(url.href)
+      }
+    }
+
+    function hasUtmParams(url) {
+      const myUrl = new URL(url)
+      return myUrl.searchParams.has('utm_source') ||
+        myUrl.searchParams.has('utm_source_type') ||
+        myUrl.searchParams.has('utm_medium') ||
+        myUrl.searchParams.has('utm_therapeutic_area')
     }
   })
 </script>
