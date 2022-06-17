@@ -11,7 +11,7 @@ export default function useSnackbar() {
     }
   }, [isOpen])
 
-  function openSnackBar(msg, type) {
+  function openSnackBar(msg: string, type: string) {
     setMessage(msg)
     setAlertType(type)
     setIsOpen(true)
