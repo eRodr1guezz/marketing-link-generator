@@ -8,11 +8,9 @@
   #social-container {
     margin-top: 3rem;
     background: rgb(0, 92, 139);
-    background: linear-gradient(
-      90deg,
-      rgba(0, 92, 139, 1) 0%,
-      rgba(65, 188, 201, 1) 100%
-    );
+    background: linear-gradient(90deg,
+        rgba(0, 92, 139, 1) 0%,
+        rgba(65, 188, 201, 1) 100%);
   }
 
   #social-media-wrapper {
@@ -20,6 +18,17 @@
     -webkit-font-smoothing: antialiased;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  @media screen and (max-width: 1100px) {
+    #social-media-wrapper {
+      display: block;
+    }
+
+    .tweet-column {
+      width: auto !important;
+    }
+
   }
 
   .tweet-grid {
@@ -137,7 +146,7 @@
     background-image: url("https://uploads-ssl.webflow.com/629e47136630ca3f6cafa972/629e47136630ca07ebafa98d_ic-header-twitter.svg");
   }
 
-  a > .twitter-icon:hover {
+  a>.twitter-icon:hover {
     color: #f7ab35;
     opacity: 1;
   }
@@ -148,7 +157,7 @@
     const url = `https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets`;
     const devUrl = "http://localhost:9999/.netlify/functions/get-tweets";
 
-    const response = await fetch(url, {
+    const response = await fetch(devUrl, {
       headers: { "Content-Type": "application/json" },
     });
 
@@ -157,8 +166,6 @@
     console.log(res);
 
     const wrapper = document.querySelector("#social-media-wrapper");
-    const tweetColumn = document.createElement("li");
-    tweetColumn.className = "tweet-column";
 
     const tweets = res.data.map((tw, i) => {
       const { text, author_id, created_at, attachments, id } = tw;
@@ -172,6 +179,7 @@
       const tweetContent = document.createElement("div"); //tweet content (actual text)
       tweetContent.className = "tweet-content";
 
+      //start link handling
       const linkRegex =
         /(https?:\/\/)(\s)?(\s?)(\w+\.)*([\w\-\s]+\/)*([\w-]+)\/?/g;
       const linkArr = text.matchAll(linkRegex);
@@ -198,13 +206,10 @@
       } else {
         tweetContent.innerHTML = text;
       }
+      //end link handling
 
       const tweet = document.createElement("li"); //tweet container
       tweet.className = "tweet";
-
-      const tweetMediaHeader = document.createElement("img"); //tweet header
-      tweetMediaHeader.className = "tweet-media-header";
-      tweetMediaHeader.height = 250;
 
       const tweetFooter = document.createElement("footer"); //tweet footer
 
@@ -213,10 +218,11 @@
 
       tweetAvatar.src = theUser[0].profile_image_url;
 
-      tweetMediaHeader.appendChild(tweetContent);
-
       //if the resulting tweet has an attachments property
       if (res.data[i].hasOwnProperty("attachments")) {
+        const tweetMediaHeader = document.createElement("img"); //tweet header
+        tweetMediaHeader.className = "tweet-media-header";
+        tweetMediaHeader.height = 250;
         //first map the user to its media by the media_key...
         const filteredUser = res.includes.media.filter(
           (result) => result.media_key === res.data[i].attachments.media_keys[0]
@@ -226,12 +232,14 @@
           //set the header image source to the photo url
           tweetMediaHeader.src = filteredUser[0].url;
           //append the header to the tweet
+          tweetMediaHeader.appendChild(tweetContent);
           tweet.appendChild(tweetMediaHeader);
         } else {
           //otherwise (if the media type is video)
           //set the header source to the preview image url that is specific to videos - video is NOT supported at this time in the Twitter API!
           tweetMediaHeader.src = filteredUser[0].preview_image_url;
           //append the header to the tweet
+          tweetMediaHeader.appendChild(tweetContent);
           tweet.appendChild(tweetMediaHeader);
         }
       } else {
@@ -264,12 +272,36 @@
       return tweet;
     });
 
-    tweets
+    console.log(tweets)
+
+    function buildGrid() {
+      let offset = 0;
+      let offsetX = 5
+
+      for (let i = 0; i < 3; i++) {
+        let c = tweets.slice(offset, offsetX)
+
+        const tweetColumn = document.createElement('div');
+        tweetColumn.className = 'tweet-column';
+
+        c.forEach(t => {
+          tweetColumn.appendChild(t)
+        })
+
+        offset += 5
+        offsetX += 5
+
+        wrapper.appendChild(tweetColumn)
+      }
+    }
+    buildGrid()
+
   });
 </script>
 
 <html>
-  <section id="social-container">
-    <div id="social-media-wrapper"></div>
-  </section>
+<section id="social-container">
+  <div id="social-media-wrapper"></div>
+</section>
+
 </html>
