@@ -157,7 +157,7 @@
     const url = `https://effulgent-cocada-e3d151.netlify.app/.netlify/functions/get-tweets`;
     const devUrl = "http://localhost:9999/.netlify/functions/get-tweets";
 
-    const response = await fetch(devUrl, {
+    const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
     });
 
