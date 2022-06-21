@@ -31,7 +31,7 @@ const handler = async function (event, context) {
     Authorization: `Bearer ${apiKey}`,
   };
 
-  const response = await fetch(anotherUrl, { headers });
+  const response = await fetch(otherUrl, { headers });
 
   const res = await response.json();
 
