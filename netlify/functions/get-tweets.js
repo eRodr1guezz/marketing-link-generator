@@ -23,15 +23,16 @@ const handler = async function (event, context) {
   //   url = url.concat(`&next_token=${token}`);
   // }
 
-  const apiKey =
+  console.log(process.env.TWITTER_TOKEN)
+  console.log(process.env.REACT_APP_TWITTER_TOKEN)
 
-    process.env.TWITTER_TOKEN || process.env.REACT_APP_TWITTER_TOKEN;
+  const apiKey = process.env.TWITTER_TOKEN || process.env.REACT_APP_TWITTER_TOKEN || "AAAAAAAAAAAAAAAAAAAAAFLycgEAAAAA7Yrg6cDw0ejJQKxCz4jOhmwQgcA%3DvHvEOcoiULTJGPiKI9gDPPq5vWCgs8536SHc8T1j4V5EoJHUIH";
 
   const headers = {
     Authorization: `Bearer ${apiKey}`,
   };
 
-  const response = await fetch(otherUrl, { headers });
+  const response = await fetch(anotherUrl, { headers });
 
   const res = await response.json();
 
