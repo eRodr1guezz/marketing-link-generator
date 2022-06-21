@@ -17,13 +17,7 @@ const handler = async function (event, context) {
     };
   }
 
-  // const { token } = event.queryStringParameters
-  // if (token) {
-  //   url = url.concat(`&next_token=${token}`);
-  // }
-
-  const apiKey =
-    "AAAAAAAAAAAAAAAAAAAAAFLycgEAAAAAmkWteNs0IURxKkr7%2FWhOIk6Lslc%3DMy7TfunNzuCWplL3z0NK8eC57ooHQRVFN5r22YBETqe04BiMF9";
+  const apiKey = process.env.TWITTER_TOKEN || process.env.REACT_APP_TWITTER_TOKEN
   const headers = {
     Authorization: `Bearer ${apiKey}`,
   };

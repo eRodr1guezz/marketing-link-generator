@@ -14,9 +14,21 @@
   }
 
   #social-media-wrapper {
+    display: flex;
     -webkit-font-smoothing: antialiased;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  @media screen and (max-width: 1100px) {
+    #social-media-wrapper {
+      display: block;
+    }
+
+    .tweet-column {
+      width: auto !important;
+    }
+
   }
 
   .tweet-grid {
@@ -24,6 +36,12 @@
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
     align-items: flex-start;
     gap: 1.5rem;
+  }
+
+  .tweet-column {
+    display: flex;
+    flex-direction: column;
+    width: 33%;
   }
 
   .tweet {
@@ -35,14 +53,15 @@
     color: white;
     padding-bottom: 1rem;
     transition: all 500ms;
+    margin: 1rem;
   }
 
   blockquote {
     background: #f5f5f5;
     font-size: 1em;
-    border-left: .7em solid #ccc;
-    margin: 1em .5em;
-    padding: .1em 1em;
+    border-left: 0.7em solid #ccc;
+    margin: 1em 0.5em;
+    padding: 0.1em 1em;
     line-height: 1.2em;
     quotes: "\201C""\201D";
   }
@@ -53,8 +72,8 @@
     content: open-quote;
     font-size: 4em;
     line-height: 0;
-    vertical-align: -.41em;
-    padding: 0 .1em 0 .1em;
+    vertical-align: -0.41em;
+    padding: 0 0.1em 0 0.1em;
   }
 
   .social-wall-blockquote:after {
@@ -65,7 +84,7 @@
     line-height: 0.3em;
     margin-right: 0.25em;
     vertical-align: -0.57em;
-    padding: 0 0 0 .1em
+    padding: 0 0 0 0.1em;
   }
 
   .social-wall-blockquote:first-child {
@@ -147,117 +166,142 @@
     console.log(res);
 
     const wrapper = document.querySelector("#social-media-wrapper");
-    const tweetGrid = document.querySelector(".tweet-grid");
 
-    res.data.forEach((tw, i) => {
-      if (i < 6) {
-        const theUser = res.includes.users.filter(
-          (user) => user.id === res.data[i].author_id
-        )
+    const tweets = res.data.map((tw, i) => {
+      const { text, author_id, created_at, attachments, id } = tw;
 
-        const theTweet = res.includes.users.filter(user => user.id === res.data[i].author_id)[0]
+      const theUser = res.includes.users.filter(
+        (user) => user.id === res.data[i].author_id
+      );
 
-        const socialIcon = document.createElement("a");
-        socialIcon.className = "twitter-icon";
+      //construct the body of the tweet
+      let tweetBodyContent;
+      const tweetContent = document.createElement("div"); //tweet content (actual text)
+      tweetContent.className = "tweet-content";
 
-        const linkRegex = /(https?:\/\/)(\s)?(www\.)?(\s?)(\w+\.)*([\w\-\s]+\/)*([\w-]+)\/?/g;
-        const links = tw.text.matchAll(linkRegex);
+      //start link handling
+      const linkRegex =
+        /(https?:\/\/)(\s)?(\s?)(\w+\.)*([\w\-\s]+\/)*([\w-]+)\/?/g;
+      const linkArr = text.matchAll(linkRegex);
+      const links = [...text.matchAll(linkRegex)];
 
-        //if there ARE links found in the tweet, initiate the tweet body as a mutable empty string
-        //if not, set it to the fetched tweet text content
-        let tweetBodyContent = tw.text
+      if (links.length > 0) {
+        const x = links[0].shift();
+        const y = links[1] ? links[1].shift() : null;
 
-        const hasEntities = res.includes.users[i].hasOwnProperty('entities')
-
-        if (hasEntities) {
-          const { hashtags, url } = res.includes.users[i].entities
-          if (url) {
-            // console.log(url.urls)
+        for (let i = 0; i < 2; i++) {
+          let xtemp = text.replace(
+            x,
+            `<a class="tweet-link" href=${x}>${x}</a>`
+          );
+          for (let j = 0; j < i; j++) {
+            let ytemp = xtemp.replace(
+              y,
+              `<a class="tweet-link" href=${y}>${y}</a>`
+            );
+            tweetBodyContent = ytemp;
           }
         }
+        tweetContent.innerHTML = tweetBodyContent;
+      } else {
+        tweetContent.innerHTML = text;
+      }
+      //end link handling
 
-        //if there are links, iterate over them and 
-        // if (links.length > 0) {
-        for (let [link1] of links) {
-          socialIcon.href = link1
-          tweetBodyContent = tw.text.replace(linkRegex, `<a class="tweet-link" href=${link1}>${link1}</a>`);
-        }
-        // }
+      const tweet = document.createElement("li"); //tweet container
+      tweet.className = "tweet";
 
-        const tweet = document.createElement("li"); //tweet container
-        tweet.className = "tweet";
+      const tweetFooter = document.createElement("footer"); //tweet footer
 
+      const tweetAvatar = document.createElement("img"); //user image in footer
+      tweetAvatar.className = "user-avatar";
+
+      tweetAvatar.src = theUser[0].profile_image_url;
+
+      //if the resulting tweet has an attachments property
+      if (res.data[i].hasOwnProperty("attachments")) {
         const tweetMediaHeader = document.createElement("img"); //tweet header
         tweetMediaHeader.className = "tweet-media-header";
-        tweetMediaHeader.height = 250
-
-        const tweetContent = document.createElement("div");//tweet content (actual text)
-        // const tweetBodyContent = tw.text.replaceAll(linkRegex, `<a href=${links[0]}>${links[0]}</a>`); //this should be where the formatting occurs
-        tweetContent.className = "tweet-content";
-        tweetContent.innerHTML = tweetBodyContent;
-
-        const tweetFooter = document.createElement("footer"); //tweet footer
-
-        const tweetAvatar = document.createElement("img"); //user image in footer
-        tweetAvatar.className = "user-avatar";
-
-        tweetAvatar.src = theUser[0].profile_image_url;
-
-        tweetMediaHeader.appendChild(tweetContent);
-
-        //if the resulting tweet has an attachments property
-        if (res.data[i].hasOwnProperty('attachments')) {
-          //first map the user to its media by the media_key...
-          const filteredUser = res.includes.media.filter(result => result.media_key === res.data[i].attachments.media_keys[0])
-          //check if the attachment is NOT a video...
-          if (filteredUser[0].type !== 'video') {
-            //set the header image source to the photo url
-            tweetMediaHeader.src = filteredUser[0].url
-            //append the header to the tweet
-            tweet.appendChild(tweetMediaHeader);
-          } else { //otherwise (if the media type is video)
-            //set the header source to the preview image url that is specific to videos - video is NOT supported at this time in the Twitter API!
-            tweetMediaHeader.src = filteredUser[0].preview_image_url
-            //append the header to the tweet
-            tweet.appendChild(tweetMediaHeader);
-          }
+        tweetMediaHeader.height = 250;
+        //first map the user to its media by the media_key...
+        const filteredUser = res.includes.media.filter(
+          (result) => result.media_key === res.data[i].attachments.media_keys[0]
+        );
+        //check if the attachment is NOT a video...
+        if (filteredUser[0].type !== "video") {
+          //set the header image source to the photo url
+          tweetMediaHeader.src = filteredUser[0].url;
+          //append the header to the tweet
+          tweetMediaHeader.appendChild(tweetContent);
+          tweet.appendChild(tweetMediaHeader);
         } else {
-          //otherwise, if no attachments are found (or the attachment)
-          if (tweetBodyContent.length < 100) {
-            tweetContent.classList.add('no-img-font')
-          }
+          //otherwise (if the media type is video)
+          //set the header source to the preview image url that is specific to videos - video is NOT supported at this time in the Twitter API!
+          tweetMediaHeader.src = filteredUser[0].preview_image_url;
+          //append the header to the tweet
+          tweetMediaHeader.appendChild(tweetContent);
+          tweet.appendChild(tweetMediaHeader);
         }
-
-        const userName = document.createElement("div");
-        const timeStamp = document.createElement("div");
-
-        // timeStamp.innerText = theTweet[0].created_at;
-        console.log(res.includestheUser[0].id)
-
-        userName.className = "user-name";
-        userName.innerText =
-          "@" +
-          res.includes.users.filter(
-            (user) => user.id === res.data[i].author_id
-          )[0].username;
-
-        tweetFooter.appendChild(tweetAvatar);
-        tweetFooter.className = "tweet-foot";
-        userName.appendChild(timeStamp);
-        tweetFooter.appendChild(userName);
-        tweetFooter.appendChild(socialIcon);
-
-        tweet.appendChild(tweetContent);
-        tweet.appendChild(tweetFooter);
-        tweetGrid.appendChild(tweet);
+      } else {
+        //otherwise, if no attachments are found (or the attachment)
+        tweetContent.classList.add("no-img-font");
       }
+
+      const userName = document.createElement("div");
+      const timeStamp = document.createElement("div");
+
+      userName.className = "user-name";
+      userName.innerText =
+        "@" +
+        res.includes.users.filter(
+          (user) => user.id === res.data[i].author_id
+        )[0].username;
+
+      const socialIcon = document.createElement("a");
+      socialIcon.className = "twitter-icon";
+
+      tweetFooter.appendChild(tweetAvatar);
+      tweetFooter.className = "tweet-foot";
+      userName.appendChild(timeStamp);
+      tweetFooter.appendChild(userName);
+      tweetFooter.appendChild(socialIcon);
+
+      tweet.appendChild(tweetContent);
+      tweet.appendChild(tweetFooter);
+
+      return tweet;
     });
+
+    console.log(tweets)
+
+    function buildGrid() {
+      let offset = 0;
+      let offsetX = 5
+
+      for (let i = 0; i < 3; i++) {
+        let c = tweets.slice(offset, offsetX)
+
+        const tweetColumn = document.createElement('div');
+        tweetColumn.className = 'tweet-column';
+
+        c.forEach(t => {
+          tweetColumn.appendChild(t)
+        })
+
+        offset += 5
+        offsetX += 5
+
+        wrapper.appendChild(tweetColumn)
+      }
+    }
+    buildGrid()
 
   });
 </script>
 
+<html>
 <section id="social-container">
-  <div id="social-media-wrapper">
-    <ul class="tweet-grid"></ul>
-  </div>
+  <div id="social-media-wrapper"></div>
 </section>
+
+</html>
