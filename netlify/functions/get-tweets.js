@@ -6,6 +6,7 @@ const handler = async function (event, context) {
 
   const testUrl = "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&tweet.fields=attachments,author_id,created_at,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,media_key,preview_image_url,url&user.fields=entities,name,profile_image_url,url,username"
   const otherUrl = "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&expansions=author_id&tweet.fields=attachments,author_id,id,text&media.fields=alt_text,media_key,preview_image_url,url&user.fields=id,name,profile_image_url,username"
+  const anotherUrl = "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username&max_results=20"
 
   if (!context.clientContext && !context.clientContext.identity) {
     return {
@@ -22,7 +23,7 @@ const handler = async function (event, context) {
     Authorization: `Bearer ${apiKey}`,
   };
 
-  const response = await fetch(testUrl, { headers });
+  const response = await fetch(anotherUrl, { headers });
 
   const res = await response.json();
 
