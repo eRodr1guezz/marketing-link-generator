@@ -24,7 +24,9 @@ const handler = async function (event, context) {
   // }
 
   const apiKey =
-    process.env.TWITTER_TOKEN || REACT_APP_TWITTER_TOKEN;
+
+    process.env.TWITTER_TOKEN || process.env.REACT_APP_TWITTER_TOKEN;
+
   const headers = {
     Authorization: `Bearer ${apiKey}`,
   };
