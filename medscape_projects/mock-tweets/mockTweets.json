@@ -1,0 +1,1008 @@
+{
+  "data": [
+    {
+      "author_id": "33633067",
+      "entities": {
+        "annotations": [
+          {
+            "start": 129,
+            "end": 148,
+            "probability": 0.7944,
+            "type": "Place",
+            "normalized_text": "Carlsbad, California"
+          }
+        ],
+        "urls": [
+          {
+            "start": 163,
+            "end": 186,
+            "url": "https://t.co/1OutlQDGnz",
+            "expanded_url": "http://ms.spr.ly/6018bl0Bg",
+            "display_url": "ms.spr.ly/6018bl0Bg"
+          },
+          {
+            "start": 233,
+            "end": 256,
+            "url": "https://t.co/jQ5di91d6T",
+            "expanded_url": "https://twitter.com/MedscapeCME/status/1539186668074373120/video/1",
+            "display_url": "pic.twitter.com/jQ5di91d6T",
+            "media_key": "7_1539186618657030144"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 7,
+            "end": 27,
+            "tag": "PsychUpdateSpring22"
+          },
+          {
+            "start": 203,
+            "end": 223,
+            "tag": "PsychUpdateWinter22"
+          },
+          {
+            "start": 224,
+            "end": 232,
+            "tag": "LiveCME"
+          }
+        ]
+      },
+      "id": "1539186668074373120",
+      "text": "fuck you! You will never be a part of https://t.co/1OutlQDGnz to be a part of #PsychUpdateWinter22 #LiveCME https://t.co/jQ5di91d6T",
+      "attachments": {
+        "media_keys": ["7_1539186618657030144"]
+      },
+      "created_at": "2022-06-21T10:01:13.000Z"
+    },
+    {
+      "author_id": "1154134940323328010",
+      "entities": {
+        "annotations": [
+          {
+            "start": 65,
+            "end": 74,
+            "probability": 0.97,
+            "type": "Person",
+            "normalized_text": "Ross Baker"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 3,
+            "end": 16,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 88,
+            "end": 108,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "id": "1538963736148443137",
+      "text": "RT @MedscapeLIVE: Check out this wonderful abstract submitted by Ross Baker, PhD at our #PsychUpdateSpring22. Want to submit an abstract fo…",
+      "created_at": "2022-06-20T19:15:21.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "entities": {
+        "annotations": [
+          {
+            "start": 47,
+            "end": 56,
+            "probability": 0.9678,
+            "type": "Person",
+            "normalized_text": "Ross Baker"
+          }
+        ],
+        "urls": [
+          {
+            "start": 168,
+            "end": 191,
+            "url": "https://t.co/JZGNjBTYoy",
+            "expanded_url": "https://events.medscapelive.org/website/38899/",
+            "display_url": "events.medscapelive.org/website/38899/"
+          },
+          {
+            "start": 206,
+            "end": 229,
+            "url": "https://t.co/uTyOUGbBvg",
+            "expanded_url": "https://twitter.com/MedscapeLIVE/status/1538942802805014528/video/1",
+            "display_url": "pic.twitter.com/uTyOUGbBvg",
+            "media_key": "7_1538942770148257792"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 70,
+            "end": 90,
+            "tag": "PsychUpdateSpring22"
+          },
+          {
+            "start": 192,
+            "end": 205,
+            "tag": "psychtwitter"
+          }
+        ]
+      },
+      "id": "1538942802805014528",
+      "text": "Check out this wonderful abstract submitted by Ross Baker, PhD at our #PsychUpdateSpring22. Want to submit an abstract for the next conference, click here to register: https://t.co/JZGNjBTYoy #psychtwitter https://t.co/uTyOUGbBvg",
+      "attachments": {
+        "media_keys": ["7_1538942770148257792"]
+      },
+      "created_at": "2022-06-20T17:52:11.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "entities": {
+        "annotations": [
+          {
+            "start": 44,
+            "end": 60,
+            "probability": 0.9923,
+            "type": "Person",
+            "normalized_text": "Richard Fischbein"
+          }
+        ],
+        "urls": [
+          {
+            "start": 247,
+            "end": 270,
+            "url": "https://t.co/NutuL6cc5K",
+            "expanded_url": "https://www.medscapelive.com",
+            "display_url": "medscapelive.com"
+          },
+          {
+            "start": 271,
+            "end": 294,
+            "url": "https://t.co/uGhZAyzGJN",
+            "expanded_url": "https://twitter.com/MedscapeLIVE/status/1538905957807398912/video/1",
+            "display_url": "pic.twitter.com/uGhZAyzGJN",
+            "media_key": "7_1538905886156021765"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 18,
+            "end": 31,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 149,
+            "end": 158,
+            "tag": "Oncology"
+          },
+          {
+            "start": 159,
+            "end": 171,
+            "tag": "Dermatology"
+          },
+          {
+            "start": 172,
+            "end": 183,
+            "tag": "Psychiatry"
+          },
+          {
+            "start": 184,
+            "end": 195,
+            "tag": "Cardiology"
+          },
+          {
+            "start": 196,
+            "end": 206,
+            "tag": "Neurology"
+          }
+        ]
+      },
+      "id": "1538905957807398912",
+      "text": "Haven’t been to a @MedscapeLIVE conference? Richard Fischbein, MD attended his first and loved it! Register for an upcoming conference in your field #Oncology #Dermatology #Psychiatry #Cardiology #Neurology Click here to find our next live event: https://t.co/NutuL6cc5K https://t.co/uGhZAyzGJN",
+      "attachments": {
+        "media_keys": ["7_1538905886156021765"]
+      },
+      "created_at": "2022-06-20T15:25:46.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "entities": {
+        "annotations": [
+          {
+            "start": 129,
+            "end": 148,
+            "probability": 0.7989,
+            "type": "Place",
+            "normalized_text": "Carlsbad, California"
+          }
+        ],
+        "urls": [
+          {
+            "start": 163,
+            "end": 186,
+            "url": "https://t.co/zKU1qCJmEh",
+            "expanded_url": "http://ms.spr.ly/6016blLLi",
+            "display_url": "ms.spr.ly/6016blLLi"
+          },
+          {
+            "start": 224,
+            "end": 247,
+            "url": "https://t.co/8bPfzuA7eM",
+            "expanded_url": "https://twitter.com/MedscapeLIVE/status/1538899697724792835/video/1",
+            "display_url": "pic.twitter.com/8bPfzuA7eM",
+            "media_key": "7_1538899647988744192"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 7,
+            "end": 27,
+            "tag": "PsychUpdateSpring22"
+          },
+          {
+            "start": 203,
+            "end": 223,
+            "tag": "PsychUpdateWinter22"
+          }
+        ]
+      },
+      "id": "1538899697724792835",
+      "text": "Missed #PsychUpdateSpring22? No need to worry! Registration for the Psych winter conference is now open. Join us December 1-3 in Carlsbad, California. Click here: https://t.co/zKU1qCJmEh to be a part of #PsychUpdateWinter22 https://t.co/8bPfzuA7eM",
+      "attachments": {
+        "media_keys": ["7_1538899647988744192"]
+      },
+      "created_at": "2022-06-20T15:00:53.000Z"
+    },
+    {
+      "author_id": "824089330671120384",
+      "id": "1538821545501638657",
+      "text": "@evolutionarypsy @MedscapeLIVE The previous comment was in regards to Esketamine.",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 16,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          },
+          {
+            "start": 17,
+            "end": 30,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ]
+      },
+      "created_at": "2022-06-20T09:50:21.000Z"
+    },
+    {
+      "author_id": "824089330671120384",
+      "id": "1538821318585483265",
+      "text": "@evolutionarypsy @MedscapeLIVE From what I have read, patients are in a room with music and there no need for a therapist or therapy in general. True?",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 16,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          },
+          {
+            "start": 17,
+            "end": 30,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ]
+      },
+      "created_at": "2022-06-20T09:49:26.000Z"
+    },
+    {
+      "author_id": "373569862",
+      "id": "1538668476432273408",
+      "text": "@MedscapeLIVE Such an honor to do this. Thanks to  @Medscape",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 13,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          },
+          {
+            "start": 51,
+            "end": 60,
+            "username": "Medscape",
+            "id": "16892009"
+          }
+        ]
+      },
+      "created_at": "2022-06-19T23:42:06.000Z"
+    },
+    {
+      "author_id": "1519335647659454464",
+      "entities": {
+        "annotations": [
+          {
+            "start": 36,
+            "end": 41,
+            "probability": 0.912,
+            "type": "Place",
+            "normalized_text": "HAWAII"
+          },
+          {
+            "start": 70,
+            "end": 91,
+            "probability": 0.8452,
+            "type": "Place",
+            "normalized_text": "Waikiki Beach Marriott"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 3,
+            "end": 16,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ]
+      },
+      "id": "1538423202082430976",
+      "text": "RT @MedscapeLIVE: LEARN &amp; EARN FROM HAWAII: Join us February 19-24 at Waikiki Beach Marriott hotel for our 45th Annual Hawaii Dermatology S…",
+      "created_at": "2022-06-19T07:27:28.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "entities": {
+        "annotations": [
+          {
+            "start": 18,
+            "end": 23,
+            "probability": 0.9005,
+            "type": "Place",
+            "normalized_text": "HAWAII"
+          },
+          {
+            "start": 52,
+            "end": 73,
+            "probability": 0.7929,
+            "type": "Place",
+            "normalized_text": "Waikiki Beach Marriott"
+          },
+          {
+            "start": 101,
+            "end": 126,
+            "probability": 0.1987,
+            "type": "Organization",
+            "normalized_text": "Hawaii Dermatology Seminar"
+          }
+        ],
+        "urls": [
+          {
+            "start": 251,
+            "end": 274,
+            "url": "https://t.co/NvXdDy5fJL",
+            "expanded_url": "http://ms.spr.ly/6010bcF7C",
+            "display_url": "ms.spr.ly/6010bcF7C"
+          },
+          {
+            "start": 289,
+            "end": 312,
+            "url": "https://t.co/pzsB5JfHGs",
+            "expanded_url": "https://twitter.com/MedscapeLIVE/status/1538260779585130496/photo/1",
+            "display_url": "pic.twitter.com/pzsB5JfHGs",
+            "media_key": "3_1538260770168913921"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 275,
+            "end": 288,
+            "tag": "Hawaiiderm23"
+          }
+        ]
+      },
+      "id": "1538260779585130496",
+      "text": "LEARN &amp; EARN FROM HAWAII: Join us February 19-24 at Waikiki Beach Marriott hotel for our 45th Annual Hawaii Dermatology Seminar. The first 200 registrants will receive a special conference beach ball &amp; towel! Secure your seat now, click here: https://t.co/NvXdDy5fJL #Hawaiiderm23 https://t.co/pzsB5JfHGs",
+      "attachments": {
+        "media_keys": ["3_1538260770168913921"]
+      },
+      "created_at": "2022-06-18T20:42:04.000Z"
+    },
+    {
+      "author_id": "4937061",
+      "id": "1538252184634044416",
+      "text": "RT @evolutionarypsy: Programs are working on counseling with no records, no electronic health records, no stigma. Many health professionals…",
+      "entities": {
+        "mentions": [
+          {
+            "start": 3,
+            "end": 19,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          }
+        ]
+      },
+      "created_at": "2022-06-18T20:07:54.000Z"
+    },
+    {
+      "author_id": "4937061",
+      "id": "1538252149011800064",
+      "text": "RT @evolutionarypsy: 3 medical school classes a year are lost to physician suicide, more common among female physicians. The leading cause…",
+      "entities": {
+        "mentions": [
+          {
+            "start": 3,
+            "end": 19,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          }
+        ]
+      },
+      "created_at": "2022-06-18T20:07:46.000Z"
+    },
+    {
+      "author_id": "4937061",
+      "id": "1538252089763123200",
+      "text": "RT @evolutionarypsy: Organizations need to prioritize these situations of resilience. Our patients need access to care and so do we for bur…",
+      "entities": {
+        "mentions": [
+          {
+            "start": 3,
+            "end": 19,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          }
+        ]
+      },
+      "created_at": "2022-06-18T20:07:32.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "id": "1538245079567056897",
+      "text": "Great sessions happening at #PsychUpdateSpring22 with our world renowned faculty! https://t.co/kYSETIAAML",
+      "entities": {
+        "urls": [
+          {
+            "start": 82,
+            "end": 105,
+            "url": "https://t.co/kYSETIAAML",
+            "expanded_url": "https://twitter.com/MedscapeLIVE/status/1538245079567056897/video/1",
+            "display_url": "pic.twitter.com/kYSETIAAML",
+            "media_key": "7_1538245002589003777"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 28,
+            "end": 48,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "attachments": {
+        "media_keys": ["7_1538245002589003777"]
+      },
+      "created_at": "2022-06-18T19:39:40.000Z"
+    },
+    {
+      "author_id": "14272388",
+      "entities": {
+        "annotations": [
+          {
+            "start": 96,
+            "end": 112,
+            "probability": 0.9325,
+            "type": "Person",
+            "normalized_text": "Gregory Mattingly"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 3,
+            "end": 18,
+            "username": "Dr_SadiaUsmani",
+            "id": "1344790221930553345"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 74,
+            "end": 94,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "id": "1538215311866044417",
+      "text": "RT @Dr_SadiaUsmani: Three ways to build self-resilience from the chair of #PsychUpdateSpring22, Gregory Mattingly, MD: 1. Exercise 2. Socia…",
+      "created_at": "2022-06-18T17:41:23.000Z"
+    },
+    {
+      "author_id": "20484444",
+      "entities": {
+        "annotations": [
+          {
+            "start": 96,
+            "end": 112,
+            "probability": 0.9325,
+            "type": "Person",
+            "normalized_text": "Gregory Mattingly"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 3,
+            "end": 18,
+            "username": "Dr_SadiaUsmani",
+            "id": "1344790221930553345"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 74,
+            "end": 94,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "id": "1538215170442510339",
+      "text": "RT @Dr_SadiaUsmani: Three ways to build self-resilience from the chair of #PsychUpdateSpring22, Gregory Mattingly, MD: 1. Exercise 2. Socia…",
+      "created_at": "2022-06-18T17:40:49.000Z"
+    },
+    {
+      "author_id": "597794006",
+      "entities": {
+        "annotations": [
+          {
+            "start": 96,
+            "end": 112,
+            "probability": 0.9325,
+            "type": "Person",
+            "normalized_text": "Gregory Mattingly"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 3,
+            "end": 18,
+            "username": "Dr_SadiaUsmani",
+            "id": "1344790221930553345"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 74,
+            "end": 94,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "id": "1538198720038174721",
+      "text": "RT @Dr_SadiaUsmani: Three ways to build self-resilience from the chair of #PsychUpdateSpring22, Gregory Mattingly, MD: 1. Exercise 2. Socia…",
+      "created_at": "2022-06-18T16:35:27.000Z"
+    },
+    {
+      "author_id": "1344790221930553345",
+      "entities": {
+        "annotations": [
+          {
+            "start": 76,
+            "end": 92,
+            "probability": 0.9065,
+            "type": "Person",
+            "normalized_text": "Gregory Mattingly"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 161,
+            "end": 174,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 54,
+            "end": 74,
+            "tag": "PsychUpdateSpring22"
+          }
+        ]
+      },
+      "id": "1538197053318340610",
+      "text": "Three ways to build self-resilience from the chair of #PsychUpdateSpring22, Gregory Mattingly, MD: 1. Exercise 2. Social connection 3. having a sense of purpose @MedscapeLIVE",
+      "created_at": "2022-06-18T16:28:50.000Z"
+    },
+    {
+      "author_id": "210226021",
+      "id": "1538193471248515072",
+      "text": "Increasing resilience: increasing social connectivity, physical activity (helps sleep, increases neuronal growth), treat insomnia (greater chronic pain, inflammation, htn, diabetes, cortisol, worsening most psychiatric conditions, obesity) #psychupdatespring22 @MedscapeLIVE",
+      "entities": {
+        "mentions": [
+          {
+            "start": 261,
+            "end": 274,
+            "username": "MedscapeLIVE",
+            "id": "103021562"
+          }
+        ],
+        "hashtags": [
+          {
+            "start": 240,
+            "end": 260,
+            "tag": "psychupdatespring22"
+          }
+        ]
+      },
+      "created_at": "2022-06-18T16:14:36.000Z"
+    },
+    {
+      "author_id": "103021562",
+      "id": "1538188307640766465",
+      "text": "RT @evolutionarypsy: Lots to be learned! What about comorbidities? Most of these patients were well enough to be taken off meds for the tri…",
+      "entities": {
+        "mentions": [
+          {
+            "start": 3,
+            "end": 19,
+            "username": "evolutionarypsy",
+            "id": "210226021"
+          }
+        ]
+      },
+      "created_at": "2022-06-18T15:54:05.000Z"
+    }
+  ],
+  "includes": {
+    "media": [
+      {
+        "preview_image_url": "https://pbs.twimg.com/media/FVxKHaSXsAMzqG3.jpg",
+        "type": "video",
+        "media_key": "7_1539186618657030144",
+        "height": 1200
+      },
+      {
+        "preview_image_url": "https://pbs.twimg.com/ext_tw_video_thumb/1538942770148257792/pu/img/RiAOIlneF0orWdwJ.jpg",
+        "type": "video",
+        "media_key": "7_1538942770148257792",
+        "height": 360
+      },
+      {
+        "preview_image_url": "https://pbs.twimg.com/ext_tw_video_thumb/1538905886156021765/pu/img/gwCUrZx-Xty8TV2r.jpg",
+        "type": "video",
+        "media_key": "7_1538905886156021765",
+        "height": 1280
+      },
+      {
+        "preview_image_url": "https://pbs.twimg.com/media/FVtFHiAXsAIRnlc.jpg",
+        "type": "video",
+        "media_key": "7_1538899647988744192",
+        "height": 1200
+      },
+      {
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/FVkABTnWQAEe059.jpg",
+        "media_key": "3_1538260770168913921",
+        "height": 1179
+      },
+      {
+        "preview_image_url": "https://pbs.twimg.com/ext_tw_video_thumb/1538245002589003777/pu/img/bhSSj80BN4bRot0W.jpg",
+        "type": "video",
+        "media_key": "7_1538245002589003777",
+        "height": 1280
+      }
+    ],
+    "users": [
+      {
+        "id": "33633067",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/890659028119859200/QigQ_FjP_normal.jpg",
+        "username": "MedscapeCME",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 22,
+                "url": "http://t.co/A7RD3ZWJq0",
+                "expanded_url": "http://www.medscape.org",
+                "display_url": "medscape.org"
+              }
+            ]
+          },
+          "description": {
+            "hashtags": [
+              {
+                "start": 31,
+                "end": 35,
+                "tag": "CME"
+              },
+              {
+                "start": 37,
+                "end": 41,
+                "tag": "CNE"
+              },
+              {
+                "start": 43,
+                "end": 46,
+                "tag": "CE"
+              },
+              {
+                "start": 52,
+                "end": 56,
+                "tag": "CPE"
+              }
+            ]
+          }
+        },
+        "name": "Medscape Education"
+      },
+      {
+        "id": "1154134940323328010",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1272268507867222018/7cquQqxI_normal.jpg",
+        "username": "EventCentralMe",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/i0i5cC4PyX",
+                "expanded_url": "http://www.EventCentral.me/",
+                "display_url": "EventCentral.me"
+              }
+            ]
+          },
+          "description": {
+            "urls": [
+              {
+                "start": 6,
+                "end": 29,
+                "url": "https://t.co/G274hFwX54",
+                "expanded_url": "http://EventCentral.me",
+                "display_url": "EventCentral.me"
+              }
+            ]
+          }
+        },
+        "name": "Event Central"
+      },
+      {
+        "id": "103021562",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1373930423730892801/Mk2OI4b5_normal.png",
+        "username": "MedscapeLIVE",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/Ig3afBxx7q",
+                "expanded_url": "https://www.MedscapeLive.com",
+                "display_url": "MedscapeLive.com"
+              }
+            ]
+          }
+        },
+        "name": "MedscapeLIVE"
+      },
+      {
+        "id": "824089330671120384",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/987945211988008961/tM-EhOZR_normal.jpg",
+        "username": "DilligentDab",
+        "name": "Dab in the USA"
+      },
+      {
+        "id": "373569862",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1309295867044802560/Hkr_yJCh_normal.jpg",
+        "username": "HansaBhargavaMD",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/OxmAZgNnUh",
+                "expanded_url": "http://www.webmd.com/hansa-bhargava",
+                "display_url": "webmd.com/hansa-bhargava"
+              }
+            ]
+          },
+          "description": {
+            "hashtags": [
+              {
+                "start": 78,
+                "end": 91,
+                "tag": "MentalHealth"
+              },
+              {
+                "start": 93,
+                "end": 100,
+                "tag": "equity"
+              },
+              {
+                "start": 101,
+                "end": 111,
+                "tag": "Parenting"
+              },
+              {
+                "start": 112,
+                "end": 123,
+                "tag": "resilience"
+              },
+              {
+                "start": 124,
+                "end": 135,
+                "tag": "innovation"
+              }
+            ],
+            "mentions": [
+              {
+                "start": 30,
+                "end": 39,
+                "username": "Medscape"
+              },
+              {
+                "start": 53,
+                "end": 59,
+                "username": "WebMD"
+              },
+              {
+                "start": 61,
+                "end": 68,
+                "username": "forbes"
+              }
+            ]
+          }
+        },
+        "name": "Hansa Bhargava, MD"
+      },
+      {
+        "id": "1519335647659454464",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1519338341224701954/M_eWvIqS_normal.jpg",
+        "username": "ShinPiyali",
+        "name": "Piyali Shin"
+      },
+      {
+        "id": "4937061",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1276628479304318977/phTmt4oD_normal.jpg",
+        "username": "lizditz",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/NNt9GWgPDn",
+                "expanded_url": "http://lizditz.typepad.com",
+                "display_url": "lizditz.typepad.com"
+              }
+            ]
+          },
+          "description": {
+            "urls": [
+              {
+                "start": 55,
+                "end": 78,
+                "url": "https://t.co/QHGkBIKInd",
+                "expanded_url": "http://thinkingautismguide.blogspot.com/",
+                "display_url": "thinkingautismguide.blogspot.com"
+              }
+            ]
+          }
+        },
+        "name": "Liz \"The Mask Goes Over Your Nose AND Mouth\" Ditz"
+      },
+      {
+        "id": "14272388",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/478670202259795968/bOk7aosZ_normal.jpeg",
+        "username": "db0255",
+        "name": "Alex Maione, MS"
+      },
+      {
+        "id": "20484444",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1517534982784401412/1ydNYLYO_normal.jpg",
+        "username": "awsumpowers",
+        "entities": {
+          "description": {
+            "hashtags": [
+              {
+                "start": 18,
+                "end": 29,
+                "tag": "SpacesHost"
+              },
+              {
+                "start": 31,
+                "end": 41,
+                "tag": "Match2023"
+              }
+            ]
+          }
+        },
+        "name": "Asim A, MD"
+      },
+      {
+        "id": "597794006",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1144613995946684417/9-1rM_Ls_normal.png",
+        "username": "PsychopharmInst",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/xGfKV6JJac",
+                "expanded_url": "http://psychopharmacologyinstitute.com",
+                "display_url": "psychopharmacologyinstitute.com"
+              }
+            ]
+          }
+        },
+        "name": "Psychopharmacology Institute"
+      },
+      {
+        "id": "1344790221930553345",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1449764918589378567/kF780gDH_normal.jpg",
+        "username": "Dr_SadiaUsmani",
+        "entities": {
+          "description": {
+            "hashtags": [
+              {
+                "start": 73,
+                "end": 86,
+                "tag": "bestigmafree"
+              },
+              {
+                "start": 88,
+                "end": 95,
+                "tag": "equity"
+              },
+              {
+                "start": 99,
+                "end": 112,
+                "tag": "mentalhealth"
+              }
+            ]
+          }
+        },
+        "name": "Sadia Usmani"
+      },
+      {
+        "id": "210226021",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1391706556148953089/AGY6Ewpw_normal.jpg",
+        "username": "evolutionarypsy",
+        "entities": {
+          "url": {
+            "urls": [
+              {
+                "start": 0,
+                "end": 23,
+                "url": "https://t.co/vqW4ubfvfF",
+                "expanded_url": "https://www.psychologytoday.com/us/blog/evolutionary-psychiatry",
+                "display_url": "psychologytoday.com/us/blog/evolut…"
+              }
+            ]
+          },
+          "description": {
+            "hashtags": [
+              {
+                "start": 83,
+                "end": 93,
+                "tag": "teamhuman"
+              }
+            ]
+          }
+        },
+        "name": "Emily Deans MD"
+      }
+    ]
+  },
+  "meta": {
+    "newest_id": "1539186668074373120",
+    "oldest_id": "1538188307640766465",
+    "result_count": 20,
+    "next_token": "b26v89c19zqg8o3fpyznxleuewazp7s0c39f86iegkfwd"
+  }
+}
