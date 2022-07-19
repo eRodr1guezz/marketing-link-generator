@@ -95,7 +95,7 @@ const handler = async function (event, context) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
-    body: JSON.stringify(rawTweetArray.slice(0, 6)),
+    body: JSON.stringify(rawTweetArray.slice(0, 7)),
   };
 };
 
