@@ -9,6 +9,8 @@ const fetch = require("node-fetch");
 const mockTweets = require('../../medscape_projects/mock-tweets/mockTweets.json');
 
 const handler = async function (event, context) {
+  const id = "103021562"
+  const medscapeLiveTweets = `https://api.twitter.com/2/users/${id}/tweets?max_results=10&tweet.fields=attachments,author_id,created_at,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url,variants&user.fields=id,name,profile_image_url,username`
   const url =
     "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username&max_results=15";
   const testUrl = "https://api.twitter.com/2/tweets/search/recent?query=hawaiiderm2023&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username"
