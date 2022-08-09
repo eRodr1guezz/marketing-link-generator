@@ -6,12 +6,14 @@
 // const moderateTweet = require('../../medscape_projects/filter').moderateTweet
 const { moderateTweet, badWords } = require('../../medscape_projects/filter')
 const fetch = require("node-fetch");
-const mockTweets = require('../../medscape_projects/mock-tweets/mockTweets.json')
+
+const mockTweets = require('../../medscape_projects/mock-tweets/mockTweets.json');
 
 const handler = async function (event, context) {
+  const id = "103021562"
+  const medscapeLiveTweets = `https://api.twitter.com/2/users/${id}/tweets?max_results=10&tweet.fields=attachments,author_id,created_at,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url,variants&user.fields=id,name,profile_image_url,username`
   const url =
-    "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username&max_results=10";
-
+    "https://api.twitter.com/2/tweets/search/recent?query=medscapelive&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username&max_results=15";
   const testUrl = "https://api.twitter.com/2/tweets/search/recent?query=hawaiiderm2023&tweet.fields=attachments,author_id,created_at,entities,id,text&expansions=attachments.media_keys,author_id&media.fields=alt_text,height,media_key,preview_image_url,type,url&user.fields=entities,id,name,profile_image_url,username"
 
   const apiKey =
@@ -22,64 +24,73 @@ const handler = async function (event, context) {
   };
 
   const response = await fetch(url, { headers });
-
   const res = await response.json();
 
-  const filteredData = mockTweets.data.filter(r => !r.text.includes('RT'))
+  const tweetsByAuthorId = getTweetsByAuthorId(res);
+  const usersByAuthorId = getUsersByAuthorId(res);
+  const mediaKeys = getMediaByMediaKey(res);
 
-  // const flattenObject = (obj) => {
-  //   const flatObject = {}
+  const rawTweetArray = generateTweetArray(tweetsByAuthorId, usersByAuthorId, mediaKeys).filter(t => !t.text.includes('RT'))
 
-  //   Object.keys(obj).forEach(key => {
-  //     const value = obj[key]
-  //   })
-  // }
+  function getTweetsByAuthorId(apiResponse) {
+    let tweetByAuthorId = {};
 
-  function buildTable(data) {
-    let finalTweets = []
-    let tweetsByAuthorId = {}
+    const { data } = apiResponse;
 
     for (let i = 0; i < data.length; i++) {
-      let d = data[i]
-      if ('attachments' in d && 'media_keys' in d.attachments) {
-        d.media_keys = d.attachments.media_keys
+      let tweetData = data[i]
+      tweetByAuthorId[tweetData.author_id] = tweetData
+    };
 
-        tweetsByAuthorId[data[i].author_id] = d
-      }
+    return tweetByAuthorId
+  };
 
-      tweetsByAuthorId[data[i].author_id] = data[i]
+  function getUsersByAuthorId(apiResponse) {
+    let usersByAuthorId = {}
+    const { includes } = apiResponse;
 
-      const mediaKey = tweetsByAuthorId[data[i].author_id]?.media_keys
-      console.log(mediaKey)
+    for (let i = 0; i < includes.users.length; i++) {
+      let userData = includes.users[i]
+      usersByAuthorId[userData.id] = userData
+    };
 
-      if (mediaKey) {
-        //if the tweet has a media key we need to get the associated key value with the includes.media object
-      }
-      // const media = d.includes.media
-      // tweetAuthorTable[data[i].author_id]
-      // finalTweets.push(tweetAuthorTable)
-    }
-
-
-    // for (let j = 0; j < mockTweets.includes.media.length; j++) {
-    //   const mediaKey = mockTweets.includes.media[j].media_key
-
-    // }
-
-    console.log(tweetsByAuthorId)
-    return tweetsByAuthorId
+    return usersByAuthorId
   }
 
-  // buildTable(filteredData)
+  function getMediaByMediaKey(apiResponse) {
+    const { includes } = apiResponse;
+    let mediaByMediaKey = {}
 
-  // for (let i = 0; i < filteredData.length; i++) {
-  //   if (mockTweets.includes.media[i].media_key) {
-  //     let mediaKey = mockTweets.includes.media[i].media_key
-  //     let authorsTable = buildTable(filteredData)
+    for (let i = 0; i < includes.media.length; i++) {
+      let mediaData = includes.media[i]
+      mediaByMediaKey[mediaData.media_key] = mediaData
+    };
 
-  //     authorsTable[] = ''
+    return mediaByMediaKey
+  }
 
-  //   }
+  function generateTweetArray(tweetData, userData, mediaKeys) {
+    let tweets = []
+
+    Object.keys(tweetData).forEach(key => {
+      let tweetObj = {}
+      let media;
+
+      const tweet = tweetData[key]
+      const tweetUser = userData[key]
+
+      if ('attachments' in tweet) {
+        const tweetMediaKey = tweetData[key].attachments.media_keys[0]
+        media = mediaKeys[tweetMediaKey]
+      }
+
+      tweetObj = { ...tweet, ...tweetUser, ...media }
+
+      tweets.push(tweetObj)
+    })
+
+    return tweets
+  }
 
   return {
     statusCode: 200,
@@ -87,7 +98,8 @@ const handler = async function (event, context) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
-    body: JSON.stringify(res),
+
+    body: JSON.stringify(rawTweetArray.slice(0, 7)),
   };
 };
 
