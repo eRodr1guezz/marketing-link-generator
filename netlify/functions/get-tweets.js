@@ -6,6 +6,7 @@
 // const moderateTweet = require('../../medscape_projects/filter').moderateTweet
 const { moderateTweet, badWords } = require('../../medscape_projects/filter')
 const fetch = require("node-fetch");
+
 const mockTweets = require('../../medscape_projects/mock-tweets/mockTweets.json');
 
 const handler = async function (event, context) {
@@ -97,6 +98,7 @@ const handler = async function (event, context) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
+
     body: JSON.stringify(rawTweetArray.slice(0, 7)),
   };
 };
